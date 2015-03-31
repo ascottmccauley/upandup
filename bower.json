@@ -1,0 +1,25 @@
+{
+  "name": "upandup",
+  "version": "0.0.1",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  },
+  "authors": [
+    "ascottmccauley <scott@ascottmccauley.com>"
+  ],
+  "description": "A Starter Child Theme for Groundup",
+  "keywords": [
+    "WordPress"
+  ],
+  "license": "MIT",
+  "private": true
+}

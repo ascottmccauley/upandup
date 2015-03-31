@@ -1,0 +1,13 @@
+// Custom styles for the admin-bar
+
+@import "settings";
+
+// admin-bar
+body.admin-bar { }
+#wpadminbar {  }
+
+// mobile admin-bar
+@media screen and ( max-width: 782px ) {
+	body.admin-bar {  }
+	#wpadminbar {  }
+}

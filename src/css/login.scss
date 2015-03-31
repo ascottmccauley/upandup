@@ -1,0 +1,38 @@
+// Stylesheet for the login and register pages
+
+@import "settings";
+
+// Specific styles for the login page
+body.login-action-login {}
+
+// Specific styles for the registration page
+body.login-action.register {}
+
+// General styles
+h1 a {
+	background-image: url(../img/logo.png);
+	background-position: top;
+	background-repeat: no-repeat;
+	background-size: contain;
+	width: 100%
+}
+#loginform, #registerform {
+	p {
+		label {}
+	}
+	input {}
+	input#user_login {}
+	input#user_pass {}
+	p.forgetmenot {
+		input#rememberme {}
+	}
+	p.submit {
+		input#wp-submit {}
+	}
+}
+#nav, #backtoblog {
+	a {}
+}
+#login_error {
+	display: none;
+}

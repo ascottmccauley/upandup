@@ -1,0 +1,6 @@
+<?php
+/**
+ * @package upandup
+ */
+?>
+<?php
