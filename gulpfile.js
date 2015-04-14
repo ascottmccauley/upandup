@@ -86,7 +86,7 @@ gulp.task('css', function() {
 // # js
 // `gulp js` - runs JSHint on all scripts from `src/js` and bower files, and then compiles, combines and minify to `assets/js/main.js`
 gulp.task('js', ['jquery'], function() {
-	return gulp.src(bower('!**/jquery.js'))
+	return gulp.src(bower(['!**/jquery.js', '**/*.js']))
 		.pipe($.plumber({errorHandler: onError}))
 		.pipe($.addSrc(paths.js.src + '**/*.js'))
 		.pipe(filters.js)
