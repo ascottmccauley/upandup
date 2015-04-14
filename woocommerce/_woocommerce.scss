@@ -1,0 +1,131 @@
+/**** Global ****/
+.woocommerce-breadcrumb {
+	@include crumb-container;
+	margin: 1rem 0;
+	li {
+		@include crumbs;
+		&:last-child {
+			cursor: $cursor-default-value;
+			color: $crumb-font-color-current;
+			a {
+				cursor: $cursor-default-value;
+				color: $crumb-font-color-current;
+			}
+			
+			&:hover, &:hover a,
+			&:focus, &:focus a { text-decoration: none; }
+		}
+	}
+}
+input[type="number"] {
+	max-width: 40px;
+}
+.button.added {
+	display: none !important;
+	text-indent: -9999px !important;
+	visibility: hidden !important;
+}
+
+
+.woocommerce-pagination {
+	@include pagination-container(true);
+}
+
+.quantity.buttons_added {
+	.minus, .plus {
+		display: none;
+	}
+}
+
+/**** product categories ****/
+.product-category {
+	margin-bottom: 1rem;
+	&:hover {
+		opacity: .80;
+	}
+	@media #{$medium-up} {
+		@include grid-column(6, $float: left);
+	}
+	@media #{large-up} {
+		@include grid-column(4);
+	}
+}
+
+/**** products ****/
+.add_to_cart_button {
+	@include button-size($padding:$button-tny);
+}
+
+.added_to_cart {
+	@include button($padding:$button-tny, $bg:$success-color);
+}
+
+.product-list, .products {
+	li {
+		text-align: center
+	}
+}
+
+.thumbnails {
+	margin-top: 1rem;
+}
+
+// Quadruple upsell size because parent is going to be 1/4 the size
+.upsells .products {
+	@media #{$medium-up} {
+		@include block-grid(2);
+	}
+}
+
+/***** single-product ****/
+form.cart  {
+	@include grid-row;
+	.quantity {
+		@include grid-column(8);
+	}
+	.single_add_to_cart_button {
+		@include button-size($padding:$button-tny);
+		@include grid-column(4);
+	}
+}
+/***** Cart *****/
+tr.shipping {
+	@include hide;
+}
+
+/***** Checkout *****/
+#ship-to-different-address-checkbox {
+	margin-bottom: 0;
+}
+
+// Special case - hide payment options
+.checkout #payment {
+	@include hide;
+}
+
+/***** Widgets *****/
+.sidebar-filters {
+	
+}
+
+.widget_attribute_filters {
+	li a {
+		@include button($padding:$button-tny, $bg:$primary-color, $full-width:true, $radius:10px);
+		text-align: left;
+		&::before {
+			font-family: FontAwesome;
+			content: $fa-var-check-square-o;
+			padding-left:  .5rem;
+			padding-right: 1rem;
+		}
+	}
+	.count {
+		display: none;
+	}
+	li.filtered a {
+		opacity: .75;
+		&::before {
+			content: $fa-var-square-o;
+		}
+	}
+}
