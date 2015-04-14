@@ -3,6 +3,8 @@
 
 @import "settings";
 
+@import "fonts";
+
 // Import Foundation
 $include-parent-classes: true !default; // Have child themes import this stylesheet by default
 @import "../../bower_components/foundation/scss/normalize";

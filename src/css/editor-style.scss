@@ -1,3 +1,22 @@
 // This is styling specific for the admin editor screen
 
 @import "settings";
+
+$include-html-classes: false  !default; // Only import mixins from Foundation
+$include-html-global-classes: true !default; // Include the typography classes from Foundation
+$include-html-type-classes: true !default;  // Include the typography classes from Foundation
+$include-print-styles: false  !default; // Do not include print classes
+
+@import "fonts";
+
+// Import Foundation
+@import "../../bower_components/foundation/scss/foundation";
+
+body {
+	background: $body-bg;
+	color: $body-font-color;
+	padding: 10px;
+}
+
+
+
