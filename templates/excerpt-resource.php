@@ -1,6 +1,8 @@
 <?php
 /**
- * @package upandup
+ *
+ * @package groundup
+ * @subpackage upandup
  */
 ?>
 <?php 
@@ -9,8 +11,8 @@ $resourceID = get_post_meta( $post->ID, '_resource_media', true );
 $resourceURL = wp_get_attachment_url( $resourceID );
 $resourceType = get_post_mime_type( $resourceID );
 
-$thumbnail = get_the_post_thumbnail($post->ID, 'small');
-if($thumbnail != '') { ?>
+$thumbnail = get_the_post_thumbnail( $post->ID, 'small' );
+if ( $thumbnail != '' ) { ?>
 	<article <?php post_class(); ?>>
 		<section class="entry-content">
 			<header>

@@ -1,6 +1,8 @@
 <?php
 /**
- * @package upandup
+ *
+ * @package groundup
+ * @subpackage upandup
  */
 ?>
 <?php 
