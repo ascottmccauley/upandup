@@ -30,7 +30,7 @@ function upandup_woo_remove_image_size() {
 		remove_image_size( $size );
 	}
 }
-add_action( 'upandup_init', 'upandup_woo_remove_image_size' );
+add_action( 'groundup_init', 'upandup_woo_remove_image_size' );
 
 // Remove WooCommerce Styles
 function upandup_woo_remove_styles() {
