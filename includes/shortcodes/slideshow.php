@@ -10,19 +10,19 @@
  * [slideshow location="home"]
 **/
 
-function shortcode_slideshow($atts) {
-  extract(shortcode_atts(array(
+function shortcode_slideshow( $atts ) {
+  extract( shortcode_atts( array(
     'location' => '',
     'options' => 'infinite: true, speed: 300, fade: true, slidesToShow: 1, autoplay: true, autoplaySpeed: 5000',
-  ), $atts));
+  ), $atts ) );
   global $slideshow;
   global $slideshow_options;
   $slideshow = $location;
   $slideshow_options = $options;
   ob_start();
-  get_template_part('content/slideshow', $location);
+  get_template_part( 'templates/slideshow', $location );
   $content = ob_get_contents();
   ob_end_clean();
   return $content;
 }
-add_shortcode('slideshow', 'shortcode_slideshow');
+add_shortcode( 'slideshow', 'shortcode_slideshow' );
