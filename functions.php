@@ -120,3 +120,12 @@ class Groundup_Offcanvas_Walker extends Walker_Nav_Menu {
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 }
+
+// Remove default page_title for pages
+function upandup_page_title( $page_title ) {
+	if ( is_page() ) {
+		$page_title = null;
+	}
+	return $page_title;
+}
+add_filter( 'page_title', 'upandup_page_title' );
