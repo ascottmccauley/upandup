@@ -189,8 +189,8 @@ remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_l
  * rewrite the category thumbnail search to look for a category thumbnail or else return the first ## product thumbnails it can find.
 **/
 if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
-	function upandup_woo_subcategory_thumbnail( $category, $thumb_quantity = 5 ) {
-		$thumbnail_id = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true  );
+	function upandup_woo_subcategory_thumbnail( $category ) {
+		$thumbnail_id = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true );
 		// Get uploaded thumbnail
 		if ( $thumbnail_id ) {
 			if ( wp_is_mobile() ) {
@@ -204,24 +204,7 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 			$image = str_replace( ' ', '%20', $image );
 			echo '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $category->name ) . '">';
 		}else {
-			$args = array('post_status'=>'publish',
-				'post_type' => 'product',
-				'numberposts' => $thumb_quantity,
-				'tax_query' => array( array( 
-					'taxonomy'=>'product_cat',
-					'field' => 'id',
-					'terms' => $category->term_id					
-				) )
-			);
-			$posts = get_posts( $args );
-			echo '<div class="subcategory image-list">';
-			foreach ($posts as $post) {
-				$post_thumbnail_id = get_post_thumbnail_id( $post->ID );
-				$image_url = wp_get_attachment_image_src( $post_thumbnail_id, 'thumbnail' );
-				$image_url = $image_url[0];
-				echo '<img src="' . $image_url . '" alt="' . esc_attr( $category->name ) . '">';
-			}
-			echo '</div>';
+			echo '<div class="product-category"><h3 class="text-center">' . $category->name . '</h3></div>';
 		}
 	}
 }
