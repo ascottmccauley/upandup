@@ -7,9 +7,9 @@
 ?>
 <?php
 // Shortcodes
-$shortcodes = scandir(get_stylesheet_directory()  . '/includes/shortcodes');
-// Remove '.' and '..' from $shortcodes
-$shortcodes = array_slice($shortcodes, 2);
+$shortcodes = scandir( get_stylesheet_directory()  . '/includes/shortcodes' );
+// Remove '.' and '..' from array
+$shortcodes = array_slice( $shortcodes, 2 );
 
 foreach ( $shortcodes as $file ) {
 	if ( ! $filepath = locate_template( 'includes/shortcodes/' . $file ) ) {
@@ -19,9 +19,9 @@ foreach ( $shortcodes as $file ) {
 }
 
 // Post Types
-$post_types = scandir(get_stylesheet_directory()  . '/includes/post-types');
-// Remove '.' and '..' from $shortcodes
-$post_types = array_slice($post_types, 2);
+$post_types = scandir( get_stylesheet_directory()  . '/includes/post-types' );
+// Remove '.' and '..' from array
+$post_types = array_slice( $post_types, 2 );
 
 foreach ( $post_types as $file ) {
 	if ( ! $filepath = locate_template( 'includes/post-types/' . $file ) ) {
