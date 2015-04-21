@@ -25,6 +25,11 @@ $slick-loader-path: "../img/";
 	display: none;
 }
 
+// Import Sass-Burger
+$burger-height: 0 !default; // Include this because node-sass hasn't updated libsass
+$burger-gutter: 0 !default; // Include this because node-sass hasn't updated libsass
+@import "../../bower_components/sass-burger/burger";
+
 // Import FontAwesome
 $fa-font-path: "../fonts"; // Final dir of fonts
 $fa-css-prefix: icon;
@@ -130,6 +135,107 @@ html, body {
 
 // Menu
 ///////
+nav.top-bar, nav.second-bar {
+	-webkit-box-shadow: 0 5px 5px rgba($black,.4);
+	-moz-box-shadow: 0 5px 5px rgba($black,.4);
+	box-shadow: 0 5px 5px rgba($black,.4);
+	z-index: 33;
+	.name h1 {
+		text-align: left;
+	}
+	button, .button {
+		height: 2.1rem;
+		line-height: 1rem;		
+	}
+	input {
+		height: 2.1rem;
+	}
+	@media only screen and (max-width: 40em) {
+		.top-bar .button, .top-bar button {
+			top: 0;
+		}
+	}
+	ul.dropdown, ul.dropdown li:last-child, ul.dropdown li:last-child a {
+		-webkit-border-bottom-left-radius: 1em;
+		-moz-border-radius-bottomleft: 1em;
+		border-bottom-left-radius: 1em;
+		-webkit-border-bottom-right-radius: 1em;
+		-moz-border-radius-bottomright: 1em;
+		border-bottom-right-radius: 1em;
+	}
+	li.has-dropdown:hover, li.has-dropdown:hover a {
+		-webkit-border-bottom-left-radius: 0;
+		-moz-border-radius-bottomleft: 0;
+		border-bottom-left-radius: 0;
+	}
+}
+
+// Search
+nav.second-bar {
+	@extend .top-bar;
+	-webkit-border-bottom-left-radius: 1em;
+	-moz-border-radius-bottomleft: 1em;
+	border-bottom-left-radius: 1em;
+	float: right;
+	margin-top: -$topbar-margin-bottom;
+	margin-bottom: 0;
+	z-index: 22;
+	section {
+		@extend .top-bar-section;
+	}
+	li:first-child, li:first-child a, li:first-child ul {
+		-webkit-border-bottom-left-radius: 1em;
+		-moz-border-radius-bottomleft: 1em;
+		border-bottom-left-radius: 1em;
+	}
+}
+
+// Off Canvas Menu
+.menu-button {
+	display: inline-block;
+	padding: .75em;
+	background-color: $tabbar-bg;
+	span { @include burger(23px, 3px, 5px, $topbar-menu-icon-color); }
+	width: $tabbar-height;
+	&.mobile {
+		display: block;
+		position: absolute;
+		top: 5px;
+		&.right-off-canvas-toggle {
+			right: -5px;
+		}
+		&.left-off-canvas-toggle {
+			left: -5px;
+		}
+		z-index: 997;
+	}
+}
+.move-left .right-off-canvas-toggle span, .move-right .left-off-canvas-toggle span {
+	@include burger-to-cross;
+}
+
+.right-off-canvas-menu, .left-off-canvas-menu {
+	li.active a {
+		background: $topbar-link-bg-active;
+		color: $topbar-link-color-active;
+		&:hover {
+			background: $topbar-link-bg-active-hover;
+			color: $topbar-link-color-active-hover;
+		}
+	}
+}
+
+.middle.tab-bar-section {
+	border-right: solid 1px scale-color($tabbar-bg, $lightness: 10%);
+}
+
+body.with-sidebar .middle.tab-bar-section {
+	border-left: solid 1px scale-color($tabbar-bg, $lightness: 10%);
+}
+
+body.no-sidebar .tab-bar .left-small {
+	@include hide;
+}
 
 // Main
 ///////

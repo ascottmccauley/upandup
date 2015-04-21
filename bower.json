@@ -15,7 +15,8 @@
     "foundation": "~5.5.1",
     "fontawesome": "~4.3.0",
     "magnific-popup": "~1.0.0",
-    "slick-carousel": "~1.5.0"
+    "slick-carousel": "~1.5.0",
+    "sass-burger": "~1.1.1"
   },
   "authors": [
     "ascottmccauley <scott@ascottmccauley.com>"
