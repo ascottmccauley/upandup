@@ -17,15 +17,15 @@ function shortcode_email( $atts, $content = null ) {
 	'label' => '', 
 	), $atts ) );
 	
-	if($address == '') {
-		$address = do_shortcode($content);
-	}elseif($content != '') {
-		$label = do_shortcode($content);
+	if( $address == '' ) {
+		$address = do_shortcode( $content );
+	}elseif( $content != '' ) {
+		$label = do_shortcode( $content );
 	}
-	if($label == '') {
-		$label = antispambot($address);
+	if( $label == '' ) {
+		$label = antispambot( $address );
 	}
 	 
 	return '<a href="mailto:' . antispambot($address) . '">' . $label . '</a>';
 }
-add_shortcode('email', 'shortcode_email');
+add_shortcode( 'email', 'shortcode_email' );
