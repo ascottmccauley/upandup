@@ -33,8 +33,8 @@ function shortcode_contact( $atts, $content = null, $tag ) {
 	
 	$contactFields[ 'message' ] = array('type' => 'textarea', 'placeholder' => 'Your Message', 'required' => ' required' );
 		
-	// Get a unique hash based on the date
-	$hash = contact_get_hash();
+	// Get a unique string
+	$hash = wp_create_nonce( 'spam_trap' );
 	
 	// Process Inputs
 	$is_valid_nonce = ( isset( $_POST[ 'contact_nonce' ] ) && wp_verify_nonce( $_POST[ 'contact_nonce' ], 'contact_nonce_contact_action' ) ) ? true : false;
@@ -140,16 +140,8 @@ function shortcode_contact( $atts, $content = null, $tag ) {
 }
 add_shortcode( 'contact', 'shortcode_contact' );
 
-// Creates a random 6 digit number for 24 hours
-function contact_get_hash() {
-	srand( date( 'Ymd' ) );
-	$number = rand( 0,9999999 );
-	$hash = substr( sha1( $number ), 0, 6);
-	return $hash;
-}
-
 function contact_get_decoy_fields( ) {
-	$hash = contact_get_hash();
+	$hash = wp_create_nonce( 'spam_trap' );
 	$decoy_fields = '';
 	$fields = array( 'First Name', 'Last Name', 'Email 2', 'Address', 'Address2', 'City', 'State', 'Zipcode', 'Telephone', 'Phone' );
 	foreach ( $fields as $field ) {
