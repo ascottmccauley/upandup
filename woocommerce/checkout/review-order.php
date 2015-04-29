@@ -7,8 +7,9 @@
  * @version     2.3.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} ?>
 
 <div class="medium-6 large-4 columns">
 	<h5 id="order_review_heading"><?php _e( 'Your order', 'woocommerce' ); ?></h5>

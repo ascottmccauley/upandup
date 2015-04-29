@@ -3,8 +3,11 @@
  * The Template for displaying all single products.
  * @version     1.6.4
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit; 
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+ 
 get_header( 'shop' ); 
 /**
  * woocommerce_before_main_content hook

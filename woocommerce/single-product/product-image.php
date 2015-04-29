@@ -6,8 +6,11 @@
  * @package 	WooCommerce/Templates
  * @version     2.0.14
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit; 
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 global $post, $woocommerce, $product;
 
 $attachment_ids = $product->get_gallery_attachment_ids();

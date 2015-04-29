@@ -9,7 +9,9 @@
  * @version     2.3.0
 **/
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit; ?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} ?>
 <tr class="shipping">
 	<th><?php
 		if ( $show_package_details ) {

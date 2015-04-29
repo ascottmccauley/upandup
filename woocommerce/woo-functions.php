@@ -3,7 +3,10 @@
  * Woo-Functions
  * Any custom functions related specifically to a WooCommerce setup
 **/ 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 /************************
  * Cleanup

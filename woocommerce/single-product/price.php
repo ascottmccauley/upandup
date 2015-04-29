@@ -3,8 +3,11 @@
  * Single Product Price, including microdata for SEO
  * @version     1.6.4
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
 global $product; ?>
 <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
 	<h5 class="price"><?php echo $product->get_price_html(); ?></h5>

@@ -9,8 +9,9 @@
  * @version     1.6.4
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} ?>
 <section class="product-category text-center" role="navigation">
 
 	<?php do_action( 'woocommerce_before_subcategory', $category ); ?>

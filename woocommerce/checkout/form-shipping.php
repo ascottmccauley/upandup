@@ -7,8 +7,9 @@
  * @version     2.2.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
-?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} ?>
 <div class="woocommerce-shipping-fields medium-6 large-4 columns">
 	<?php if ( WC()->cart->needs_shipping_address() === true ) {
 		if ( empty( $_POST ) ) {

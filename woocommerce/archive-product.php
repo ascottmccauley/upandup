@@ -3,8 +3,10 @@
  * The Template for displaying product archives, including the main shop page which is a post type archive.
  * @version     2.0.0
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 get_header( 'shop' );
 

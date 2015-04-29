@@ -3,6 +3,7 @@
  * Single Product title
  * @version     1.6.4
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit; ?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} ?>
 <h2 itemprop="name" class="product_title entry-title"><?php the_title(); ?></h2>

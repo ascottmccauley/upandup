@@ -3,8 +3,11 @@
  * The template for displaying product content in the single-product.php template
  * @version     1.6.4
 **/
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
+
  /**
   * woocommerce_before_single_product hook
   *

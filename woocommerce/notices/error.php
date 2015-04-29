@@ -7,8 +7,9 @@
  * @version     1.6.4
  */
 
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit; 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+} 
 
 if ( ! $messages ) return; ?>
 <div class="alert-box alert" data-alert tabindex="0" aria-live="assertive" role="dialogalert"><a href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</a><ul>
