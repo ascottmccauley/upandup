@@ -25,12 +25,12 @@ add_filter( 'woocommerce_enqueue_styles', '__return_false' );
 
 // Remove Default Woocommerce Image Sizes
 function upandup_woo_remove_image_size() {
-	$default_sizes = array('shop_thumbnail','shop_catalog','shop_single');
+	$default_sizes = array( 'shop_thumbnail', 'shop_catalog', 'shop_single' );
 	foreach ( $default_sizes as $size ) {
 		remove_image_size( $size );
 	}
 }
-add_action( 'groundup_init', 'upandup_woo_remove_image_size' );
+add_action( 'init', 'upandup_woo_remove_image_size' );
 
 // Remove WooCommerce Styles
 function upandup_woo_remove_styles() {
