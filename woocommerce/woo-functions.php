@@ -71,6 +71,12 @@ function upandup_woo_dequeue_script() {
 }
 add_action( 'wp_enqueue_scripts', 'upandup_woo_dequeue_script', 99);
 
+// Remove woocommerce placeholder image
+function upandup_placeholder_img( ) {
+	return '';
+}
+add_filter( 'woocommerce_placeholder_img', 'upandup_placeholder_img' );
+
 // Create custom sidebar for WooCommerce pages
 function upandup_woo_register_sidebars( $sidebars ) {
 	$woo_sidebars = array( 'Shop', 'Products', 'Product', 'Cart' );

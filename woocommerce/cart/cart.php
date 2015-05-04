@@ -47,10 +47,10 @@ do_action( 'woocommerce_before_cart' ); ?>
 						?>
 					</td>
 					<?php // Don't load thumbnails for mobile users
-					if(!wp_is_mobile()){ ?>
+					if( ! wp_is_mobile() ){ ?>
 						<td class="product-thumbnail hide-for-small">
 							<?php
-								$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image('tiny'), $cart_item, $cart_item_key );
+								$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( 'tiny' ), $cart_item, $cart_item_key );
 	
 								if ( ! $_product->is_visible() )
 									echo $thumbnail;
