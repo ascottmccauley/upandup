@@ -115,6 +115,10 @@ $include-html-global-classes: $include-html-classes;
 // $font-weight-bold: bold !default;
 $tan: #b7b09d;
 $brown: #686158;
+$grey: #d7d7d7;
+$pink: #fbdcda;
+$purple: #cabfdf;
+$green: #9cc0a6;
 $blue: #001689;
 
  $white       : #FFFFFF;
@@ -412,7 +416,7 @@ $blue: #001689;
 // $include-html-nav-classes: $include-html-classes;
 
 // We use this to set the background color for the breadcrumb container.
- $crumb-bg: $primary-color;
+ $crumb-bg: $tan;
 
 // We use these to set the padding around the breadcrumbs.
 // $crumb-padding: rem-calc(9 14 9);
@@ -427,9 +431,9 @@ $blue: #001689;
 
 // We use these to set various text styles for breadcrumbs.
 // $crumb-font-size: rem-calc(11);
- $crumb-font-color: $tan;
- $crumb-font-color-current: $secondary-color;
- $crumb-font-color-unavailable: scale-color($primary-color, $lightness:-25%);
+ $crumb-font-color: $white;
+ $crumb-font-color-current: $white;
+ $crumb-font-color-unavailable: $brown;
 // $crumb-font-transform: uppercase;
 // $crumb-link-decor: underline;
 

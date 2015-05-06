@@ -102,6 +102,13 @@ html, body {
 	background: $body-bg;
 }
 
+body {
+	&.adults { background: $grey; }
+	&.childrens { background: $pink; }
+	&.pre-teen { background: $purple; }
+	&.chains { background: $green; }
+}
+
 // Header
 /////////
 #header {
@@ -136,9 +143,6 @@ html, body {
 // Menu
 ///////
 nav.top-bar, nav.second-bar {
-	-webkit-box-shadow: 0 5px 5px rgba($black,.4);
-	-moz-box-shadow: 0 5px 5px rgba($black,.4);
-	box-shadow: 0 5px 5px rgba($black,.4);
 	z-index: 33;
 	.name h1 {
 		text-align: left;
@@ -168,6 +172,11 @@ nav.top-bar, nav.second-bar {
 		-moz-border-radius-bottomleft: 0;
 		border-bottom-left-radius: 0;
 	}
+}
+
+nav.top-bar:not(.expanded) {
+	text-align: center;
+	section.top-bar-section { display: inline-block; }
 }
 
 // Search

@@ -1,9 +1,12 @@
 /**** Global ****/
 .woocommerce-breadcrumb {
 	@include crumb-container;
-	margin: 1rem 0;
+	text-align: center;
+	margin: 0 0 1rem;
 	li {
 		@include crumbs;
+		display: inline;
+		float: none;
 		&:last-child {
 			cursor: $cursor-default-value;
 			color: $crumb-font-color-current;

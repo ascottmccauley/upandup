@@ -113,6 +113,10 @@ function woocommerce_output_content_wrapper_end() {
 	echo '</main>';
 }
 
+// Move Breadcrumbs
+remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0 );
+add_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 5, 0 );
+
 // Add login/account and mini-cart to secondary-navbar
 function upandup_woo_add_to_nav( $items, $args ) {
 
@@ -125,7 +129,7 @@ function upandup_woo_add_to_nav( $items, $args ) {
 		}
 	}
 	
-	if ($menu_object->slug == 'secondary-menu') {
+	if ( $menu_object->slug == 'secondary-menu' ) {
 		$menu_object['count'] = $menu_object->count + 2;
 		update_term($menu_object);
 		if ( is_user_logged_in() ) {
@@ -232,7 +236,21 @@ function upandup_woo_template_loop_product_thumbnail() {
 		echo '<a href="'. get_the_permalink() . '" class="square-thumb" style="background-image: url(\'' . $thumbnail[0] . '\')"></a>';
 	}
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10);
+add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
+
+// Add parent category to body class
+function upandup_woo_body_class( $classes ) {
+	if ( is_woocommerce() ) {
+		$cat = get_the_terms( $product->ID, 'product_cat' );
+		foreach ( $cat as $category ) {
+			if ( $category->parent == 0 ) {
+				$classes[] = $category->slug;
+			}
+		}
+	}
+	return $classes;
+}
+add_filter( 'body_class', 'upandup_woo_body_class' );
 
 /************************
  * single-product 
