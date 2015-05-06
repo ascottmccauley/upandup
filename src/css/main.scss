@@ -44,6 +44,11 @@ a:hover i {
 	text-decoration: none;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	text-align: center;
+	text-transform: uppercase;
+}
+
 p, .entry-summary, .entry-content, .widget, .comment > section {
 	font-family: $paragraph-font-family;
 	font-weight: $paragraph-font-weight;
@@ -102,13 +107,6 @@ html, body {
 	background: $body-bg;
 }
 
-body {
-	&.adults { background: $grey; }
-	&.childrens { background: $pink; }
-	&.pre-teen { background: $purple; }
-	&.chains { background: $green; }
-}
-
 // Header
 /////////
 #header {
@@ -122,7 +120,7 @@ body {
 		margin: 0 auto;
 		max-width: 100%;
 		height: auto;
-		padding: 2rem;
+		padding: 1rem;
 		text-align: center;
 		a {
 			border: 0;
@@ -144,6 +142,10 @@ body {
 ///////
 nav.top-bar, nav.second-bar {
 	z-index: 33;
+	li a {
+		font-family: $header-font-family;
+		text-transform: uppercase;
+	}
 	.name h1 {
 		text-align: left;
 	}
@@ -174,9 +176,16 @@ nav.top-bar, nav.second-bar {
 	}
 }
 
+// Center Topbar
 nav.top-bar:not(.expanded) {
 	text-align: center;
-	section.top-bar-section { display: inline-block; }
+	section.top-bar-section { 
+		display: table;
+		margin: 0 auto;
+		li {
+			display: table-cell;
+		}
+	}
 }
 
 // Search
@@ -609,14 +618,19 @@ li.comment > section {
 	background: $topbar-bg-color;
 	clear: both;
 	display: table;
-	font-size: .8em;
+	font-family: $header-font-family;
+	text-transform: uppercase;
+	font-size: .5em;
 	margin-top: 20px;
 	padding: 20px 20px 10px 20px;
 	text-align: center;
 	width: 100%;
 	ul {
-		@include inline-list;
 		margin: 0 auto;
+		li {
+			display: inline;
+			margin: 0 1rem;
+		}
 	}
 	a {
 		&:hover {

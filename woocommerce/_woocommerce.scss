@@ -1,4 +1,10 @@
 /**** Global ****/
+html, body {
+	&.adults { background: $grey; }
+	&.childrens { background: $pink; }
+	&.pre-teen { background: $purple; }
+	&.chains { background: $green; }
+}
 .woocommerce-breadcrumb {
 	@include crumb-container;
 	text-align: center;
@@ -6,6 +12,7 @@
 	li {
 		@include crumbs;
 		display: inline;
+		font-family: $header-font-family;
 		float: none;
 		&:last-child {
 			cursor: $cursor-default-value;

@@ -252,6 +252,19 @@ function upandup_woo_body_class( $classes ) {
 }
 add_filter( 'body_class', 'upandup_woo_body_class' );
 
+function upandup_woo_html_class( $output ) {
+	if ( is_woocommerce() ) {
+		$cat = get_the_terms( $product->ID, 'product_cat' );
+		foreach ( $cat as $category ) {
+			if ( $category->parent == 0 ) {
+				$output.= 'class="' . $category->slug . '"';
+			}
+		}
+	}
+	return $output;
+}
+add_filter( 'language_attributes', 'upandup_woo_html_class' );
+
 /************************
  * single-product 
 ************************/
