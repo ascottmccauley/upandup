@@ -50,15 +50,15 @@ input[type="number"] {
 /**** product categories ****/
 .product-category {
 	margin-bottom: 1rem;
+	text-align: center;
+	@include grid-column(6, $float: left);
 	&:hover {
 		opacity: .80;
 	}
-	@media #{$medium-up} {
-		@include grid-column(6, $float: left);
-	}
-	@media #{large-up} {
-		@include grid-column(4);
-	}
+}
+
+body.tax-product_cat .product-category {
+	@include grid-column(4, $float: left );
 }
 
 /**** products ****/

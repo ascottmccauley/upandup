@@ -184,6 +184,9 @@ nav.top-bar:not(.expanded) {
 		margin: 0 auto;
 		li {
 			display: table-cell;
+			&.back {
+				display: none;
+			}
 		}
 	}
 }
