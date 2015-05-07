@@ -191,7 +191,7 @@ function woocommerce_product_loop_start() {
 
 // Replace Category Thumbnail
 remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
-add_action( 'woocommerce_after_subcategory_title', 'upandup_woo_subcategory_thumbnail', 10 );
+add_action( 'woocommerce_before_subcategory_title', 'upandup_woo_subcategory_thumbnail', 10 );
 
 // Remove Thumbnail Price
 remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
@@ -199,7 +199,7 @@ remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_l
 /**
  * woocommerce_subcategory_thumbnail
  *
- * rewrite the category thumbnail search to look for a category thumbnail or else return the first ## product thumbnails it can find.
+ * rewrite the category thumbnail search to look for a category thumbnail or else return 2 random product thumbnails.
 **/
 if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 	function upandup_woo_subcategory_thumbnail( $category ) {
@@ -217,7 +217,7 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 			$image = str_replace( ' ', '%20', $image );
 			echo '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $category->name ) . '">';
 		}else {
-			echo '<div class="product-category"><h3 class="text-center">' . $category->name . '</h3></div>';
+			echo '<img src="http://placehold.it/600x400">';
 		}
 	}
 }

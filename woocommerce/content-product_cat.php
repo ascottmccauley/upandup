@@ -12,7 +12,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 } ?>
-<section class="product-category text-center" role="navigation">
+
+<section class="product-category text-center <?php echo $category->slug; ?>" role="navigation">
 
 	<?php do_action( 'woocommerce_before_subcategory', $category ); ?>
 
@@ -24,16 +25,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 *
 			 * @hooked woocommerce_subcategory_thumbnail - 10
 			 */
-			do_action( 'woocommerce_before_subcategory_title', $category );
-			
-			$thumbnail_id = get_woocommerce_term_meta( $category->term_id, 'thumbnail_id', true  );
-			if(isset($thumbnail_id)) {
-				$class = ' class="hide"';
-			}else {
-				$class = '';
-			}	?>
+			do_action( 'woocommerce_before_subcategory_title', $category );	?>
 
-		<h4<?php echo $class ?>>
+		<h4>
 			<?php echo $category->name;
 				if ( $category->count > 0 )
 					echo apply_filters( 'woocommerce_subcategory_count_html', ' <mark class="count">(' . $category->count . ')</mark>', $category ); ?>
