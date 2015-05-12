@@ -27,11 +27,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  **/
  do_action( 'woocommerce_before_single_product_summary' ); ?>
  
-<section itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class('row'); ?>>
+<section itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class( 'row' ); ?>>
 	<?php // Check to see if product has images before determining layout
 	global $product;
-	$attachment_ids = $product->get_gallery_attachment_ids();
-	if($attachment_ids || has_post_thumbnail()) {
+	$image = upandup_woo_img_url( 'full' );
+	if( ! empty( $image ) ) {
 		$class = "small-12 medium-6 medium-push-6 columns";
 	}else {
 		$class = "small-12 columns";

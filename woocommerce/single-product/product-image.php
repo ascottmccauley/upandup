@@ -13,37 +13,26 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post, $woocommerce, $product;
 
-$attachment_ids = $product->get_gallery_attachment_ids();
-if($attachment_ids || has_post_thumbnail()) { ?>
+$img_url = upandup_woo_img_url( 'medium' );
+if ( ! empty( $img_url ) ) { ?>
+	
 	<div class="small-12 medium-6 medium-pull-6 columns gallery images">
 	
-		<?php
-			if ( has_post_thumbnail() ) {
+		<?php 
+		$image_title = esc_attr( get_the_title( get_post_thumbnail_id() ) );
+		$img_link = upandup_woo_img_url( 'full' );
+		$image = '<img src="' . $img_url . '">';
+		
+		$attachment_count = count( $product->get_gallery_attachment_ids() );	
+		if ( $attachment_count > 0 ) {
+			$gallery = '[product-gallery]';
+		} else {
+			$gallery = '';
+		}
+		
+		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" itemprop="image" class="zoom th" title="%s" data-rel="prettyPhoto' . $gallery . '">%s</a>', $image_link, $image_title, $image ), $post->ID );
+		
+		do_action( 'woocommerce_product_thumbnails' ); ?>
 	
-				$image_title = esc_attr( get_the_title( get_post_thumbnail_id() ) );
-				$image_link  = wp_get_attachment_url( get_post_thumbnail_id() );
-				$image       = get_the_post_thumbnail( $post->ID, apply_filters( 'single_product_large_thumbnail_size', 'medium' ), array(
-					'title' => $image_title
-					) );
-	
-				$attachment_count = count( $product->get_gallery_attachment_ids() );
-	
-				if ( $attachment_count > 0 ) {
-					$gallery = '[product-gallery]';
-				} else {
-					$gallery = '';
-				}
-	
-				echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" itemprop="image" class="zoom th" title="%s" data-rel="prettyPhoto' . $gallery . '">%s</a>', $image_link, $image_title, $image ), $post->ID );
-	
-			} else {
-	
-				echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<img src="%s" alt="%s" />', wc_placeholder_img_src(), __( 'Placeholder', 'woocommerce' ) ), $post->ID );
-	
-			}
-		?>
-	
-		<?php do_action( 'woocommerce_product_thumbnails' ); ?>
-	
-	</div>
+	</div>	
 <?php } ?>

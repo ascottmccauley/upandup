@@ -71,12 +71,6 @@ function upandup_woo_dequeue_script() {
 }
 add_action( 'wp_enqueue_scripts', 'upandup_woo_dequeue_script', 99);
 
-// Remove woocommerce placeholder image
-function upandup_placeholder_img( ) {
-	return '';
-}
-add_filter( 'woocommerce_placeholder_img', 'upandup_placeholder_img' );
-
 // Create custom sidebar for WooCommerce pages
 function upandup_woo_register_sidebars( $sidebars ) {
 	$woo_sidebars = array( 'Shop', 'Products', 'Product', 'Cart' );
@@ -170,6 +164,44 @@ function upandup_woo_breadcrumb_defaults( $defaults ) {
 }
 add_filter( 'woocommerce_breadcrumb_defaults', 'upandup_woo_breadcrumb_defaults' );
 
+// Replace placeholder image with a search for the correct `sku.jpg` image.
+function upandup_woo_img_url( $size = 'thumbnail' ) {
+	global $post;
+	global $product;
+	
+	if ( $size == 'full' ) {
+		$img_url = wp_get_attachment_url( get_post_thumbnail_id() );
+	} else {
+		$img = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
+		if ( ! empty( $img ) ) {
+			$img_url = $img[0];
+		}
+	} 
+	// check /media/sku-$size.jpg and /media/sku.jpg
+	if ( empty( $img_url ) ) {
+		// scan media folder for sku.jpg
+		$upload_dir = wp_upload_dir();
+		$upload_path = $upload_dir['path'];
+		$upload_url = $upload_dir['url'];
+		$sku = $product->get_sku();
+		if ( $size == 'full' ) {
+			$size = '';
+		} else {
+			$size = '-' . $size;
+		}
+		if ( file_exists( $upload_path . '/' . $sku . $size . '.jpg' ) ) {
+			$img_url = 	$upload_url . '/' . $sku . $size . '.jpg';
+		} elseif ( file_exists( $upload_path . '/' . $sku . '.jpg' ) )  {
+			// check without the $size
+			$img_url = 	$upload_url . '/' . $sku . '.jpg';
+		} else {
+			$img_url = '';
+		}
+	}
+
+	return $img_url;
+}
+
 /************************
  * shop page
 ************************/
@@ -231,10 +263,12 @@ remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_l
 
 function upandup_woo_template_loop_product_thumbnail() {
 	global $post;
-	$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), 'thumbnail' );
-	if ( ! empty( $thumbnail ) ) {
-		echo '<a href="'. get_the_permalink() . '" class="square-thumb" style="background-image: url(\'' . $thumbnail[0] . '\')"></a>';
-	}
+	global $product;
+	
+	$img_url = upandup_woo_img_url( 'thumbnail' );
+	if ( ! empty( $img_url ) ) {
+		echo '<a href="'. get_the_permalink() . '" class="square-thumb" style="background-image: url(\'' . $img_url . '\')"></a>';
+	} 
 }
 add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
 
@@ -283,10 +317,11 @@ remove_action( 'woocommerce_product_tabs', 'woocommerce_product_reviews_tab', 30
 remove_action( 'woocommerce_product_tab_panels', 'woocommerce_product_reviews_panel', 30 );
 
 // If there is only 1 image (and it is 'featured') do not include gallery
+// TODO: also check uploads folder for correct image
 function upandup_woo_check_images() {
 	global $product;
 	$attachment_ids = $product->get_gallery_attachment_ids();
-	if ( count( $attachment_ids ) < 1) {
+	if ( count( $attachment_ids ) < 1 ) {
 		remove_action( 'woocommerce_before_single_product_summary','woocommerce_show_product_images', 20 );
 	} elseif ( count( $attachment_ids ) == 1 && has_post_thumbnail() ) {
 		// Check to see if only image in gallery is the featured thumbnail
@@ -295,7 +330,7 @@ function upandup_woo_check_images() {
 		}
 	}
 }
-add_action( 'woocommerce_before_single_product_summary','upandup_woo_check_images', 5 );
+add_action( 'woocommerce_before_single_product_summary', 'upandup_woo_check_images', 5 );
 
 // Add Product Attributes
 function upandup_woo_product_attributes() {
