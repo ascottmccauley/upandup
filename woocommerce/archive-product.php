@@ -28,12 +28,12 @@ if ( have_posts() ) {
 	 * @hooked woocommerce_result_count - 20
 	 * @hooked woocommerce_catalog_ordering - 30
 	**/
-	remove_action('woocommerce_before_shop_loop','woocommerce_result_count', 20);
-	remove_action('woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30);
+	remove_action( 'woocommerce_before_shop_loop','woocommerce_result_count', 20 );
+	remove_action( 'woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30 );
 	do_action( 'woocommerce_before_shop_loop' ); ?>
 				
 		<?php $subcats = woocommerce_product_subcategories();
-		if(woocommerce_products_will_display()) { ?>
+		if( woocommerce_products_will_display() ) { ?>
 			<ul class="product-list small-block-grid-2 medium-block-grid-4 large-block-grid-6">
 				<?php while ( have_posts() ) : the_post();
 					wc_get_template_part( 'content', 'product' ); ?>
