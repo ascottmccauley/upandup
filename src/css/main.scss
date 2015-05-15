@@ -193,7 +193,6 @@ nav.top-bar:not(.expanded) {
 
 // Search
 nav.second-bar {
-	@extend .top-bar;
 	-webkit-border-bottom-left-radius: 1em;
 	-moz-border-radius-bottomleft: 1em;
 	border-bottom-left-radius: 1em;
@@ -201,9 +200,6 @@ nav.second-bar {
 	margin-top: -$topbar-margin-bottom;
 	margin-bottom: 0;
 	z-index: 22;
-	section {
-		@extend .top-bar-section;
-	}
 	li:first-child, li:first-child a, li:first-child ul {
 		-webkit-border-bottom-left-radius: 1em;
 		-moz-border-radius-bottomleft: 1em;
