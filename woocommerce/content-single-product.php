@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <section itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class( 'row' ); ?>>
 	<?php // Check to see if product has images before determining layout
 	global $product;
-	$image = upandup_woo_img_url( 'full' );
+	$image = upandup_woo_img_url( 'medium' );
 	if( ! empty( $image ) ) {
 		$class = "small-12 medium-6 medium-push-6 columns";
 	}else {
