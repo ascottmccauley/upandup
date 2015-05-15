@@ -274,11 +274,15 @@ add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loo
 
 // Add parent category to body class
 function upandup_woo_body_class( $classes ) {
-	if ( is_woocommerce() ) {
+	global $product;
+	
+	if ( is_product() || is_product_category() ) {
 		$cat = get_the_terms( $product->ID, 'product_cat' );
-		foreach ( $cat as $category ) {
-			if ( $category->parent == 0 ) {
-				$classes[] = $category->slug;
+		if ( ! empty ( $cat ) ) {
+			foreach ( $cat as $category ) {
+				if ( $category->parent == 0 ) {
+					$classes[] = $category->slug;
+				}
 			}
 		}
 	}
@@ -286,12 +290,17 @@ function upandup_woo_body_class( $classes ) {
 }
 add_filter( 'body_class', 'upandup_woo_body_class' );
 
+// Add parent category to html class
 function upandup_woo_html_class( $output ) {
-	if ( is_woocommerce() ) {
+	global $product;
+	
+	if ( is_product() || is_product_category() ) {
 		$cat = get_the_terms( $product->ID, 'product_cat' );
-		foreach ( $cat as $category ) {
-			if ( $category->parent == 0 ) {
-				$output.= 'class="' . $category->slug . '"';
+		if ( ! empty ( $cat ) ) {
+			foreach ( $cat as $category ) {
+				if ( $category->parent == 0 ) {
+					$output.= 'class="' . $category->slug . '"';
+				}
 			}
 		}
 	}
