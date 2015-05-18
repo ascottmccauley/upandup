@@ -267,8 +267,10 @@ function upandup_woo_template_loop_product_thumbnail() {
 	
 	$img_url = upandup_woo_img_url( 'thumbnail' );
 	if ( ! empty( $img_url ) ) {
-		echo '<a href="'. get_the_permalink() . '" class="square-thumb" style="background-image: url(\'' . $img_url . '\')"></a>';
-	} 
+		echo '<a href="' . get_the_permalink() . '" class="square-thumb" style="background-image: url(\'' . $img_url . '\');"></a>';
+	} else {
+		echo '<a href="' . get_the_permalink() . '" class="square-thumb placeholder" style="background: white;"></a>';
+	}
 }
 add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
 
