@@ -55,7 +55,9 @@ if (!window.getComputedStyle) {
 })( this );
 
 jQuery(document).ready(function() {
-	jQuery(document).foundation();
+	jQuery(document).foundation({
+		accordion: { multi_expand: true }
+	});
 
 	/* Disable the Submit Button Until Forms Are Filled Out */
 	jQuery('#commentform #submit').attr('disabled', true);
@@ -104,4 +106,11 @@ jQuery(document).ready(function() {
 	jQuery(window).on("resize", stickyFooter);
 	setTimeout(stickyFooter, 3000); //kludge
 	stickyFooter();
+	
+	// Collapsible Lists
+	jQuery('dt').on('click', function() {
+		jQuery(this).toggleClass('collapse');
+		jQuery(this).siblings('dd').slideToggle();
+	});
+	
 });
