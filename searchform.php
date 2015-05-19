@@ -6,7 +6,7 @@
  * @subpackage upandup
  */
 ?>
-<form role="search" method="get" id="searchbar" action="<?php echo home_url('/'); ?>">
+<form role="search" method="get" class="searchbar" action="<?php echo home_url('/'); ?>">
 	<div class="row">
 		<div class="row collapse postfix-round">
 			<div class="small-9 columns">
