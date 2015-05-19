@@ -275,12 +275,18 @@ function upandup_woo_template_loop_product_thumbnail() {
 add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
 
 // Add parent category to body class
+// Add 'parent' class if only 1 category exists
 function upandup_woo_body_class( $classes ) {
 	global $product;
 	
 	if ( is_product() || is_product_category() ) {
 		$cat = get_the_terms( $product->ID, 'product_cat' );
 		if ( ! empty ( $cat ) ) {
+			$current_term = $GLOBALS['wp_query']->get_queried_object();
+			if ( is_product_category() && $current_term->parent == 0 ) {
+				$classes[] = $categories[0];
+				$classes[] = 'parent';
+			}
 			foreach ( $cat as $category ) {
 				if ( $category->parent == 0 ) {
 					$classes[] = $category->slug;
@@ -292,16 +298,22 @@ function upandup_woo_body_class( $classes ) {
 }
 add_filter( 'body_class', 'upandup_woo_body_class' );
 
-// Add parent category to html class
+// Add topmost category to html class
+// Add 'parent' class if only 1 category exists
 function upandup_woo_html_class( $output ) {
 	global $product;
 	
 	if ( is_product() || is_product_category() ) {
 		$cat = get_the_terms( $product->ID, 'product_cat' );
 		if ( ! empty ( $cat ) ) {
-			foreach ( $cat as $category ) {
-				if ( $category->parent == 0 ) {
-					$output.= 'class="' . $category->slug . '"';
+			$current_term = $GLOBALS['wp_query']->get_queried_object();
+			if ( is_product_category() && $current_term->parent == 0 ) {
+				$output.= 'class="' . $categories[0] . ' parent"';
+			}else {
+				foreach ( $cat as $category ) {
+					if ( $category->parent == 0 ) {
+						$output.= 'class="' . $category->slug . '"';
+					}
 				}
 			}
 		}

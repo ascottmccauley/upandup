@@ -27,7 +27,7 @@ global $product; ?>
 			 */
 			do_action( 'woocommerce_before_shop_loop_item_title' ); ?>
 	
-		<a href="<?php the_permalink(); ?>"><h3><?php the_title(); ?></h3></a>
+		<a href="<?php the_permalink(); ?>"><h4><?php the_title(); ?></h4></a>
 
 		<?php
 			/**

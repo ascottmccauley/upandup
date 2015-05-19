@@ -1,19 +1,22 @@
 /**** Global ****/
 html, body {
-	&.adults { background: $grey; }
-	&.childrens { background: $pink; }
-	&.pre-teen { background: $purple; }
-	&.chains { background: $green; }
+	&.adults.parent, &.adults .woocommerce-breadcrumb { background: $grey; }
+	&.childrens.parent, &.childrens .woocommerce-breadcrumb { background: $pink; }
+	&.pre-teen.parent, &.pre-teen .woocommerce-breadcrumb { background: $purple; }
+	&.replacement-chains.parent, &.replacement-chains .woocommerce-breadcrumb { background: $green; }
 }
 .woocommerce-breadcrumb {
 	@include crumb-container;
 	text-align: center;
 	margin: 0 0 1rem;
+	position: relative;
 	li {
 		@include crumbs;
 		display: inline;
 		font-family: $header-font-family;
-		float: none;
+		@media #{$medium-up} {
+			float: none;
+		}
 		&:last-child {
 			cursor: $cursor-default-value;
 			color: $crumb-font-color-current;
@@ -24,6 +27,19 @@ html, body {
 			
 			&:hover, &:hover a,
 			&:focus, &:focus a { text-decoration: none; }
+		}
+	}
+	form.searchbar {
+		position: absolute;
+		right: 5px;
+		top: 2px;
+		width: 175px;
+		input {
+			height: 2rem;
+		}
+		button {
+			height: 2rem;
+			padding: 0;
 		}
 	}
 }
@@ -68,7 +84,7 @@ body.tax-product_cat .product-category {
 	&.adults a { background: $grey; }
 	&.childrens a { background: $pink; }
 	&.pre-teen a{  background: $purple; }
-	&.chains a { background: $green; }
+&.replacement-chains a { background: $green; }
 	h4 { color: $brown; }
 }
 
@@ -78,13 +94,19 @@ li.product {
 	position: relative;
 	.button-group {
 		position: absolute;
-		top: 20px;
+		top: 20%;
 		width: 100%;
 		visibility: hidden;
 		.button {
-			background: $secondary-color;
+			background: $white;
 			border: 1px solid $primary-color;
 			color: $primary-color;
+			margin-bottom: 5px;
+			padding: 2px;
+			width: 60%;
+			&:hover {
+				background: $secondary-color;
+			}
 		}
 	}
 	&:hover .button-group {

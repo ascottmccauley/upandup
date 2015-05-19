@@ -34,6 +34,8 @@ if ( $breadcrumb ) {
 
 	}
 
+	echo get_search_form();
+	
 	echo $wrap_after;
 
 }

@@ -113,13 +113,13 @@ $include-html-global-classes: $include-html-classes;
 // We use these to define default font weights
 // $font-weight-normal: normal !default;
 // $font-weight-bold: bold !default;
-$tan: #b7b09d;
-$brown: #686158;
-$grey: #d7d7d7;
-$pink: #fbdcda;
-$purple: #cabfdf;
-$green: #9cc0a6;
-$blue: #001689;
+ $tan: #b7b09d;
+ $brown: #686158;
+ $grey: #d7d7d7;
+ $pink: #fbdcda;
+ $purple: #cabfdf;
+ $green: #9cc0a6;
+ $blue: #001689;
 
  $white       : #FFFFFF;
  $ghost       : #FAFAFA;
@@ -143,14 +143,14 @@ $blue: #001689;
 
 // We use these as default colors throughout
  $primary-color: $brown;
- $secondary-color: $white;
+ $secondary-color: $tan;
  $alert-color: #e58b84;
  $success-color: #a4d1a8;
  $warning-color: #f4be88;
  $info-color: #b3bee7;
 
 // We use these to control various global styles
- $body-bg: $tan;
+ $body-bg: $white;
  $body-font-color: $primary-color;
  $body-font-family: 'Halant', Garamond, serif;
 // $body-font-weight: $font-weight-normal;
@@ -224,7 +224,7 @@ $blue: #001689;
  $header-font-family: 'Cinzel', Trajan, Serif;
 // $header-font-weight: $font-weight-normal;
 // $header-font-style: normal;
- $header-font-color: $white;
+ $header-font-color: $secondary-color;
 // $header-line-height: 1.4;
 // $header-top-margin: .2rem;
 // $header-bottom-margin: .5rem;
@@ -287,7 +287,7 @@ $blue: #001689;
 // We use these to style the <hr> element
 // $hr-border-width: 1px;
 // $hr-border-style: solid;
- $hr-border-color: scale-color($primary-color, $lightness: -10%);
+ $hr-border-color: $secondary-color;
 // $hr-margin: rem-calc(20);
 
 // We use these to style lists
@@ -431,9 +431,9 @@ $blue: #001689;
 
 // We use these to set various text styles for breadcrumbs.
  $crumb-font-size: rem-calc(15);
- $crumb-font-color: $white;
- $crumb-font-color-current: $white;
- $crumb-font-color-unavailable: $brown;
+ $crumb-font-color: $primary-color;
+ $crumb-font-color-current: $primary-color;
+ $crumb-font-color-unavailable: $primary-color;
 // $crumb-font-transform: uppercase;
 // $crumb-link-decor: underline;
 
@@ -473,7 +473,7 @@ $blue: #001689;
 // We use these to control button border and hover styles.
 // $button-border-width: 0px;
 // $button-border-style: solid;
- $button-bg-color: $primary-color;
+ $button-bg-color: $secondary-color;
 // $button-bg-hover: scale-color($button-bg-color, $lightness: $button-function-factor);
 // $button-border-color: $button-bg-hover;
 // $secondary-button-bg-hover: scale-color($secondary-color, $lightness: $button-function-factor);
@@ -828,7 +828,7 @@ $blue: #001689;
 
  $include-html-off-canvas-classes: $include-html-classes;
 
- $tabbar-bg: scale-color($primary-color, $lightness: -10%);
+ $tabbar-bg: $primary-color;
 // $tabbar-height: rem-calc(45);
 // $tabbar-icon-width: $tabbar-height;
 // $tabbar-line-height: $tabbar-height;

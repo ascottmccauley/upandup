@@ -6,7 +6,6 @@
 @import "fonts";
 
 // Import Foundation
-$include-parent-classes: true !default; // Have child themes import this stylesheet by default
 @import "../../bower_components/foundation/scss/normalize";
 @import "../../bower_components/foundation/scss/foundation";
 
@@ -191,10 +190,11 @@ nav.top-bar:not(.expanded) {
 	}
 }
 
-// Search
+// Secondary Nav
 nav.second-bar {
 	-webkit-border-bottom-left-radius: 1em;
 	-moz-border-radius-bottomleft: 1em;
+	background: $secondary-color;
 	border-bottom-left-radius: 1em;
 	float: right;
 	margin-top: -$topbar-margin-bottom;
@@ -619,7 +619,7 @@ li.comment > section {
 	display: table;
 	font-family: $header-font-family;
 	text-transform: uppercase;
-	font-size: .5em;
+	font-size: .25em;
 	margin-top: 20px;
 	padding: 20px 20px 10px 20px;
 	text-align: center;
