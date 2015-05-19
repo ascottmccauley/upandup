@@ -4,37 +4,63 @@
 
 @import "fonts";
 
-// Specific styles for the login page
-body.login-action-login {}
+$include-html-classes: false;
 
-// Specific styles for the registration page
-body.login-action.register {}
+// Import Foundation
+@import "../../bower_components/foundation/scss/normalize";
+@import "../../bower_components/foundation/scss/foundation";
 
-// General styles
-h1 a {
-	background-image: url(../img/logo.png);
-	background-position: top;
-	background-repeat: no-repeat;
-	background-size: contain;
-	width: 100%
-}
-#loginform, #registerform {
-	p {
-		label {}
+html, body {
+	background-color: $secondary-color;
+	#login {
+		h1 a {
+			background-image: url(../img/logo.png);
+			background-position: top;
+			background-repeat: no-repeat;
+			background-size: contain;
+			width: 100%;
+		}
+		#loginform, #registerform {
+			padding: 1rem;
+			p {
+				label {}
+			}
+			input {}
+			input#user_login {}
+			input#user_pass {}
+			p.forgetmenot {
+				float: right;
+				input#rememberme {
+					float: right;
+					margin-left; .75rem;
+				}
+			}
+			p.submit {
+				clear: both;
+				width: 100%;
+				input#wp-submit {
+					@include button($bg: $success-color, $padding: $button-med, $radius: $button-radius, $full-width: true);
+					@include single-transition(background-color);
+					background-image: none;
+					height: auto;
+					margin-bottom: 0;
+				}
+			}
+		}
+		#nav, #backtoblog {
+			color: $primary-color;
+			margin: 10px;
+			text-align: center;
+			width: 100%;
+			a {
+				color: $primary-color;
+				&:hover {
+					color: $white;
+				}
+			}
+		}
+		#login_error {
+			display: none;
+		}
 	}
-	input {}
-	input#user_login {}
-	input#user_pass {}
-	p.forgetmenot {
-		input#rememberme {}
-	}
-	p.submit {
-		input#wp-submit {}
-	}
-}
-#nav, #backtoblog {
-	a {}
-}
-#login_error {
-	display: none;
 }
