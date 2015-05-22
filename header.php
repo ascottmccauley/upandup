@@ -13,7 +13,7 @@ if ( is_front_page() || groundup_is_new_user() ) {
 	$class = '';
 	$logo = get_home_url() . '/assets/img/logo-small.png';
 } ?>
-<header id="header" role="banner">
+<header id="header" role="banner" class="hide-for-small">
 	<figure class="logo<?php echo $class; ?>" role="logo">
 		<a href="<?php echo get_home_url(); ?>/">
 			<img src="<?php echo $logo; ?>">
