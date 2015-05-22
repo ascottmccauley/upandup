@@ -87,8 +87,7 @@ button, .button, input[type="submit"], a {
 }
 
 // centered-square thumbnails with img source set to background-image: url(...);
-.square-thumb {
-	@include thumb;
+.square-thumb { 
 	background-color: #fff;
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -137,7 +136,7 @@ html, body {
 	}
 }
 
-// Menu
+// Menu/Nav
 ///////
 nav.top-bar, nav.second-bar {
 	z-index: 33;
@@ -192,22 +191,52 @@ nav.top-bar:not(.expanded) {
 
 // Secondary Nav
 nav.second-bar {
-	-webkit-border-bottom-left-radius: 1em;
-	-moz-border-radius-bottomleft: 1em;
 	background: $secondary-color;
-	border-bottom-left-radius: 1em;
-	float: right;
 	margin-top: -$topbar-margin-bottom;
 	margin-bottom: 0;
+	width: 100%;
 	z-index: 22;
-	li:first-child, li:first-child a, li:first-child ul {
-		-webkit-border-bottom-left-radius: 1em;
-		-moz-border-radius-bottomleft: 1em;
-		border-bottom-left-radius: 1em;
+	section.top-bar-section {
+		li {
+			background: $secondary-color;
+		}
+		li:not(.has-form)>a:not(.button) {
+			background: $secondary-color;
+			&:hover {
+				background: scale-color($secondary-color, $lightness: -20%);
+			}
+		}
+		li:not(.has-form):not(.active)>a:not(.button) {
+			background: $secondary-color;
+			&:hover {
+				background: scale-color($secondary-color, $lightness: -20%);
+			}
+		}
 	}
 }
 
 // Off Canvas Menu
+.middle.tab-bar-section {
+	border-right: solid 1px scale-color($tabbar-bg, $lightness: 10%);
+	h1 a {
+		background: url(../img/logo-small.png);
+		background-position: top;
+		background-repeat: no-repeat;
+		background-size: contain;
+		text-shadow: none;
+		color: transparent;
+	}
+	
+}
+
+body.with-sidebar .middle.tab-bar-section {
+	border-left: solid 1px scale-color($tabbar-bg, $lightness: 10%);
+}
+
+body.no-sidebar .tab-bar .left-small {
+	@include hide;
+}
+
 .menu-button {
 	display: inline-block;
 	padding: .75em;
@@ -240,18 +269,6 @@ nav.second-bar {
 			color: $topbar-link-color-active-hover;
 		}
 	}
-}
-
-.middle.tab-bar-section {
-	border-right: solid 1px scale-color($tabbar-bg, $lightness: 10%);
-}
-
-body.with-sidebar .middle.tab-bar-section {
-	border-left: solid 1px scale-color($tabbar-bg, $lightness: 10%);
-}
-
-body.no-sidebar .tab-bar .left-small {
-	@include hide;
 }
 
 // Main

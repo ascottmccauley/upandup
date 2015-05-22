@@ -91,32 +91,80 @@ body.tax-product_cat .product-category {
 
 /**** products ****/
 li.product {
+	color: $primary-color;
 	position: relative;
-	.button-group {
+	.square-thumb {
+		border: 2px solid $pink;
+	}
+	.product-info {
+		background-color: $pink;
+		overflow: auto;
+	}
+	h5 {
+		border-bottom: 1px solid $white;
+		color: $white;
+		margin-bottom: 0;
+	}
+	span.price {
+		float: left;
+		margin-left: 1rem;
+	}
+	.add_to_cart_button, .added_to_cart {
+		background: none;
+		display: inline;
+		font-size: 0;
+		margin: 0;
+		padding: 0;
 		position: absolute;
-		top: 20%;
-		width: 100%;
-		visibility: hidden;
-		.button {
-			background: $white;
-			border: 1px solid $primary-color;
+		bottom: 22px;
+		right: 2px;
+		&::after {
 			color: $primary-color;
-			margin-bottom: 5px;
-			padding: 2px;
-			width: 60%;
-			&:hover {
-				background: $secondary-color;
-			}
+			content: $fa-var-shopping-cart;
+			font-size: 1rem;
+			font-family: FontAwesome;
+			margin-right: 1rem;
 		}
 	}
-	&:hover .button-group {
-		opacity: .75;
-		visibility: visible;
+	&.added, &.added::after {
+		display: none;
+	}
+	.added_to_cart::after {
+		color: $success-color;
+		content: $fa-var-bookmark;
 	}
 }
-
-.added_to_cart {
-	@include button($padding:$button-tny, $bg:$success-color);
+body.adults li.product {
+	.square-thumb {
+		border: 2px solid $grey;
+	}
+	.product-info {
+		background: $grey;
+	}
+}
+body.childrens li.product {
+	.square-thumb {
+		border: 2px solid $pink;
+	}
+	.product-info {
+		background: $pink;
+	}
+}
+body.pre-teen li.product {
+	.square-thumb {
+		border: 2px solid $purple;
+	}
+	.product-info {
+		background: $purple;
+	}
+}
+body.replacement-chains li.product {
+	.square-thumb {
+		border: 2px solid $green;
+	}
+	.product-info {
+		background: $green;
+	}
 }
 
 .product-list, .products {

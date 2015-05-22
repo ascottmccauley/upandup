@@ -50,13 +50,10 @@ do_action( 'woocommerce_before_cart' ); ?>
 					if( ! wp_is_mobile() ){ ?>
 						<td class="product-thumbnail hide-for-small">
 							<?php
-								$thumbnail = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image( 'tiny' ), $cart_item, $cart_item_key );
-	
-								if ( ! $_product->is_visible() )
-									echo $thumbnail;
-								else
-									printf( '<a href="%s">%s</a>', $_product->get_permalink( $cart_item ), $thumbnail );
-							?>
+								$image_url = upandup_woo_img_url( 'tiny', $_product );
+								if ( $image_url != '' && $_product->is_visible() ) {
+									echo '<a href="' . $_product->get_permalink( $cart_item ) . '"><img src="' . $image_url . '"></a>';
+								}	?>
 						</td>
 					<?php } ?>
 					<td class="product-name">

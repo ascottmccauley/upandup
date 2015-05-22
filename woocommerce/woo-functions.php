@@ -117,25 +117,24 @@ function upandup_woo_add_to_nav( $items, $args ) {
 	$locations = get_nav_menu_locations();
 	$menu_object = get_term( $locations[$args->theme_location], 'nav_menu' );
 	
-	if ( $menu_object->slug == 'primary-menu') {
+	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
 			$items .= '<li class="login"><a href="' . get_home_url() . '/login?redirect_to=' . urlencode(get_permalink(wc_get_page_id( 'shop' ))) . '">Log In</a></li>';
 		}
 	}
 	
-	if ( $menu_object->slug == 'secondary-menu' ) {
-		$menu_object['count'] = $menu_object->count + 2;
-		update_term($menu_object);
+	if ( $menu_object->slug == 'secondary' ) {
+		$menu_object->count = $menu_object->count + 2;
 		if ( is_user_logged_in() ) {
 			// Add Product Search
 			$items .= '<li class="search has-form">' . get_product_search_form( $echo = false ) . '</li>';
 			
 			// Add Login/Account Link
-			$items .= '<li class="account has-dropdown"><a href="' . get_permalink(wc_get_page_id( 'myaccount' )) . '">Account</a><ul class="dropdown"><li><a href="' . wp_logout_url( home_url() ) . '">Log Out</a></li></ul></li>';
+			$items .= '<li class="account has-dropdown"><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '">Account</a><ul class="dropdown"><li><a href="' . wp_logout_url( home_url() ) . '">Log Out</a></li></ul></li>';
 		}
 		
 		// Add Minicart Link
-		$cart_quantity = sizeof(WC()->cart->get_cart());
+		$cart_quantity = sizeof( WC()->cart->get_cart() );
 		if ( $cart_quantity > 0 ) {
 			$cart_subtotal = WC()->cart->get_cart_subtotal();
 			$checkout_link = WC()->cart->get_cart_url();
@@ -165,9 +164,13 @@ function upandup_woo_breadcrumb_defaults( $defaults ) {
 add_filter( 'woocommerce_breadcrumb_defaults', 'upandup_woo_breadcrumb_defaults' );
 
 // Replace placeholder image with a search for the correct `sku.jpg` image.
-function upandup_woo_img_url( $size = 'thumbnail' ) {
+function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 	global $post;
 	global $product;
+	
+	if ( $_product == '' ) {
+		$_product = $product;
+	}
 	
 	if ( $size == 'full' ) {
 		$img_url = wp_get_attachment_url( get_post_thumbnail_id() );
@@ -183,7 +186,7 @@ function upandup_woo_img_url( $size = 'thumbnail' ) {
 		$upload_dir = wp_upload_dir();
 		$upload_path = $upload_dir['path'];
 		$upload_url = $upload_dir['url'];
-		$sku = $product->get_sku();
+		$sku = $_product->get_sku();
 		if ( $size == 'full' ) {
 			$size = '';
 		} else {
@@ -225,9 +228,6 @@ function woocommerce_product_loop_start() {
 remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
 add_action( 'woocommerce_before_subcategory_title', 'upandup_woo_subcategory_thumbnail', 10 );
 
-// Remove Thumbnail Price
-remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
-
 /**
  * woocommerce_subcategory_thumbnail
  *
@@ -259,7 +259,8 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 ************************/
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
-remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
+//remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+//add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_add_to_cart', 15 );
 
 function upandup_woo_template_loop_product_thumbnail() {
 	global $post;
@@ -308,7 +309,7 @@ function upandup_woo_html_class( $output ) {
 		if ( ! empty ( $cat ) ) {
 			$current_term = $GLOBALS['wp_query']->get_queried_object();
 			if ( is_product_category() && $current_term->parent == 0 ) {
-				$output.= 'class="' . $categories[0] . ' parent"';
+				$output.= 'class="' . $current_term->slug . ' parent"';
 			}else {
 				foreach ( $cat as $category ) {
 					if ( $category->parent == 0 ) {

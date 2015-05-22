@@ -1293,8 +1293,8 @@ $include-html-global-classes: $include-html-classes;
  $include-html-table-classes: true;
 
 // These control the background color for the table and even rows
- $table-bg: scale-color($primary-color, $lightness: 45%);
- $table-even-row-bg: scale-color($table-bg, $lightness: -5%);
+ $table-bg: scale-color($secondary-color, $lightness: 95%);
+ $table-even-row-bg: scale-color($table-bg, $lightness: 5%);
 
 // These control the table cell border style
 // $table-border-style: solid;
@@ -1302,9 +1302,9 @@ $include-html-global-classes: $include-html-classes;
  $table-border-color: scale-color($table-bg, $lightness: -25%);
 
 // These control the table head styles
- $table-head-bg: $primary-color;
+ $table-head-bg: scale-color($secondary-color, $lightness: 60%);
 // $table-head-font-size: rem-calc(14);
- $table-head-font-color: $secondary-color;
+ $table-head-font-color: $primary-color;
 // $table-head-font-weight: $font-weight-bold;
 // $table-head-padding: rem-calc(8 10 10);
 
