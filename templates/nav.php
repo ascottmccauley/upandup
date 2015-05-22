@@ -40,9 +40,11 @@ if ( ! wp_is_mobile() ) { ?>
 	<section class="left-small">
 		<a class="left-off-canvas-toggle menu-button"><span></span></a>
 	</section>
-	<section class="middle tab-bar-section">
-		<h1 class="title"><a href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a></h1>
-	</section>
+	<?php if ( ! is_front_page() && ! groundup_is_new_user() ) { ?>
+		<section class="middle tab-bar-section">
+			<h1 class="title"><a href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a></h1>
+		</section>
+	<?php } ?>
 	<section class="right-small">
 		<a class="right-off-canvas-toggle menu-button"><span></span></a>
 	</section>

@@ -3,11 +3,22 @@
 @import "settings";
 
 // admin-bar
-body.admin-bar { }
-#wpadminbar {  }
+body.admin-bar {
+	#header {
+		margin-top: 32px;
+	}
+	.sticky.fixed {
+		top: 32px;
+	}
+}
+#wpadminbar { 
+	background: scale-color($primary-color, $lightness: -20%);
+}
 
 // mobile admin-bar
 @media screen and ( max-width: 782px ) {
-	body.admin-bar {  }
-	#wpadminbar {  }
+	#wpadminbar { position: absolute; }
+	.tab-bar {
+		margin-top: 46px;
+	}
 }
