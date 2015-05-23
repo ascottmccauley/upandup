@@ -134,7 +134,7 @@ li.product {
 		content: $fa-var-bookmark;
 	}
 }
-body.adults li.product {
+li.product.product_cat-adults {
 	.square-thumb {
 		border: 2px solid $grey;
 	}
@@ -142,7 +142,7 @@ body.adults li.product {
 		background: $grey;
 	}
 }
-body.childrens li.product {
+li.product.product_cat-childrens {
 	.square-thumb {
 		border: 2px solid $pink;
 	}
@@ -150,7 +150,7 @@ body.childrens li.product {
 		background: $pink;
 	}
 }
-body.pre-teen li.product {
+li.product.product_cat-pre-teen {
 	.square-thumb {
 		border: 2px solid $purple;
 	}
@@ -158,7 +158,7 @@ body.pre-teen li.product {
 		background: $purple;
 	}
 }
-body.replacement-chains li.product {
+li.product.product_cat-replacement-chains {
 	.square-thumb {
 		border: 2px solid $green;
 	}
