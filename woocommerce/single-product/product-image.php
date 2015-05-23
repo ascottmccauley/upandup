@@ -20,7 +20,7 @@ if ( ! empty( $img_url ) ) { ?>
 	
 		<?php 
 		$image_title = esc_attr( get_the_title( get_post_thumbnail_id() ) );
-		$img_link = upandup_woo_img_url( 'full' );
+		$image_link = upandup_woo_img_url( 'full' );
 		$image = '<img src="' . $img_url . '">';
 		
 		$attachment_count = count( $product->get_gallery_attachment_ids() );	
