@@ -23,6 +23,16 @@ function upandup_shop_private() {
 }
 add_action( 'template_redirect', 'upandup_shop_private' );
 
+// Change template for search.php to archive-product
+function upandup_search_template( $template ) {
+	if ( is_search() ) {
+		return wc_get_template_part( 'archive', 'product' );
+	} else {
+		return $template;
+	}
+}
+add_filter( 'template_include', 'upandup_search_template' );
+
 // Remove Default Woocommerce Styling
 add_filter( 'woocommerce_enqueue_styles', '__return_false' );
 
@@ -46,7 +56,7 @@ function upandup_woo_remove_js() {
 	wp_deregister_script( 'prettyPhoto' );
 	wp_deregister_script( 'prettyPhoto-init' );
 }
-add_action( 'wp_print_scripts', 'upandup_woo_remove_js', 100 );
+//add_action( 'wp_print_scripts', 'upandup_woo_remove_js', 100 );
 
 // Conditionally remove WooCommerce js
 function upandup_woo_dequeue_script() {
@@ -62,7 +72,6 @@ function upandup_woo_dequeue_script() {
 		wp_dequeue_script( 'wc-chosen' );
 		wp_dequeue_script( 'woocommerce' );
 		wp_dequeue_script( 'prettyPhoto' );
-		wp_dequeue_script( 'prettyPhoto-init' );
 		wp_dequeue_script( 'jquery-blockui' );
 		wp_dequeue_script( 'jquery-placeholder' );
 		wp_dequeue_script( 'fancybox' );
@@ -80,13 +89,15 @@ add_filter( 'groundup_register_sidebars', 'upandup_woo_register_sidebars' );
 
 // Add custom sidebars to the correct pages
 function upandup_woo_sidebars( $sidebars ) {
-	if ( is_product() ) {
-		$sidebars = array( 'Product' );
-	}elseif ( woocommerce_products_will_display() ) {
+	if ( is_search() ) {
 		$sidebars = array( 'Products', 'Shop' );
-	}elseif ( is_woocommerce() ) {
+	} elseif ( is_product() ) {
+		$sidebars = array( 'Product' );
+	} elseif ( woocommerce_products_will_display() ) {
+		$sidebars = array( 'Products', 'Shop' );
+	} elseif ( is_woocommerce() ) {
 		$sidebars = array( 'Shop' );
-	}elseif ( is_cart() || is_checkout() ) {
+	} elseif ( is_cart() || is_checkout() ) {
 		$sidebars = array( 'Cart' );
 	}
 	return $sidebars;
@@ -217,6 +228,7 @@ add_filter( 'woocommerce_subcategory_count_html', function() { return false; } )
 remove_action( 'woocommerce_before_shop_loop','woocommerce_result_count', 20);
 // Remove Catalog Ordering
 remove_action( 'woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30);
+// Remove Rating
 remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
 
 // Change loop-start
@@ -259,8 +271,6 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 ************************/
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
-//remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
-//add_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_add_to_cart', 15 );
 
 function upandup_woo_template_loop_product_thumbnail() {
 	global $post;
@@ -278,23 +288,37 @@ add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loo
 // Add parent category to body class
 // Add 'parent' class if only 1 category exists
 function upandup_woo_body_class( $classes ) {
-	global $product;
+	global $wp_query;
+	global $post;
 	
-	if ( is_product() || is_product_category() ) {
-		$cat = get_the_terms( $product->ID, 'product_cat' );
-		if ( ! empty ( $cat ) ) {
-			$current_term = $GLOBALS['wp_query']->get_queried_object();
-			if ( is_product_category() && $current_term->parent == 0 ) {
-				$classes[] = $categories[0];
-				$classes[] = 'parent';
-			}
-			foreach ( $cat as $category ) {
+	if ( is_product() ) {
+		$categories = get_the_terms( $post->ID, 'product_cat' );
+		if ( isset( $categories ) ) {
+			foreach ( $categories as $category ) {
 				if ( $category->parent == 0 ) {
 					$classes[] = $category->slug;
 				}
 			}
 		}
 	}
+	
+	if ( is_product_category() ) {
+		$current_category = $wp_query->get_queried_object();
+		if ( $current_category->parent == 0 ) {
+			$classes[] = 'parent';
+			$classes[] = $current_category->slug;
+		} else {
+			$categories = get_the_terms( $post->ID, 'product_cat' );
+			if ( isset( $categories ) ) {
+				foreach ( $categories as $category ) {
+					if ( $category->parent == 0 ) {
+						$classes[] = $category->slug;
+					}
+				}
+			}
+		}
+	}
+	
 	return $classes;
 }
 add_filter( 'body_class', 'upandup_woo_body_class' );
@@ -302,26 +326,42 @@ add_filter( 'body_class', 'upandup_woo_body_class' );
 // Add topmost category to html class
 // Add 'parent' class if only 1 category exists
 function upandup_woo_html_class( $output ) {
-	global $product;
+	global $wp_query;
+	global $post;
 	
-	if ( is_product() || is_product_category() ) {
-		$cat = get_the_terms( $product->ID, 'product_cat' );
-		if ( ! empty ( $cat ) ) {
-			$current_term = $GLOBALS['wp_query']->get_queried_object();
-			if ( is_product_category() && $current_term->parent == 0 ) {
-				$output.= 'class="' . $current_term->slug . ' parent"';
-			}else {
-				foreach ( $cat as $category ) {
+	$classes = array();
+	
+	if ( is_product() ) {
+		$categories = get_the_terms( $post->ID, 'product_cat' );
+		if ( isset( $categories ) ) {
+			foreach ( $categories as $category ) {
+				if ( $category->parent == 0 ) {
+					$output .= 'class="' . $category->slug .'"';
+				}
+			}
+		}
+	}
+	
+	if ( is_product_category() ) {
+		$current_category = $wp_query->get_queried_object();
+		if ( $current_category->parent == 0 ) {
+			$output .= 'class="parent ' . $current_category->slug .'"';
+		} else {
+			$categories = get_the_terms( $post->ID, 'product_cat' );
+			if ( isset( $categories ) ) {
+				foreach ( $categories as $category ) {
 					if ( $category->parent == 0 ) {
-						$output.= 'class="' . $category->slug . '"';
+						$output .= 'class="' . $category->slug . '"';
 					}
 				}
 			}
 		}
 	}
+	
 	return $output;
 }
 add_filter( 'language_attributes', 'upandup_woo_html_class' );
+
 
 /************************
  * single-product 
