@@ -152,18 +152,3 @@ function upandup_page_title( $page_title ) {
 	return $page_title;
 }
 add_filter( 'page_title', 'upandup_page_title' );
-
-// Add search to secondary menu when logged in
-function upandup_add_to_nav( $items, $args ) {
-	$locations = get_nav_menu_locations();
-	$menu_object = get_term( $locations[ $args->theme_location ], 'nav_menu' );
-	
-	if ( $menu_object->slug == 'secondary' ) {
-		if ( is_user_logged_in() ) {
-			$items .= '<li class="search has-form">' . get_search_form( false ) . '</li>';
-		}
-	}
-	
-	return $items;
-}
-add_filter( 'wp_nav_menu_items', 'upandup_add_to_nav', 15, 2 );
