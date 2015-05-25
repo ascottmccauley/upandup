@@ -63,13 +63,29 @@ input[type="number"] {
 	}
 }
 
+ul.products {
+	@include block-grid($per-row: 2);
+	@media #{$medium-up} {
+		@include block-grid($per-row: 4);
+	}
+	@media #{$large-up} {
+		@include block-grid($per-row: 6);
+	}
+}
+
 /**** product categories ****/
-.product-category {
-	@include grid-column(6, $float: left);
+body.no-sidebar ul.products {
+	@media #{$large-up} {
+		@include block-grid($per-row: 4);
+	}
 }
-body.tax-product_cat .product-category {
-	@include grid-column(4, $float: left );
+body.shop.no-sidebar ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 2);
+	}
 }
+
+body.tax-product_cat .product-category {}
 .product-category {
 	a {
 		background: $white;
@@ -81,11 +97,13 @@ body.tax-product_cat .product-category {
 			opacity: .80;
 		}
 	}
+}
+
+body.shop .product-category {
 	&.adults a { background: $grey; }
 	&.childrens a { background: $pink; }
 	&.pre-teen a{  background: $purple; }
-&.replacement-chains a { background: $green; }
-	h4 { color: $brown; }
+	&.replacement-chains a { background: $green; }
 }
 
 

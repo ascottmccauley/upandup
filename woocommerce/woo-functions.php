@@ -231,11 +231,6 @@ remove_action( 'woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30
 // Remove Rating
 remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
 
-// Change loop-start
-function woocommerce_product_loop_start() {
-	echo '<ul class="products unstyled small-block-grid-2 medium-block-grid-4 large-block-grid-6">';
-}
-
 // Replace Category Thumbnail
 remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
 add_action( 'woocommerce_before_subcategory_title', 'upandup_woo_subcategory_thumbnail', 10 );
@@ -261,7 +256,7 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 			$image = str_replace( ' ', '%20', $image );
 			echo '<img src="' . esc_url( $image ) . '" alt="' . esc_attr( $category->name ) . '">';
 		}else {
-			echo '<img src="http://placehold.it/600x400">';
+			// TODO: Figure out placeholder image.
 		}
 	}
 }
@@ -317,6 +312,10 @@ function upandup_woo_body_class( $classes ) {
 				}
 			}
 		}
+	}
+	
+	if ( is_shop() ) {
+		$classes[] = 'shop';
 	}
 	
 	return $classes;

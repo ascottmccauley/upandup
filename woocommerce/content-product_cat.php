@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 } ?>
 
-<section class="product-category text-center <?php echo $category->slug; ?>" role="navigation">
+<li class="product-category text-center <?php echo $category->slug; ?>" role="navigation">
 
 	<?php do_action( 'woocommerce_before_subcategory', $category ); ?>
 
@@ -43,4 +43,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php do_action( 'woocommerce_after_subcategory', $category ); ?>
 
-</section>
+</li>
