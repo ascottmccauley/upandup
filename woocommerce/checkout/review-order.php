@@ -42,7 +42,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tfoot>
 			<?php if ( WC()->cart->needs_shipping() && WC()->cart->show_shipping() ) {
 				do_action( 'woocommerce_review_order_before_shipping' );
-				wc_cart_totals_shipping_html();
+				// wc_cart_totals_shipping_html(); // Moved to after order notes
 				do_action( 'woocommerce_review_order_after_shipping' );
 			}
 			foreach ( WC()->cart->get_fees() as $fee ) { ?>
