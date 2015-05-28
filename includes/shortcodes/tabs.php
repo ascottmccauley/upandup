@@ -47,6 +47,8 @@ function shortcode_tab( $atts, $content = null, $tag ) {
 	// make first tab active by default
 	if ( empty( $tabs ) ) {
 		$active = ' active';
+	}else {
+		$active = '';
 	}
 	
 	// get unique number

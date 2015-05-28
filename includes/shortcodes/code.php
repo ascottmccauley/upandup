@@ -6,7 +6,6 @@
  * also overrides all shortcodes contained inside content
 **/
 function shortcode_code( $atts, $content = null, $tag ) {
-	$content = clean_pre($content);
 	$content = esc_html($content);
 	return '<' . $tag . '>' . $content . '</' . $tag . '>';
 }
