@@ -121,7 +121,7 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 	}
 }
 
-// Add offcanvas menu to footer
+// Add offcanvas menu to #footer
 function upandup_offcanvas_footer_menu () {
 	echo '<a class="exit-off-canvas"></a>';
 	echo '<aside class="right-off-canvas-menu">';
@@ -141,8 +141,17 @@ function upandup_offcanvas_footer_menu () {
 			'walker'=> new Upandup_Offcanvas_Walker,
 		) );
 	}
+	echo '</aside>';
 }
 add_action( 'wp_footer', 'upandup_offcanvas_footer_menu' );
+
+// Add Extra Logos to #footer
+function upandup_extra_logos() {
+	echo '<a href="#" class="logo kiddiekraft"><img src="' . get_home_url() . '/assets/img/logo-kiddiekraft.png"></a>';
+	echo '<a href="#" class="logo steppingstones"><img src="' . get_home_url() . '/assets/img/logo-steppingstones.png"></a>';
+	echo '<a href="http://locketstudio.com" target="_blank" class="logo locketstudio"><img src="' . get_home_url() . '/assets/img/logo-locketstudio.png"></a>';
+}
+add_action( 'wp_footer', 'upandup_extra_logos' );
 
 // Remove default page_title for pages
 function upandup_page_title( $page_title ) {
