@@ -4,7 +4,7 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     2.3.8
+ * @version     2.4.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -24,9 +24,8 @@ do_action( 'woocommerce_before_cart' ); ?>
 		<tr>
 			<th class="product-remove hide-for-small">&nbsp;</th>
 			<th class="product-name text-center" colspan="2"><?php _e( 'Product', 'woocommerce' ); ?></th>
-			<th class="product-price"><?php _e( 'Price', 'woocommerce' ); ?></th>
+			<th class="product-price"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
 			<th class="product-quantity"><?php _e( 'Quantity', 'woocommerce' ); ?></th>
-			<th class="product-subtotal"><?php _e( 'Total', 'woocommerce' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -52,7 +51,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 							<?php
 								$image_url = upandup_woo_img_url( 'tiny', $_product );
 								if ( $image_url != '' && $_product->is_visible() ) {
-									echo '<a href="' . $_product->get_permalink( $cart_item ) . '"><img src="' . $image_url . '"></a>';
+									echo '<a href="' . esc_url( $_product->get_permalink( $cart_item ) ) . '"><img src="' . $image_url . '" width="60" height="60"></a>';
 								}	?>
 						</td>
 					<?php } ?>
@@ -61,7 +60,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 							if ( ! $_product->is_visible() )
 								echo apply_filters( 'woocommerce_cart_item_name', $_product->get_title(), $cart_item, $cart_item_key );
 							else
-								echo apply_filters( 'woocommerce_cart_item_name', sprintf( '<a href="%s">%s</a>', $_product->get_permalink( $cart_item ), $_product->get_title() ), $cart_item, $cart_item_key );
+								echo apply_filters( 'woocommerce_cart_item_name', sprintf( '<a href="%s">%s</a>', esc_url( $_product->get_permalink( $cart_item ) ), $_product->get_title() ), $cart_item, $cart_item_key );
 
 							// Meta data
 							echo WC()->cart->get_item_data( $cart_item );
@@ -94,12 +93,6 @@ do_action( 'woocommerce_before_cart' ); ?>
 							echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item );
 						?>
 					</td>
-
-					<td class="product-subtotal">
-						<?php
-							echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ), $cart_item, $cart_item_key );
-						?>
-					</td>
 				</tr>
 				<?php
 			}
@@ -120,7 +113,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 					</div>
 				<?php } ?>
 
-				<input type="submit" class="button left" name="update_cart" value="<?php _e( 'Update Cart', 'woocommerce' ); ?>">
+				<input type="submit" class="button" name="update_cart" value="<?php _e( 'Update Cart', 'woocommerce' ); ?>">
 				
 				<?php do_action( 'woocommerce_cart_actions' ); ?>
 
