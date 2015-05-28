@@ -30,7 +30,7 @@ if ( ! empty( $img_url ) ) { ?>
 			$gallery = '';
 		}
 		
-		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" itemprop="image" class="zoom th" title="%s" data-rel="prettyPhoto' . $gallery . '">%s</a>', $image_link, $image_title, $image ), $post->ID );
+		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" itemprop="image" class="zoom th" title="%s">%s</a>', $image_link, $image_title, $image ), $post->ID );
 		
 		do_action( 'woocommerce_product_thumbnails' ); ?>
 	
