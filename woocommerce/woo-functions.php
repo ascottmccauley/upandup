@@ -47,16 +47,18 @@ add_action( 'init', 'upandup_woo_remove_image_size' );
 
 // Remove WooCommerce Styles
 function upandup_woo_remove_styles() {
-	wp_deregister_style( 'woocommerce_prettyPhoto_css' );
+	wp_dequeue_style( 'woocommerce_prettyPhoto_css' );
 }
 add_action( 'wp_print_styles', 'upandup_woo_remove_styles', 100 );
 
 // Remove WooCommerce js
 function upandup_woo_remove_js() {
-	wp_deregister_script( 'prettyPhoto' );
-	wp_deregister_script( 'prettyPhoto-init' );
+	wp_dequeue_script( 'prettyPhoto' );
+	wp_dequeue_script( 'prettyPhoto-init' );
+	wp_dequeue_script( 'fancybox' );
+	wp_dequeue_script( 'enable-lightbox' );
 }
-//add_action( 'wp_print_scripts', 'upandup_woo_remove_js', 100 );
+add_action( 'wp_print_scripts', 'upandup_woo_remove_js', 100 );
 
 // Conditionally remove WooCommerce js
 function upandup_woo_dequeue_script() {
@@ -300,7 +302,9 @@ function upandup_woo_body_class( $classes ) {
 	if ( is_product_category() ) {
 		$current_category = $wp_query->get_queried_object();
 		if ( $current_category->parent == 0 ) {
-			$classes[] = 'parent';
+			if ( ! woocommerce_products_will_display() ) {
+				$classes[] = 'parent';
+			}
 			$classes[] = $current_category->slug;
 		} else {
 			$categories = get_the_terms( $post->ID, 'product_cat' );
@@ -343,7 +347,7 @@ function upandup_woo_html_class( $output ) {
 	
 	if ( is_product_category() ) {
 		$current_category = $wp_query->get_queried_object();
-		if ( $current_category->parent == 0 ) {
+		if ( $current_category->parent == 0 && ! woocommerce_products_will_display() ) {
 			$output .= 'class="parent ' . $current_category->slug .'"';
 		} else {
 			$categories = get_the_terms( $post->ID, 'product_cat' );
@@ -395,12 +399,22 @@ function upandup_woo_check_images() {
 }
 add_action( 'woocommerce_before_single_product_summary', 'upandup_woo_check_images', 5 );
 
-// Add Product Attributes
+// Add Product Attributes, Size, Weight and Tags
 function upandup_woo_product_attributes() {
 	global $product;
+	$attributeList = '';
+	
+	if ( $product->enable_dimensions_display() ) {
+		if ( $product->has_weight() ) {
+			$attributeList .= '<li>' . $product->get_weight() . ' ' . esc_attr( get_option( 'woocommerce_weight_unit' ) ) . '</li>';
+		}
+		if ( $product->has_dimensions() ) {
+			$attributeList .= '<li>' . $product->get_dimensions() . '</li>';
+		}
+	}
+	
 	// Get Attributes
 	$attributes = $product->get_attributes();
-	$attributeList = '';
 	if ( ! empty( $attributes ) ) {
 		foreach ( $attributes as $attribute ) {
 			if ($attribute['is_visible']) {
@@ -410,8 +424,11 @@ function upandup_woo_product_attributes() {
 					// Convert pipes to commas and display values
 					$values = array_map( 'trim', explode( WC_DELIMITER, $attribute['value'] ) );
 				}
-				foreach ($values as $value) {
-					$attributeList .= '<li>' . apply_filters( 'woocommerce_attribute', $value, $attribute ) . '</li>';
+				foreach ( $values as $value ) {
+					$attributeName = str_replace( 'pa_' , '', $attribute['name'] );
+					$attributeName = str_replace( '_' , ' ', $attributeName );
+					$attributeName = ucwords( $attributeName );
+					$attributeList .= '<li>' . $attributeName . ': <strong>' . $value . '</strong></li>';
 				}
 			}
 		}
@@ -426,7 +443,7 @@ function upandup_woo_product_attributes() {
 		echo '</ul>';
 	}
 }
-add_action( 'woocommerce_single_product_summary','upandup_woo_product_attributes', 40 );
+add_action( 'woocommerce_single_product_summary', 'upandup_woo_product_attributes', 40 );
 
 // Add to Cart Text
 function upandup_woo_add_to_cart_text() {
@@ -474,11 +491,18 @@ add_filter( 'upandup_woo_upsell_text', 'upandup_woo_upsell_text' );
 /************************
  * cart page
 ************************/
+// Remove Cart Totals
+remove_action( 'woocommerce_cart_collaterals', 'woocommerce_cart_totals' );
 
+// Add back checkout link
+add_action( 'woocommerce_cart_actions', 'woocommerce_button_proceed_to_checkout' );
 
 /************************
  * checkout page
 ************************/
+// Move Shipping Choice to after Order Notes:
+add_action( 'woocommerce_after_order_notes', 'wc_cart_totals_shipping_html', 20 );
+
 // Remove login form
 update_option( 'woocommerce_enable_guest_checkout', 'no' );
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10 );

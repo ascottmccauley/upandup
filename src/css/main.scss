@@ -44,7 +44,7 @@ a:hover i {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	text-align: center;
+	text-align: left;
 	text-transform: uppercase;
 }
 
@@ -58,6 +58,8 @@ p, .entry-summary, .entry-content, .widget, .comment > section {
 		padding-left: 1em;
 	}
 }
+
+
 
 hr {
 	border-bottom: 2px solid rgba(255,255,255, .1);
@@ -74,6 +76,7 @@ del {
 .alignright { float:right; margin-left: 1em; }
 .aligncenter, .center { margin: 0 auto; }
 .alignnone { float: none; }
+
 .unstyled {
 	@include unstyled;
 }
@@ -86,10 +89,17 @@ button, .button, input[type="submit"], a {
 	width: 100%;
 }
 
+@for $i from 2 through 5 {
+	.column-#{$i} {
+		column-count: $i;
+		column-gap: 1rem;
+	}
+}
+
 // centered-square thumbnails with img source set to background-image: url(...);
 .square-thumb { 
 	background-color: #fff;
-	background-size: contain;
+	background-size: 100%; // Should be contain, but animation won't work then?
 	background-repeat: no-repeat;
 	background-position: center;
 	display: block;
@@ -134,6 +144,36 @@ html, body {
 	figure.logo + h1, figure.logo ~ h2 {
 		@include hide;
 	}
+	
+}
+
+.logo.large {
+	@media #{$medium-only} {
+		transform: scale(.75);
+	}
+}
+
+.logo.kiddiekraft, .logo.steppingstones, .logo.locketstudio {
+	position: absolute;
+	z-index: 44;
+	@media #{$small-only} {
+		@include hide;
+	}
+}
+
+.logo.kiddiekraft {
+	left: 5px;
+	top: 5px;
+}
+
+.logo.steppingstones {
+	left: 15px;
+	top: 65px;
+}
+
+.logo.locketstudio {
+	right: 10px;
+	top: 25px;
 }
 
 // Menu/Nav
@@ -223,6 +263,7 @@ nav.second-bar {
 		background-position: top;
 		background-repeat: no-repeat;
 		background-size: contain;
+		text-align: center;
 		text-shadow: none;
 		color: transparent;
 	}
@@ -274,20 +315,20 @@ body.no-sidebar .tab-bar .left-small {
 // Main
 ///////
 #main {
-	margin-top: 2em;
-	@media #{$small-up} {
-		@include grid-column(12);
-		padding-left: 1rem;
-		padding-right: 1rem;
-	}
+	@include grid-column(12);
+	margin-top: 1em;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 body.with-sidebar #main {
 	@media #{$medium-up} {
 		@include grid-column(8, $push:4, $float: left);
 		padding-bottom: 20px;
+		padding-right: 2rem;
 	}
 	@media #{$large-up} {
 		@include grid-column(9, $push:3, $float: left);
+		padding-right: 2rem;
 	}
 }
 
@@ -346,6 +387,24 @@ body.with-sidebar #main {
 	&.page { }
 	&.attachment { }
 	&.sticky { }
+}
+
+article.resource.has-post-thumbnail {
+	@include grid-column(3);
+}
+
+article.event {
+	dt h5 {
+		text-align: left;
+	}
+}
+article.event.has-post-thumbnail {
+	.section-content {
+		@include grid-column($columns: 10, $push: 2);
+	}
+	.entry-thumbnail {
+		@include grid-column($columns: 2, $pull: 10);
+	}
 }
 
 // Articles
@@ -606,7 +665,6 @@ li.comment > section {
 	}
 	@media #{$medium-up} {
 		@include grid-column(4, $pull:8, $float: left);
-		margin-top: 2em;
 		padding-bottom: 20px;
 	}
 	@media #{$large-up} {
@@ -649,11 +707,10 @@ li.comment > section {
 		}
 	}
 	a {
+		color: $white;
 		&:hover {
+			color: $secondary-color;
 		}
-	}
-	h1,h2,h3,h4,h5,h6 {
-		text-shadow: 1px 2px 0 rgba(0,0,0, .2);
 	}
 	.copyright {}
 	.social {}

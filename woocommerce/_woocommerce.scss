@@ -69,41 +69,81 @@ ul.products {
 		@include block-grid($per-row: 4);
 	}
 	@media #{$large-up} {
-		@include block-grid($per-row: 6);
+		@include block-grid($per-row: 5);
+	}
+	@media #{$xlarge-up} {
+		@include block-grid($per-row: 7);
+	}
+	@media #{$xxlarge-up} {
+		@include block-grid($per-row: 9);
 	}
 }
 
 /**** product categories ****/
 body.no-sidebar ul.products {
+	margin: 0 auto !important;
+	max-width: $row-width  !important;
+	width: 100%  !important;
 	@media #{$large-up} {
 		@include block-grid($per-row: 4);
 	}
 }
+
+// category specific grids
 body.shop.no-sidebar ul.products {
 	@media #{$medium-up} {
 		@include block-grid($per-row: 2);
 	}
 }
+body.adults.parent ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 4);
+	}
+}
+body.childrens.parent ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 4);
+	}
+}
+body.pre-teen.parent ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 2);
+	}
+}
 
-body.tax-product_cat .product-category {}
 .product-category {
 	a {
 		background: $white;
+		border: .5em solid $white;
 		display: block;
 		margin: 1rem auto;
-		padding: .5rem;
+		overflow: hidden;
+		position: relative;
 		text-align: center;
-		&:hover {
-			opacity: .80;
+		img {
+			@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+			z-index: 2;
 		}
+		&:hover {
+			img {
+				opacity: .80;
+				transform: scale(1.1);
+			}
+		}
+	}
+	h4 {
+		margin-top: .25em; // prevent image overlap
+		position: relative;
+		text-align: center;
+		z-index: 4;
 	}
 }
 
 body.shop .product-category {
-	&.adults a { background: $grey; }
-	&.childrens a { background: $pink; }
-	&.pre-teen a{  background: $purple; }
-	&.replacement-chains a { background: $green; }
+	&.adults a { background: $grey; border-color: $grey; }
+	&.childrens a { background: $pink; border-color: $pink; }
+	&.pre-teen a{  background: $purple; border-color: $purple; }
+	&.replacement-chains a { background: $green; border-color: $green; }
 }
 
 
@@ -112,16 +152,22 @@ li.product {
 	color: $primary-color;
 	position: relative;
 	.square-thumb {
-		border: 2px solid $pink;
+		border: 2px solid $tan;
+		@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+		overflow: hidden;
+		&:hover {
+			background-size: 150%;
+			opacity: .80;
+		}
 	}
 	.product-info {
-		background-color: $pink;
+		background-color: $tan;
 		overflow: auto;
 	}
 	h5 {
 		border-bottom: 1px solid $white;
-		color: $white;
 		margin-bottom: 0;
+		text-align: center;
 	}
 	span.price {
 		float: left;
@@ -214,8 +260,10 @@ form.cart  {
 	}
 }
 /***** Cart *****/
-tr.shipping {
-	@include hide;
+.cart {
+	.actions {
+		text-align: right;
+	}
 }
 
 /***** Checkout *****/
@@ -228,15 +276,33 @@ tr.shipping {
 	@include hide;
 }
 
+.checkout .order-total {
+	@include hide;
+}
+
+.checkout #shipping_method {
+	@include unstyled;
+	margin-top: 1rem;
+	padding-left: 1rem;
+}
+
 /***** Widgets *****/
 .widget_attribute_filters {
+	dl {
+		border: 1px solid $secondary-color;
+	}
 	dt {
+		background: $secondary-color;
+		margin: 0;
+		padding: .5em;
 		h5 {
 			cursor: pointer;
+			margin: 0;
 		}
 		h5::after {
-			font-family: FontAwesome;
 			content: $fa-var-chevron-down;
+			float: right;
+			font-family: FontAwesome;
 			padding-left:  1rem;
 		}
 		&.collapse h5::after {
@@ -245,7 +311,7 @@ tr.shipping {
 	}
 	dd {
 		line-height: 1.2;
-		margin-bottom: .5rem;
+		margin: .5rem 0;
 		a {
 			text-align: left;
 			&::before {
