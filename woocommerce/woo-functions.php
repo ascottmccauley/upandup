@@ -185,7 +185,7 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 		$_product = $product;
 	}
 	
-	if ( $size == 'full' ) {
+	if ( $size == 'full' || $size == 'large' ) {
 		$img_url = wp_get_attachment_url( get_post_thumbnail_id() );
 	} else {
 		$img = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), $size );
@@ -200,14 +200,17 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 		$upload_path = $upload_dir['path'];
 		$upload_url = $upload_dir['url'];
 		$sku = $_product->get_sku();
-		if ( $size == 'full' ) {
-			$size = '';
+		if ( $size == 'full' || $size == 'large' ) {
+            $size = 'large';
+			$size_ext = '';
 		} else {
-			$size = '-' . $size;
+			$size_ext = '-' . $size;
 		}
-		if ( file_exists( $upload_path . '/' . $sku . $size . '.jpg' ) ) {
-			$img_url = 	$upload_url . '/' . $sku . $size . '.jpg';
-		} elseif ( file_exists( $upload_path . '/' . $sku . '.jpg' ) )  {
+        if ( file_exists( $upload_path . '/products/' . $size . '/' . $sku . '.jpg' ) ) {
+            $img_url = $upload_url . '/products/' . $size . '/' . $sku . '.jpg';
+        } elseif ( file_exists( $upload_path . '/' . $sku . $size_ext . '.jpg' ) ) {
+			$img_url = 	$upload_url . '/' . $sku . $size_ext . '.jpg';
+		} else if ( file_exists( $upload_path . '/' . $sku . '.jpg' ) )  {
 			// check without the $size
 			$img_url = 	$upload_url . '/' . $sku . '.jpg';
 		} else {
