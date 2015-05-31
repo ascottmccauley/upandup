@@ -147,9 +147,9 @@ add_action( 'wp_footer', 'upandup_offcanvas_footer_menu' );
 
 // Add Extra Logos to #footer
 function upandup_extra_logos() {
-	echo '<a href="#" class="logo kiddiekraft"><img src="' . get_home_url() . '/assets/img/logo-kiddiekraft.png"></a>';
-	echo '<a href="#" class="logo steppingstones"><img src="' . get_home_url() . '/assets/img/logo-steppingstones.png"></a>';
-	echo '<a href="http://locketstudio.com" target="_blank" class="logo locketstudio"><img src="' . get_home_url() . '/assets/img/logo-locketstudio.png"></a>';
+	echo '<a href="#" class="logo kiddiekraft"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-kiddiekraft.png"></a>';
+	echo '<a href="#" class="logo steppingstones"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-steppingstones.png"></a>';
+	echo '<a href="http://locketstudio.com" target="_blank" class="logo locketstudio"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-locketstudio.png"></a>';
 }
 add_action( 'wp_footer', 'upandup_extra_logos' );
 

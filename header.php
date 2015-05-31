@@ -8,10 +8,10 @@
 <?php // Homepage or First Visit
 if ( is_front_page() || groundup_is_new_user() ) { 
 	$class = ' large';
-	$logo = get_home_url() . '/assets/img/logo.png';
+	$logo =  get_stylesheet_directory_uri() . '/assets/img/logo.png';
 } else {
 	$class = '';
-	$logo = get_home_url() . '/assets/img/logo-small.png';
+	$logo = get_stylesheet_directory_uri() . '/assets/img/logo-small.png';
 } ?>
 <header id="header" role="banner" class="hide-for-small">
 	<figure class="logo<?php echo $class; ?>" role="logo">
