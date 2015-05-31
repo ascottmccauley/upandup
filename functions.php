@@ -161,3 +161,14 @@ function upandup_page_title( $page_title ) {
 	return $page_title;
 }
 add_filter( 'page_title', 'upandup_page_title' );
+
+// Add contents of `Footer` page to the #footer
+function upandup_footer_contents() {
+    $page = get_page_by_title( 'footer' );
+    if ( $page ) {
+        echo '<div class="footer-content">';
+        echo apply_filters( 'the_content', $page->post_content );
+        echo '</div>';
+    }
+}
+add_action( 'groundup_inside_footer', 'upandup_footer_contents' );

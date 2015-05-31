@@ -319,6 +319,7 @@ body.no-sidebar .tab-bar .left-small {
 	margin-top: 1em;
 	padding-left: 1rem;
 	padding-right: 1rem;
+    padding-bottom: 1rem;
 }
 body.with-sidebar #main {
 	@media #{$medium-up} {
@@ -665,6 +666,7 @@ li.comment > section {
 	}
 	@media #{$medium-up} {
 		@include grid-column(4, $pull:8, $float: left);
+		margin-top: 1rem;
 		padding-bottom: 20px;
 	}
 	@media #{$large-up} {
@@ -693,13 +695,21 @@ li.comment > section {
 	clear: both;
 	display: table;
 	font-family: $header-font-family;
+    font-size: .75em;
 	text-transform: uppercase;
-	font-size: .25em;
 	margin-top: 20px;
-	padding: 20px 20px 10px 20px;
 	text-align: center;
 	width: 100%;
-	ul {
+    .footer-content {
+        background: $grey;
+        border-bottom: 1px solid $secondary-color;
+        border-top: 1px solid $secondary-color;
+        margin: 0;
+        padding: 20px 20px 10px 20px;
+        width: 100%;
+    }
+	ul.menu {
+        padding: 20px 20px 10px 20px;
 		margin: 0 auto;
 		li {
 			display: inline;
@@ -707,9 +717,9 @@ li.comment > section {
 		}
 	}
 	a {
-		color: $white;
+		color: $secondary-color;
 		&:hover {
-			color: $secondary-color;
+			color: $white;
 		}
 	}
 	.copyright {}
