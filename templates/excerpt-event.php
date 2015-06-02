@@ -20,21 +20,24 @@ $event_dates = get_date_range( strtotime($event_start_date), strtotime($event_en
 	<section class="section-content">
 		<dl>
 			<dt>
-				<a href="<?php echo $event_url ? $event_url . '" target="_blank"' : get_the_permalink() ?>" rel="bookmark" title="Link to <?php the_title_attribute(); ?>"><h5><?php the_title(); ?></h5></a>
+				<a href="<?php echo $event_url ? $event_url . '" target="_blank"' : get_the_permalink() ?>" rel="bookmark" title="Link to <?php the_title_attribute(); ?>"><h4><?php the_title(); ?></h4></a>
 			</dt>
-			<?php // List Dates
-			if ( $event_dates != '' ) {
-				echo '<dd>' . $event_dates . '</dd>';
-			}
-			// List location
-			if ( $event_location != '' ) {
-				echo '<dd>' . $event_location . '</dd>';
-			}
-			// List venue
-			if ( $event_venue != '' ) {
-				echo '<dd>' . $event_venue . '</dd>';
-			} ?>
+            <dd>
+                <?php // List Dates
+                if ( $event_dates != '' ) {
+                    echo '<h6>' . $event_dates . '</h6>';
+                }
+                // List location
+                if ( $event_location != '' ) {
+                    echo '<h6>' . $event_location . '</h6>';
+                }
+                // List venue
+                if ( $event_venue != '' ) {
+                    echo '<h6>' . $event_venue . '</h6>';
+                } ?>
+            </dd>
 		</dl>
+        <hr>
 	</section>
 	<?php // Thumbnail
 	$thumbnail = get_the_post_thumbnail($post->ID, 'small');

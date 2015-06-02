@@ -270,7 +270,7 @@ function event_query( $query ) {
 					'key' => '_event_end_date',
 					'value' => $today,
 					'compare' => '>=',
-					'type' => 'CHAR'
+					'type' => 'DATE'
 				)
 			));
 		}
