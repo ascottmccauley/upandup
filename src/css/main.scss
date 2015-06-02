@@ -99,7 +99,7 @@ button, .button, input[type="submit"], a {
 // centered-square thumbnails with img source set to background-image: url(...);
 .square-thumb { 
 	background-color: #fff;
-	background-size: 100%; // Should be contain, but animation won't work then?
+	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
 	display: block;

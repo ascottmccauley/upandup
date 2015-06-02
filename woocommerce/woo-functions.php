@@ -437,7 +437,7 @@ function upandup_woo_product_attributes() {
 		}
 	}
 	// Add Tags
-	$attributeList .= $product->get_tags( '</li><li>', '<li>', '</li>' );
+	$attributeList .= $product->get_tags( '</strong>, <strong>', '<li>Theme: <strong>', '</strong></li>' );
 	
 	if ( $attributeList != '' ) {
 		echo '<h4>Attributes</h4>';
