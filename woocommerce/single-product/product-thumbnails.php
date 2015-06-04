@@ -40,11 +40,26 @@ if ( $attachment_ids ) {
 			$image_class = esc_attr( implode( ' ', $classes ) );
 			$image_title = esc_attr( get_the_title( $attachment_id ) );
 
-			echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', sprintf( '<li><a href="%s" class="%s" title="%s" data-rel="prettyPhoto[product-gallery]">%s</a></li>', $image_link, $image_class, $image_title, $image ), $attachment_id, $post->ID, $image_class );
+			echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', sprintf( '<li><a href="%s" class="%s" title="%s">%s</a></li>', $image_link, $image_class, $image_title, $image ), $attachment_id, $post->ID, $image_class );
 
 			$loop++;
 		}
 
 	?></ul>
 	<?php
+} else {
+	// check /media/sku-$size.jpg and /media/sku.jpg
+	$upload_dir = wp_upload_dir();
+	$upload_path = $upload_dir['path'];
+	$upload_url = $upload_dir['url'];
+	$sku = $product->get_sku();
+	
+	echo '<ul class="small-block-grid-4">';
+		// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
+		foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
+				$img_url = str_replace( $upload_path, $upload_url, $img_path );
+				$img_link = str_replace( 'thumb', 'large', $img_url );
+				echo '<li><a href="' . $img_link . '"><img src="' . $img_url . '"></a></li>';
+		}
+	echo '</ul>';
 }
