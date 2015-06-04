@@ -62,11 +62,12 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 		$item_html = '';
 		parent::start_el( $item_html, $item, $depth, $args );
 	
-		if (stristr($item_html, 'li class="divider')) {
+		if ( stristr( $item_html, 'li class="divider' ) ) {
 			$item_html = preg_replace( '/<a[^>]*>.*?<\/a>/iU', '', $item_html );    
-		}elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
+		} elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
 			$item_html = preg_replace( '/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
-		}   
+		}
+		
 		$output .= $item_html;
 	}
 	
@@ -79,6 +80,9 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 			}elseif ( $depth === 1 ) {
 				$element->classes[] = 'has-dropdown';
 			}
+		}
+		if ( $element->current || $element->current_item_ancestor ) {
+			$element->classes[] = 'active';
 		}
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
@@ -103,19 +107,23 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html);    
 		}elseif (stristr($item_html, 'li class="nav-header')) {
 			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html);
-		}   
+		}
+
 		$output .= $item_html;
 	}
 	
 	function display_element($element, &$children_elements, $max_depth, $depth = 0, $args, &$output) {
 		$element->is_dropdown = !empty($children_elements[$element->ID]);
 	
-		if ($element->is_dropdown) {
-			if ($depth === 0) {
+		if ( $element->is_dropdown ) {
+			if ( $depth === 0 ) {
 				$element->classes[] = 'has-submenu';
 			}elseif ($depth === 1) {
 				$element->classes[] = 'has-submenu';
 			}
+		}
+		if ( $element->current || $element->current_item_ancestor ) {
+			$element->classes[] = 'active';
 		}
 		parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
 	}
