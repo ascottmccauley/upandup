@@ -222,6 +222,8 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 /************************
  * shop page
 ************************/
+// Products per page
+add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 35;' ), 20 );
 // Remove Title from Store Front
 add_filter( 'woocommerce_show_page_title', function() { return false; } );
 // Remove product count after categories
