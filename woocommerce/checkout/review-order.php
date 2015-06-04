@@ -75,12 +75,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</tr>
 			<?php }
 			do_action( 'woocommerce_review_order_before_order_total' ); ?>
-
-			<tr class="order-total">
-				<th><?php _e( 'Order Total', 'woocommerce' ); ?></th>
-				<td><?php wc_cart_totals_order_total_html(); ?></td>
-			</tr>
-
 			<?php do_action( 'woocommerce_review_order_after_order_total' ); ?>
 
 		</tfoot>
