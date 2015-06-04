@@ -45,7 +45,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 					</tr>
 				<?php }
 			}	?>
-			<tr><td colspan="3" class="text-center"><?php _e( 'Subtotal', 'woocommerce' ); ?>:<strong> <?php echo WC()->cart->get_cart_subtotal(); ?></strong></td></tr>
 	</table>
 	
 	<?php do_action( 'woocommerce_widget_shopping_cart_before_buttons' ); ?>
