@@ -18,7 +18,7 @@ $order = wc_get_order( $order_id );
 	<thead>
 		<tr>
 			<th class="product-name"><?php _e( 'Product', 'woocommerce' ); ?></th>
-			<th class="product-total"><?php _e( 'Total', 'woocommerce' ); ?></th>
+			<th class="product-total"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -36,15 +36,18 @@ $order = wc_get_order( $order_id );
 	</tbody>
 	<tfoot>
 		<?php
-			foreach ( $order->get_order_item_totals() as $key => $total ) {
-				?>
+			if ( $order->get_shipping_method() ) { ?>
 				<tr>
-					<th scope="row"><?php echo $total['label']; ?></th>
-					<td><?php echo $total['value']; ?></td>
+					<th><?php _e( 'Shipping:', 'woocommerce' ); ?></th>
+					<td><?php echo $order->get_shipping_to_display(); ?></td>
 				</tr>
-				<?php
-			}
-		?>
+			<?php }
+			if ( $order->customer_note ) { ?>
+				<tr>
+					<th><?php _e( 'Note:', 'woocommerce' ); ?></th>
+					<td><?php echo wptexturize( $order->customer_note ); ?></td>
+				</tr>
+			<?php } ?>
 	</tfoot>
 </table>
 
