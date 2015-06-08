@@ -8,16 +8,6 @@
 <?php // Desktop Menu
 if ( ! wp_is_mobile() ) { ?>
 	<div class="sticky hide-for-small">
-		<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
-			<section class="top-bar-section">
-				<?php wp_nav_menu( array(
-					'theme_location' => 'primary',
-					'container' => false,
-					'menu_class' => 'left',
-					'walker'=> new Upandup_Topbar_Walker,
-				) ); ?>
-			</section>
-		</nav>
 		<?php // See if secondary_menu has any items
 		$locations = get_nav_menu_locations();
 		$menu_object = get_term( $locations['secondary'], 'nav_menu' );
@@ -33,6 +23,16 @@ if ( ! wp_is_mobile() ) { ?>
 				
 			</nav>
 		<?php } ?>
+		<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
+			<section class="top-bar-section">
+				<?php wp_nav_menu( array(
+					'theme_location' => 'primary',
+					'container' => false,
+					'menu_class' => 'left',
+					'walker'=> new Upandup_Topbar_Walker,
+				) ); ?>
+			</section>
+		</nav>
 	</div>
 <?php } ?>
 

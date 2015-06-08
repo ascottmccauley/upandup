@@ -118,7 +118,7 @@ html, body {
 // Header
 /////////
 #header {
-	background-color: $topbar-bg-color;
+	background-color: $primary-color;
 	overflow: hidden;
 	padding: 1rem auto;
 	text-align: center;
@@ -163,17 +163,17 @@ html, body {
 
 .logo.kiddiekraft {
 	left: 5px;
-	top: 5px;
+	top: 10px;
 }
 
 .logo.steppingstones {
 	left: 15px;
-	top: 65px;
+	top: 70px;
 }
 
 .logo.locketstudio {
 	right: 10px;
-	top: 25px;
+	top: 35px;
 }
 
 // Menu/Nav
@@ -215,7 +215,7 @@ nav.top-bar, nav.second-bar {
 }
 
 // Center Topbar
-nav.top-bar:not(.expanded) {
+#primary-navigation {
 	text-align: center;
 	section.top-bar-section { 
 		display: table;
@@ -229,27 +229,35 @@ nav.top-bar:not(.expanded) {
 	}
 }
 
+// Sticky Topbar
+.fixed {
+	#primary-navigation {
+		border-bottom: 2px solid $grey;	
+	}
+}
+
 // Secondary Nav
 nav.second-bar {
-	background: $secondary-color;
+	$second-bar-bg-color: $secondary-color;
+	background: $second-bar-bg-color;
 	margin-top: -$topbar-margin-bottom;
 	margin-bottom: 0;
 	width: 100%;
-	z-index: 22;
+	z-index: 44;
 	section.top-bar-section {
 		li {
-			background: $secondary-color;
+			background: $second-bar-bg-color;
 		}
 		li:not(.has-form)>a:not(.button) {
-			background: $secondary-color;
+			background: $second-bar-bg-color;
 			&:hover {
-				background: scale-color($secondary-color, $lightness: -20%);
+				background: scale-color($second-bar-bg-color, $lightness: -20%);
 			}
 		}
 		li:not(.has-form):not(.active)>a:not(.button) {
-			background: $secondary-color;
+			background: $second-bar-bg-color;
 			&:hover {
-				background: scale-color($secondary-color, $lightness: -20%);
+				background: scale-color($second-bar-bg-color, $lightness: -20%);
 			}
 		}
 	}
@@ -691,39 +699,44 @@ li.comment > section {
 // Footer
 /////////
 #footer {
-	background: $topbar-bg-color;
+	background: $primary-color;
 	clear: both;
 	display: table;
 	font-family: $header-font-family;
-    font-size: .75em;
+	font-size: .8em;
 	text-transform: uppercase;
 	margin-top: 20px;
 	text-align: center;
 	width: 100%;
-    .footer-content {
-        background: $grey;
-        border-bottom: 1px solid $secondary-color;
-        border-top: 1px solid $secondary-color;
-        margin: 0;
-        padding: 20px 20px 10px 20px;
-        width: 100%;
-    }
+	.footer-content {
+		background: $grey;
+		border-bottom: 1px solid $secondary-color;
+		border-top: 1px solid $secondary-color;
+		margin: 0;
+		padding: 20px 20px 10px 20px;
+		width: 100%;
+		a {
+			color: $primary-color;
+			&:hover {
+				color: $white;
+			}
+		}
+	}
 	ul.menu {
-        padding: 20px 20px 10px 20px;
+		font-size: .8em;
 		margin: 0 auto;
+		padding: 20px 20px 10px 20px;
 		li {
 			display: inline;
 			margin: 0 1rem;
 		}
-	}
-	a {
-		color: $secondary-color;
-		&:hover {
+		a {
 			color: $white;
+			&:hover {
+					
+			}
 		}
 	}
-	.copyright {}
-	.social {}
 }
 
 @media #{$small-up} {
