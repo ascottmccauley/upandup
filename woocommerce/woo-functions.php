@@ -544,9 +544,12 @@ add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
  * Store Notices
 ************************/
 function upandup_woo_add_to_cart_message( $message, $product_id ) {
-	
-	$message = 'Item has been added to the cart. ';
-	$message .= '<a href="' . wc_get_page_permalink( 'cart' ) . '" class="wc-forward"><strong>Click here to proceed</strong></a>';
+	// get correct category back link
+	$terms = wc_get_product_terms( $product_id, 'product_cat', array( 'orderby' => 'parent', 'order' => 'DESC' ) );
+	$main_term = apply_filters( 'woocommerce_breadcrumb_main_term', $terms[0], $terms );
+	$main_term_link = get_term_link( $main_term );
+	$message = '<a href="' . esc_url( $main_term_link ) . '" class="continue third"><i class="icon-arrow-left"></i> Continue Shopping</a>';
+	$message .= '<a href="' . wc_get_page_permalink( 'cart' ) . '" class="wc-forward third">View Your Cart <i class="icon-arrow-right"></i></a>';
 	
 	return $message;
 }
