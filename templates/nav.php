@@ -23,6 +23,9 @@ if ( ! wp_is_mobile() ) { ?>
 				
 			</nav>
 		<?php } ?>
+		<?php if ( is_shop() || is_product() || is_product_category() ) {
+			woocommerce_breadcrumb();
+		} ?>
 		<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
 			<section class="top-bar-section">
 				<?php wp_nav_menu( array(
