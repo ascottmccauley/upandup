@@ -89,10 +89,12 @@ button, .button, input[type="submit"], a {
 	width: 100%;
 }
 
-@for $i from 2 through 5 {
-	.column-#{$i} {
-		column-count: $i;
-		column-gap: 1rem;
+@media #{$medium-up} {
+	@for $i from 2 through 5 {
+		.column-#{$i} {
+			column-count: $i;
+			column-gap: 1rem;
+		}
 	}
 }
 
@@ -107,6 +109,9 @@ button, .button, input[type="submit"], a {
 	padding-bottom: 100%;
 	text-align: center;
 	width: 100%;
+}
+figure {
+	margin: .5rem;
 }
 
 // Body
@@ -179,7 +184,7 @@ html, body {
 // Menu/Nav
 ///////
 nav.top-bar, nav.second-bar {
-	z-index: 33;
+	z-index: 933;
 	li a {
 		font-family: $header-font-family;
 		text-transform: uppercase;
@@ -243,7 +248,7 @@ nav.second-bar {
 	margin-top: -$topbar-margin-bottom;
 	margin-bottom: 0;
 	width: 100%;
-	z-index: 44;
+	z-index: 944;
 	section.top-bar-section {
 		li {
 			background: $second-bar-bg-color;
@@ -302,7 +307,7 @@ body.no-sidebar .tab-bar .left-small {
 		&.left-off-canvas-toggle {
 			left: -5px;
 		}
-		z-index: 997;
+		z-index: 966;
 	}
 }
 .move-left .right-off-canvas-toggle span, .move-right .left-off-canvas-toggle span {
@@ -398,10 +403,26 @@ body.with-sidebar #main {
 	&.sticky { }
 }
 
-article.resource.has-post-thumbnail {
-	@include grid-column(3);
+// Resources
+// with thumbnails
+body.tax-resource_category {
+	.loop {
+		@include block-grid(2);
+		@media #{$medium-up} {
+			@include block-grid(4);	
+		}
+		@media #{$large-up} {
+			@include block-grid(6);	
+		}
+	}
+}
+.resource.has-post-thumbnail {
+	figcaption {
+		text-align: center;	
+	}
 }
 
+// Events
 article.event {
 	dt h5 {
 		text-align: left;
@@ -446,10 +467,10 @@ article.event.has-post-thumbnail {
 // Content Elements
 ///////////////////
 .mfp-bg {
-	z-index: 95 !important;
+	z-index: 955 !important;
 }
 .vnbx-mask, .mfp-wrap {
-	z-index: 96 !important;
+	z-index: 966 !important;
 }
 .gallery {
 	.imge-link {
