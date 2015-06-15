@@ -101,7 +101,7 @@ body.adults.parent ul.products {
 }
 body.childrens.parent ul.products {
 	@media #{$medium-up} {
-		@include block-grid($per-row: 4);
+		@include block-grid($per-row: 5);
 	}
 }
 body.pre-teen.parent ul.products {
@@ -189,8 +189,7 @@ li.product {
 			position: relative;
 			&::before {
 				color: $white;
-				content: $fa-var-search;
-				font-family: FontAwesome;
+				content: 'View Details';
 				height: 100%;
 				@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
 				left: 0;
@@ -204,7 +203,7 @@ li.product {
 					transform: translateY(-300%);	
 				}
 				&::before {
-					bottom: 0;	
+					bottom: -2px;	
 				}
 			}
 		}
@@ -438,8 +437,19 @@ form.cart  {
 
 /**** Store Notices ****/
 .alert-box {
-	
-	i {
-		margin-right: 1rem;	
+	overflow: hidden;
+	padding: 0;
+	text-align: center;
+	.half {
+		border-right: 2px solid $white;
+		float: left;
+		padding: 1rem;
+		width: 48%;
+	}
+	>a.half {
+		background: rgba(255,255,255,.2);
+		&:hover {
+			background: rgba(255,255,255,.1);	
+		}
 	}
 }
