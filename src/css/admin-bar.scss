@@ -4,12 +4,7 @@
 
 // admin-bar
 body.admin-bar {
-	#header {
-		margin-top: 32px;
-	}
-	.sticky.fixed {
-		top: 32px;
-	}
+	padding-top: 32px;
 }
 #wpadminbar { 
 	background: scale-color($primary-color, $lightness: -20%);
@@ -18,7 +13,7 @@ body.admin-bar {
 // mobile admin-bar
 @media screen and ( max-width: 782px ) {
 	#wpadminbar { position: absolute; }
-	.tab-bar {
-		margin-top: 46px;
+	body {
+		padding-top: 46px;
 	}
 }
