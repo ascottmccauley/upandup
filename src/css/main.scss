@@ -20,9 +20,6 @@ $slick-loader-path: "../img/";
 .mfp-container {
 	padding-top: $topbar-height;
 }
-.mfp-title {
-	display: none;
-}
 
 // Import Sass-Burger
 $burger-height: 0 !default; // Include this because node-sass hasn't updated libsass

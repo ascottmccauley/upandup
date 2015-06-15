@@ -76,6 +76,12 @@ jQuery(document).ready(function() {
 			gallery:{enabled:true},
 			type:'image',
 			image: {
+				titleSrc: function (item) {
+					console.log('working');
+					console.log(item.src);
+					console.log(item);
+					return '<a href="' + item.src + '" download="' + item.el.attr('title') + '" target="_blank" class="button btn">Download Image</a>';
+				},
 				verticalFit: true
 			},
 			focus: ''
@@ -89,7 +95,6 @@ jQuery(document).ready(function() {
 	
 	// Sticky Footer
 	function stickyFooter() {
-		console.log('stickying');
 		var footer = jQuery('#footer');
 		var pos = footer.position();
 		var height = jQuery(window).height();
