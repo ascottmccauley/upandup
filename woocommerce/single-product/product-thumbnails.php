@@ -54,12 +54,12 @@ if ( $attachment_ids ) {
 	$upload_url = $upload_dir['url'];
 	$sku = $product->get_sku();
 	
-	echo '<ul class="small-block-grid-4">';
+	echo '<ul class="thumbnails small-block-grid-4">';
 		// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
 		foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
 				$img_url = str_replace( $upload_path, $upload_url, $img_path );
 				$img_link = str_replace( 'thumb', 'large', $img_url );
-				echo '<li><a href="' . $img_link . '"><img src="' . $img_url . '"></a></li>';
+				echo '<li><a href="' . $img_link . '" class="th"><img src="' . $img_url . '"></a></li>';
 		}
 	echo '</ul>';
 }
