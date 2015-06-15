@@ -18,6 +18,12 @@ $upsells = $product->get_upsells();
 if ( sizeof( $upsells ) == 0 ) return;
 
 $meta_query = WC()->query->get_meta_query();
+// Add `_visibility` `search` products to query
+foreach( $meta_query as $key => $meta ) {
+	if ( in_array( '_visibility', $meta ) ) {
+		$meta_query[$key]['value'] = array( 'visible', 'catalog', 'search' );
+	}
+}
 
 $args = array(
 	'post_type'           => 'product',
@@ -34,7 +40,7 @@ $products = new WP_Query( $args );
 
 if ( $products->have_posts() ) : ?>
 
-	<div class="upsells products small-12 medium-4 columns right">
+	<div class="upsells">
 
 		<?php echo apply_filters('upandup_woo_upsell_text', '<h3>You may also like&hellip;</h3>'); ?>
 
