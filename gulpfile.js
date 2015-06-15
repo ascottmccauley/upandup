@@ -89,7 +89,6 @@ gulp.task('js', ['jquery'], function() {
 	return gulp.src(bower(['!**/jquery.js', '**/*.js']))
 		.pipe($.plumber({errorHandler: onError}))
 		.pipe($.addSrc(paths.js.src + '**/*.js'))
-		.pipe($.addSrc(paths.bower + '/foundation/js/vendor/modernizr.js'))
 		.pipe(filters.js)
 		.pipe($.jshint())
 		.pipe($.print())
@@ -104,6 +103,7 @@ gulp.task('js', ['jquery'], function() {
 gulp.task('jquery', function() {
 	del(paths.js.build + '*')
 	return gulp.src(bower('**/jquery.js'))
+		.pipe($.addSrc(paths.bower + '/foundation/js/vendor/modernizr.js'))
 		.pipe($.plumber({errorHandler: onError}))
 		.pipe($.print())
 		.pipe($.uglify())
