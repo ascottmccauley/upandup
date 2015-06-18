@@ -18,6 +18,19 @@ $include-parent-classes: true !default;
 	}
 }
 
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
 // Foundation by ZURB
 // foundation.zurb.com
 // Licensed under MIT Open Source
@@ -622,7 +635,7 @@ $include-html-global-classes: $include-html-classes;
 // 10. Flex Video
 // - - - - - - - - - - - - - - - - - - - - - - - - -
 
- $include-html-media-classes: false;
+ $include-html-media-classes: true;
 
 // We use these to control video container padding and margins
 // $flex-video-padding-top: rem-calc(25);
@@ -1347,8 +1360,8 @@ $input-placeholder-font-color: black;
 
 // We use these to control border styles
 // $thumb-border-style: solid;
-// $thumb-border-width: 4px;
-// $thumb-border-color: $white;
+ $thumb-border-width: 1px;
+ $thumb-border-color: $secondary-color;
 // $thumb-box-shadow: 0 0 0 1px rgba($black,.2);
 // $thumb-box-shadow-hover: 0 0 6px 1px rgba($primary-color,0.5);
 

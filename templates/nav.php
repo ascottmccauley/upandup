@@ -20,8 +20,9 @@ if ( ! wp_is_mobile() ) { ?>
 						'walker'=> new Upandup_Topbar_Walker,
 					) ); ?>
 				</section>
-				
 			</nav>
+		<?php } else { ?>
+			<h6 class="header-fill text-center">Manufacturers of beautiful products made from precious metals.</h6>
 		<?php } ?>
 		<?php if ( is_shop() || is_product() || is_product_category() ) {
 			woocommerce_breadcrumb();

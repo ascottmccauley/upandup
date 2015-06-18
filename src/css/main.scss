@@ -36,6 +36,9 @@ i, [class*="icon-"] {	@include fa-icon(); }
 @import "../../woocommerce/woocommerce";
 
 // Base Styles
+* {
+	outline: none;
+}
 a:hover i {
 	text-decoration: none;
 }
@@ -55,8 +58,6 @@ p, .entry-summary, .entry-content, .widget, .comment > section {
 		padding-left: 1em;
 	}
 }
-
-
 
 hr {
 	border-bottom: 2px solid rgba(255,255,255, .1);
