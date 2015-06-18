@@ -38,7 +38,7 @@ var paths = {
 var filters = {
 	'css': $.filter(['*.css']),
 	'js': $.filter(['*.js', '!**/jquery.js']),
-	'fonts': $.filter(['*.eot', '*.woff', '*.svg', '*.ttf', '*.otf']),
+	'fonts': $.filter(['*.eot', '*.woff', '*.svg', '*.ttf', '*.otf', '*.woff2']),
 	'img': $.filter(['*.jpg', '*.png', '*.gif']),
 };
 
