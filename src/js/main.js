@@ -77,9 +77,6 @@ jQuery(document).ready(function() {
 			type:'image',
 			image: {
 				titleSrc: function (item) {
-					console.log('working');
-					console.log(item.src);
-					console.log(item);
 					return '<a href="' + item.src + '" download="' + item.el.attr('title') + '" target="_blank" class="button btn">Download Image</a>';
 				},
 				verticalFit: true
