@@ -32,6 +32,18 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 					setup_postdata( $post );
 					?>
 					<tr>
+						<td class="group-image">
+							<?php // get image for product
+							$image_url = upandup_woo_img_url( 'tiny', $product );
+								if ( $image_url != '' ) {
+									echo '<a href="' . get_permalink() . '" class="th"><img src="' . $image_url . '" width="60" height="60"></a>';
+								} ?>
+						</td>
+						<td class="label">
+							<label for="product-<?php echo $product_id; ?>">
+								<?php echo '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink(), $product_id ) ) . '">' . esc_html( get_the_title() ) . '</a>'; ?>
+							</label>
+						</td>
 						<td>
 							<?php if ( $product->is_sold_individually() || ! $product->is_purchasable() ) : ?>
 								<?php woocommerce_template_loop_add_to_cart(); ?>
@@ -41,12 +53,6 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 									woocommerce_quantity_input( array( 'input_name' => 'quantity[' . $product_id . ']', 'input_value' => '0', 'min_value' => apply_filters( 'woocommerce_quantity_input_min', 0, $product ), 'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product ) ) );
 								?>
 							<?php endif; ?>
-						</td>
-
-						<td class="label">
-							<label for="product-<?php echo $product_id; ?>">
-								<?php echo $product->is_visible() ? '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink(), $product_id ) ) . '">' . esc_html( get_the_title() ) . '</a>' : esc_html( get_the_title() ); ?>
-							</label>
 						</td>
 
 						<?php do_action ( 'woocommerce_grouped_product_list_before_price', $product ); ?>

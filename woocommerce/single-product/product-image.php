@@ -21,16 +21,9 @@ if ( ! empty( $img_url ) ) { ?>
 		<?php 
 		$image_title = esc_attr( get_the_title( get_post_thumbnail_id() ) );
 		$image_link = upandup_woo_img_url( 'large' );
-		$image = '<img src="' . $img_url . '">';
+		$image = '<img src="' . $img_url . '" />';
 		
-		$attachment_count = count( $product->get_gallery_attachment_ids() );	
-		if ( $attachment_count > 0 ) {
-			$gallery = '[product-gallery]';
-		} else {
-			$gallery = '';
-		}
-		
-		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" itemprop="image" class="zoom th" title="%s">%s</a>', $image_link, $image_title, $image ), $post->ID );
+		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" style="background-image: url(%s);" itemprop="image" class="zoom th product-image" title="%s"></a>', $image_link, $img_url, $image_title, $image ), $post->ID );
 		
 		do_action( 'woocommerce_product_thumbnails' ); ?>
 	

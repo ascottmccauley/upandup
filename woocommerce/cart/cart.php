@@ -11,6 +11,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
 }
 
+global $woocommerce;
+
 wc_print_notices();
 
 do_action( 'woocommerce_before_cart' ); ?>
@@ -22,7 +24,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 <table class="shop_table cart full" cellspacing="0">
 	<thead>
 		<tr>
-			<th class="product-remove hide-for-small">&nbsp;</th>
+			<th class="product-remove hide-for-small"></th>
 			<th class="product-name text-center" colspan="2"><?php _e( 'Product', 'woocommerce' ); ?></th>
 			<th class="product-price"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
 			<th class="product-quantity"><?php _e( 'Quantity', 'woocommerce' ); ?></th>
@@ -42,7 +44,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 					<td class="product-remove">
 						<?php
-							echo apply_filters( 'woocommerce_cart_item_remove_link', sprintf( '<a href="%s" class="remove" title="%s">&times;</a>', esc_url( WC()->cart->get_remove_url( $cart_item_key ) ), __( 'Remove this item', 'woocommerce' ) ), $cart_item_key );
+							echo apply_filters( 'woocommerce_cart_item_remove_link', sprintf( '<a href="%s" class="remove" title="%s"><h4>&times; <small>Delete</small></h4></a>', esc_url( WC()->cart->get_remove_url( $cart_item_key ) ), __( 'Remove this item', 'woocommerce' ) ), $cart_item_key );
 						?>
 					</td>
 					<?php // Don't load thumbnails for mobile users
@@ -50,8 +52,8 @@ do_action( 'woocommerce_before_cart' ); ?>
 						<td class="product-thumbnail hide-for-small">
 							<?php
 								$image_url = upandup_woo_img_url( 'tiny', $_product );
-								if ( $image_url != '' && $_product->is_visible() ) {
-									echo '<a href="' . esc_url( $_product->get_permalink( $cart_item ) ) . '"><img src="' . $image_url . '" width="60" height="60"></a>';
+								if ( $image_url != '' ) {
+									echo '<a href="' . esc_url( $_product->get_permalink( $cart_item ) ) . '" class="th cart-thumb"><img src="' . $image_url . '" width="60" height="60"></a>';
 								}	?>
 						</td>
 					<?php } ?>
@@ -112,8 +114,8 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 					</div>
 				<?php } ?>
-
-				<input type="submit" class="button" name="update_cart" value="<?php _e( 'Update Cart', 'woocommerce' ); ?>">
+				<a class="button warning empty-cart-button" href="<?php echo $woocommerce->cart->get_cart_url(); ?>?empty-cart"><?php _e( 'Empty Cart', 'woocommerce' ); ?></a>
+				<button type="submit" class="button info update-cart-button" name="update_cart"><?php _e( 'Update Cart', 'woocommerce' ); ?></button>
 				
 				<?php do_action( 'woocommerce_cart_actions' ); ?>
 

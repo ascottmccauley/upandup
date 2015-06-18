@@ -43,7 +43,9 @@ html, body {
 	}
 }
 input[type="number"] {
-	max-width: 40px;
+	max-width: 4rem;
+	padding-left: 1rem;
+	padding-right: 1rem;
 }
 .button.added {
 	display: none !important;
@@ -83,8 +85,14 @@ body.no-sidebar ul.products {
 	margin: 0 auto !important;
 	max-width: $row-width  !important;
 	width: 100%  !important;
-	@media #{$large-up} {
+	@media #{$medium-up} {
 		@include block-grid($per-row: 4);
+	}
+	@media #{$large-up} {
+		@include block-grid($per-row: 6);
+	}
+	@media #{$large-up} {
+		@include block-grid($per-row: 8);
 	}
 }
 
@@ -134,6 +142,7 @@ body.pre-teen.parent ul.products {
 		}
 	}
 	h4 {
+		font-size: $h5-font-size;
 		padding-top: .5em; // prevent image overlap
 		position: relative;
 		text-align: center;
@@ -168,7 +177,7 @@ li.product {
 	}
 	h5 {
 		backface-visibility: hidden;
-		color: $white;
+		color: $primary-color;
 		display: inline-block;
 		height: 100%;
 		margin-bottom: 0;
@@ -188,7 +197,7 @@ li.product {
 			overflow: hidden;
 			position: relative;
 			&::before {
-				color: $white;
+				color: $primary-color;
 				content: 'View Details';
 				height: 100%;
 				@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
@@ -220,6 +229,9 @@ li.product {
 	}
 	span.price {
 		display: none;
+	}
+	a.product_type_grouped {
+		display: none;	
 	}
 	.add_to_cart_button {
 		backface-visibility: hidden;
@@ -285,7 +297,6 @@ li.product {
 	}
 }
 
-
 li.product.product_cat-adults {
 	.square-thumb {
 		border: 2px solid $grey;
@@ -330,24 +341,30 @@ li.product.product_cat-replacement-chains {
 }
 
 .upsells {
+	@include grid-column(12);
 	margin-top: 1rem;
 }
 
-.upsells .products {
-	@media #{$medium-up} {
-		@include block-grid(2);
-	}
-}
+.upsells ul.products { }
 
 /***** single-product ****/
+.product-image {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 100%;
+	@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+	width: 100%;
+	min-height: 10rem;
+	img {
+		visibility: hidden;
+	}
+}
+.zoom:hover {
+	background-size: 200%;
+}
 form.cart  {
 	.quantity {
 		float: left;
-		input {
-			padding-left: 1rem;
-			padding-right: 1rem;
-			max-width: 4rem;
-		}
 	}
 	.single_add_to_cart_button {
 		@include button-size($padding:$button-tny);
@@ -365,6 +382,69 @@ form.cart  {
 .cart {
 	.actions {
 		text-align: right;
+	}
+	.checkout-button, .update-cart-button, .empty-cart-button {
+		color: $white;
+		position: relative;
+		&::before {
+			color: $white;
+			content: $fa-var-shopping-cart;
+			font-family: FontAwesome;
+			height: 100%;
+			margin-right: .5rem;
+			opacity: 1;
+			@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+			width: 1rem;
+		}
+		&::after {
+			color: $white;
+			content: $fa-var-long-arrow-right;
+			font-family: FontAwesome;
+			height: 100%;
+			margin-left: -.5rem;
+			opacity: 0;
+			@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+			width: 1rem;
+		}
+		&:hover {
+			&::before {
+				margin-right: -.5rem;
+				opacity: 0;
+			}
+			&::after {
+				margin-left: .5rem;
+				opacity: 1;
+			}
+		}
+	}
+
+	// Empty Cart Button
+	.empty-cart-button {
+		&::before {
+			content: $fa-var-trash;	
+		}
+		&::after {
+			content: $fa-var-warning;
+		}
+	}
+	
+	// Update Cart Button
+	.update-cart-button {
+		&::before {
+			content: $fa-var-refresh;	
+		}
+		&:hover::after {
+			content: $fa-var-refresh;
+			-webkit-animation: spin .75s infinite linear;
+			-moz-animation: spin .75s infinite linear;
+			-ms-animation: spin .75s infinite linear;
+			-o-transition: rotate(3600deg);
+		}
+	}
+	
+	// Checkout Button
+	.checkout-button {
+		
 	}
 }
 

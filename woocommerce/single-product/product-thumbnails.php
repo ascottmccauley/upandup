@@ -59,7 +59,22 @@ if ( $attachment_ids ) {
 		foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
 				$img_url = str_replace( $upload_path, $upload_url, $img_path );
 				$img_link = str_replace( 'thumb', 'large', $img_url );
-				echo '<li><a href="' . $img_link . '" class="th"><img src="' . $img_url . '"></a></li>';
+				echo '<li><a href="' . $img_link . '" class="th square-thumb" style="background-image: url(\'' . $img_url . '\');"></a></li>';
 		}
+	echo '</ul>';
+}
+
+// For grouped product, add grouped children image
+$children = $product->get_children();
+if ( $children ) {
+	echo '<ul class="thumbnails small-block-grid-4">';
+	foreach( $children as $child ) {
+		$child_product = wc_get_product( $child );
+		$img_url = upandup_woo_img_url( 'small', $child_product );
+		$img_link = get_permalink( $child );
+		if ( $img_url != '' ) {
+			echo '<li><a href="' . $img_link . '" class="th square-thumb" style="background-image: url(\'' . $img_url . '\');"></a></li>';
+		}
+	}
 	echo '</ul>';
 }
