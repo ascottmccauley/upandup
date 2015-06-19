@@ -2,3 +2,64 @@
 
 // Determine whether or not to import styles from the parent theme
 $include-parent-classes: true !default;
+
+// Color Scheme
+$primary-color: #333;
+$secondary-color: #eee;
+$accent-color1: #69D846;
+$accent-color2: #34A38D;
+$accent-color3: #406AA8;
+$accent-color4: #FF9652;
+
+// Media Queries
+$small-breakpoint:  640px;
+$medium-breakpoint: 1024px;
+$large-breakpoint:  1440px;
+$xlarge-breakpoint: 1920px;
+
+$small-range:   (0, $small-breakpoint);
+$medium-range:  ($small-breakpoint  + 1px, $medium-breakpoint);
+$large-range:   ($medium-breakpoint + 1px, $large-breakpoint);
+$xlarge-range:  ($large-breakpoint  + 1px, $xlarge-breakpoint);
+$xxlarge-range: ($xlarge-breakpoint + 1px, 99999999px);
+
+$screen: "only screen";
+
+$landscape: "#{$screen} and (orientation: landscape)";
+$portrait: "#{$screen} and (orientation: portrait)";
+
+$small-up: $screen;
+$small-only: "#{$screen} and (max-width: #{upper-bound($small-range)})";
+
+$medium-up: "#{$screen} and (min-width:#{lower-bound($medium-range)})";
+$medium-only: "#{$screen} and (min-width:#{lower-bound($medium-range)}) and (max-width:#{upper-bound($medium-range)})";
+
+$large-up: "#{$screen} and (min-width:#{lower-bound($large-range)})";
+$large-only: "#{$screen} and (min-width:#{lower-bound($large-range)}) and (max-width:#{upper-bound($large-range)})";
+
+$xlarge-up: "#{$screen} and (min-width:#{lower-bound($xlarge-range)})";
+$xlarge-only: "#{$screen} and (min-width:#{lower-bound($xlarge-range)}) and (max-width:#{upper-bound($xlarge-range)})";
+
+$xxlarge-up: "#{$screen} and (min-width:#{lower-bound($xxlarge-range)})";
+$xxlarge-only: "#{$screen} and (min-width:#{lower-bound($xxlarge-range)}) and (max-width:#{upper-bound($xxlarge-range)})";
+
+$retina: (
+	"#{$screen} and (-webkit-min-device-pixel-ratio: 2)",
+	"#{$screen} and (min--moz-device-pixel-ratio: 2)",
+	"#{$screen} and (-o-min-device-pixel-ratio: 2/1)",
+	"#{$screen} and (min-device-pixel-ratio: 2)",
+	"#{$screen} and (min-resolution: 192dpi)",
+	"#{$screen} and (min-resolution: 2dppx)"
+);
+
+// Menu Variables
+//	Colors
+$mm_backgroundColor				: $primary-color;
+$mm_borderColor					: scale-color( $primary-color, $lightness: 10% );
+$mm_dimmedTextColor				: scale-color( $secondary-color, $lightness: -10% ) ;
+//$mm_emphasizedBackgroundColor	: rgba( #fff, 0.5 );
+//$mm_highlightedBackgroundColor	: rgba( #000, 0.5 );
+$mm_textColor					: $secondary-color;
+
+$nav-height: 60px;
+$footer-height: $nav-height; // must also be set in main.js 

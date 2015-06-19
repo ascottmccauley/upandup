@@ -3,3 +3,214 @@
 
 @import "settings";
 
+@import "../../bower_components/normalize-scss/normalize";
+
+@import "../../bower_components/fullPage.js/jquery.fullPage";
+
+@import "../../bower_components/jQuery.mmenu/src/scss/jquery.mmenu";
+
+// Import Sass-Burger
+$burger-height: 0 !default; // Include this because node-sass hasn't updated libsass
+$burger-gutter: 0 !default; // Include this because node-sass hasn't updated libsass
+@import "../../bower_components/sass-burger/burger";
+
+// Global Styles //
+
+body {
+	background: black;
+	color: white;
+	font-family: sans-serif;
+	text-rendering: optimizeLegibility;
+}
+
+p {
+	margin-bottom: .5em;
+	line-height: 1.4em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: bold;
+	margin-bottom: .5em;
+	small {
+		font-size: .8em;
+		font-weight: normal;
+		line-height: 0;
+	}
+}
+
+a {
+	color: #ddd;
+	text-decoration: none;
+	&:hover {
+		color: #fff;	
+	}
+}
+
+ul, ol, dl {
+	line-height: 1.2em;
+	margin-bottom: .5em;
+	li {
+		list-style-type: none;
+	}
+}
+
+dl {
+	dt {
+		font-weight: bold;
+	}
+	dd {}
+}
+
+@media #{$medium-up} {
+	p, a, h1,h2,h3,h4,h5,h6 {
+		font-size: .8em;	
+	}
+}
+
+// Header //
+
+#header {
+	background: $primary-color;
+	padding-top: $nav-height;
+	text-align: center;
+	width: 100%;
+	z-index: 444;
+	
+}
+
+// Nav //
+
+#nav {
+	background: $secondary-color;
+	color: $primary-color;
+	height: $nav-height;
+	opacity: .5;
+	position: fixed;
+	top: 0;
+	transition: opacity .25s ease-in-out;
+	visibility: hidden;
+	width: 100%;
+	z-index: 333;
+	&:hover {
+		opacity: 1;	
+	}	
+	@media #{$medium-up} {
+		visibility: visible;
+	}
+}
+
+#nav ul.menu {
+	& > li {
+		display: inline-block;
+		height: $nav-height;
+		overflow: hidden;
+		&:hover {
+			overflow: visible;	
+		}
+		ul {
+			
+		}
+	}
+}
+
+a.nav-link {
+	background: transparent;
+	box-shadow: 5px 5px 10px rgba( $primary-color, 0.3 );
+	top: 5px;
+	left: 0px;
+	opacity: .75;
+	padding: 5px 5px 5px 10px;
+	position: absolute;
+	z-index: 333;
+	span {
+		@include burger(25px, 3px, 5px, $secondary-color);
+	}
+	@media #{$medium-up} {
+		visibility: hidden;
+	}
+}
+.mm-opened a.nav-link {
+	opacity: 1;
+	span {
+		@include burger-to-cross;
+		&, &::before, &::after {
+			background-color: $secondary-color;	
+		}
+		& {
+			background-color: transparent
+		}
+	}
+}
+
+#mm-blocker {
+	background-color: rgba( $primary-color, .5 );
+}
+
+// Main //
+body {
+	background: #333;
+	-webkit-transition:background 2s;
+	-moz-transition:background 2s;
+	-o-transition:background 2s;
+	transition:background 2s;
+}
+
+#main {
+	.section, .slide {
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: contain;
+		opacity: 0;
+		-webkit-transition: opacity 1s;
+		-moz-transition: opacity 1s;
+		-o-transition: opacity 1s;
+		transition: opacity 1s;
+		header {
+			display: none; // TODO	
+		}
+		article {
+			height: 100%;
+			position: relative;
+			text-align: center;
+			width: 100%;
+			.content {
+				bottom: 0;
+				color: $secondary-color;
+				display: block;
+				padding: 0 1rem;
+				opacity: .75;
+				position: absolute;
+				text-align: center;
+				text-shadow: 2px 2px 2px $primary-color;
+				width: 100%;
+			}
+			h2 { }
+			p { }
+		}
+	}
+}
+
+// Footer //
+#footer {
+	background: black;
+	color: white;
+	height: $footer-height;
+	opacity: .5;
+	position: fixed;
+	bottom: 0;
+	transition: opacity .25s ease-in-out;
+	width: 100%;
+	z-index: 666;
+	&:hover {
+		opacity: 1;	
+	}
+}
+
+// Extras //
+.fp-controlArrow {
+	opacity: .25;
+	transition: opacity .25s ease-in-out;
+	&:hover {
+		opacity: .75;	
+	}
+}
