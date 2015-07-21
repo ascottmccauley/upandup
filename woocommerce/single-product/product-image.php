@@ -23,7 +23,7 @@ if ( ! empty( $img_url ) ) { ?>
 		$image_link = upandup_woo_img_url( 'large' );
 		$image = '<img src="' . $img_url . '" />';
 		
-		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" style="background-image: url(%s);" itemprop="image" class="zoom th product-image" title="%s"></a>', $image_link, $img_url, $image_title, $image ), $post->ID );
+		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" style="background-image: url(%s);" itemprop="image" class="zoom th product-image" title="%s">%s</a>', $image_link, $img_url, $image_title, $image ), $post->ID );
 		
 		do_action( 'woocommerce_product_thumbnails' ); ?>
 	
