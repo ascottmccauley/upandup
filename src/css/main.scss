@@ -147,7 +147,6 @@ html, body {
 	figure.logo + h1, figure.logo ~ h2 {
 		@include hide;
 	}
-	
 }
 
 .logo.large {
@@ -266,6 +265,13 @@ nav.second-bar {
 	}
 }
 
+// Nav Fill
+.header-fill {
+	background: $secondary-color;
+	height: $topbar-height;
+	line-height: $topbar-height;
+	margin: 0 auto;
+}
 // Off Canvas Menu
 .middle.tab-bar-section {
 	border-right: solid 1px scale-color($tabbar-bg, $lightness: 10%);
@@ -695,6 +701,17 @@ li.comment > section {
 		@include grid-column(4, $pull:8, $float: left);
 		margin-top: 1rem;
 		padding-bottom: 20px;
+		
+		// Widgets
+		.widget {
+			overflow: hidden;
+			margin-bottom: 1em;
+			ul {
+				@include unstyled;
+			}
+			@include grid-column(12);
+		}
+		
 	}
 	@media #{$large-up} {
 		@include grid-column(3, $pull:9, $float: left);
@@ -704,16 +721,6 @@ li.comment > section {
 #sidebar-default { }
 #sidebar-home { }
 #sidebar-single { }
-
-// Widgets
-.widget {
-	overflow: hidden;
-	margin-bottom: 1em;
-	ul {
-		@include unstyled;
-	}
-	@include grid-column(12);
-}
 
 // Footer
 /////////
