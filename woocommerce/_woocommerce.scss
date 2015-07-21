@@ -353,7 +353,6 @@ li.product.product_cat-replacement-chains {
 	background-repeat: no-repeat;
 	background-size: 100%;
 	@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
-	width: 100%;
 	min-height: 10rem;
 	img {
 		visibility: hidden;
@@ -430,14 +429,14 @@ form.cart  {
 	
 	// Update Cart Button
 	.update-cart-button {
-		&::before {
+		&::before, &::after {
 			content: $fa-var-refresh;	
 		}
 		&:hover::after {
 			content: $fa-var-refresh;
-			-webkit-animation: spin .75s infinite linear;
-			-moz-animation: spin .75s infinite linear;
-			-ms-animation: spin .75s infinite linear;
+			-webkit-animation: spin .75s 2 linear;
+			-moz-animation: spin .75s 2 linear;
+			-ms-animation: spin .75s 2 linear;
 			-o-transition: rotate(3600deg);
 		}
 	}
@@ -470,6 +469,14 @@ form.cart  {
 
 /***** Widgets *****/
 .widget_attribute_filters {
+	.clear-filters {
+		@include button($padding:$button-tny, $bg:$secondary-color, $radius:0);
+		background: $secondary-color;
+		color: $white;
+		font-family: $header-font-family;
+		text-transform: uppercase;
+		width: 100%;
+	}
 	dl {
 		border: 1px solid $secondary-color;
 	}
@@ -495,10 +502,14 @@ form.cart  {
 		line-height: 1.2;
 		margin: .5rem 0;
 		a {
+			color: $white;
+			@media #{$medium-up} {
+				color: $primary-color;
+			}
 			text-align: left;
 			&::before {
-				font-family: FontAwesome;
 				content: $fa-var-square-o;
+				font-family: FontAwesome;
 				padding-left:  .5rem;
 				padding-right: 1rem;
 			}
@@ -517,19 +528,36 @@ form.cart  {
 
 /**** Store Notices ****/
 .alert-box {
+	color: $white;
+	line-height: 3rem;
 	overflow: hidden;
 	padding: 0;
 	text-align: center;
-	.half {
-		border-right: 2px solid $white;
-		float: left;
-		padding: 1rem;
-		width: 48%;
-	}
-	>a.half {
+	a.button {
 		background: rgba(255,255,255,.2);
+		height: 100%;
+		margin: 0;
 		&:hover {
-			background: rgba(255,255,255,.1);	
+			background: rgba(0,0,0,.1);	
+		}
+		&.wc-backward {
+			float: left;
+			margin-left: 2.5rem;
+			padding-left: 1rem;
+			&::before {
+				content: $fa-var-chevron-left;
+				font-family: FontAwesome;
+				padding-right:  1rem;
+			}
+		}
+		&.wc-forward {
+			float: right;
+			padding-right: 1rem;
+			&::after {
+				content: $fa-var-chevron-right;
+				font-family: FontAwesome;
+				padding-left:  1rem;
+			}
 		}
 	}
 }

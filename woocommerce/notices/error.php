@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 } 
 
 if ( ! $messages ) return; ?>
-<div class="alert-box alert" data-alert tabindex="0" aria-live="assertive" role="dialogalert"><a href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</a><ul>
+<div class="alert-box alert" data-alert tabindex="0" aria-live="assertive" role="dialogalert"><ul>
 	<?php foreach ( $messages as $message ) { ?>
 		<li><i class="icon-exclamation-triangle"></i> <?php echo wp_kses_post( $message ); ?></li>
 	<?php } ?>
