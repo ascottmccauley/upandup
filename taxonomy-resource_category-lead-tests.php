@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Template for the resource_category taxonomy "Lead Tests"
  *
@@ -11,9 +11,16 @@
  *
 **/
  ?>
+<?php // only available for logged in users
+if ( ! is_user_logged_in() ) {
+ $redirect = urlencode( $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
+ // wp_redirect( wp_login_url( $redirect ) );
+ wp_redirect( wp_login_url() ); // eliminate redirect for now.
+ exit;
+} ?>
 <?php // check $_GET[] for a specific lead-test to search for
 if ( isset( $_GET['test'] ) ) {
-    $test = str_replace( ' ', '', strtolower( strip_tags( $_GET['test'] ) ) );   
+    $test = str_replace( ' ', '', strtolower( strip_tags( $_GET['test'] ) ) );
 } else {
     $test = '';
 }
@@ -50,17 +57,17 @@ if ( isset( $_GET['page'] ) ) {
 			</div>
 		</div>
         <div class="resource-list column-3">
-    
+
             <?php // Loop through UPLOADS/lead-tests/ dir for all .pdfs
             $upload_dir = wp_upload_dir();
             $upload_path = $upload_dir['path'] . '/lead-tests/';
             $upload_url = $upload_dir['url'] . '/lead-tests/';
-            
+
             $post_per_page = 40;
             $minId = ($page - 1) * $post_per_page;
             $maxId = ($page * $post_per_page) - 1;
             $total = 0;
-    
+
             foreach( glob( $upload_path . '*' . $test . '*.pdf' ) as $id => $resource ) {
                 $total = $id + 1;
                 if ( $id > $maxId || $id < $minId ) {
@@ -92,7 +99,7 @@ if ( isset( $_GET['page'] ) ) {
             <div class="pagination-centered">
                 <?php echo $pagination; ?>
             </div>
-        <?php }            
+        <?php }
 	} ?>
 </main>
 <?php get_sidebar();
