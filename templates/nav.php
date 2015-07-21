@@ -24,8 +24,10 @@ if ( ! wp_is_mobile() ) { ?>
 		<?php } else { ?>
 			<h6 class="header-fill text-center">Manufacturers of beautiful products made from precious metals.</h6>
 		<?php } ?>
-		<?php if ( is_shop() || is_product() || is_product_category() ) {
-			woocommerce_breadcrumb();
+		<?php if ( class_exists( 'Woocommerce' ) ) {
+			if ( is_shop() || is_product() || is_product_category() ) {
+				woocommerce_breadcrumb();
+			}
 		} ?>
 		<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
 			<section class="top-bar-section">
@@ -44,11 +46,9 @@ if ( ! wp_is_mobile() ) { ?>
 	<section class="left-small">
 		<a class="left-off-canvas-toggle menu-button"><span></span></a>
 	</section>
-	<?php if ( ! is_front_page() && ! groundup_is_new_user() ) { ?>
-		<section class="middle tab-bar-section">
-			<h1 class="title"><a href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a></h1>
-		</section>
-	<?php } ?>
+	<section class="middle tab-bar-section">
+		<h1 class="title text-center"><a href="<?php echo home_url(); ?>"><?php bloginfo('name'); ?></a></h1>
+	</section>
 	<section class="right-small">
 		<a class="right-off-canvas-toggle menu-button"><span></span></a>
 	</section>
