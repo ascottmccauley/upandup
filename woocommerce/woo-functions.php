@@ -331,7 +331,7 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 			if ( $posts ) {
 				foreach( $posts as $post ) {
 					$image_url = upandup_woo_img_url( 'thumb', $post->ID );
-					if ( ! empty ( $image_url ) ) {}
+					if ( ! empty ( $image_url ) ) {
 						echo '<img src="' . $image_url . '" alt="' . esc_attr( $category->name ) . '">';
 					}
 				}
