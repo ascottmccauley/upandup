@@ -619,6 +619,35 @@ function custom_override_checkout_fields( $fields ) {
 }
 add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 
+function upandup_woo_recent_products() {
+	// get recent orders
+	$customer_orders = get_posts( apply_filters( 'woocommerce_my_account_my_orders_query', array(
+		'numberposts' => 10,
+		'meta_key'    => '_customer_user',
+		'meta_value'  => get_current_user_id(),
+		'post_type'   => wc_get_order_types( 'view-orders' ),
+		'post_status' => array_keys( wc_get_order_statuses() ),
+	) ) );
+	if ( $customer_orders ) {
+		$ordered_products = array();
+		foreach ( $customer_orders as $customer_order ) {
+			$order = wc_get_order( $customer_order );
+			// get products
+			foreach( $order->get_items() as $item ) {
+				array_push( $ordered_products, $item['product_id'] );
+			}
+		}
+	} ?>
+	<h2>Recently Ordered Products</h2>
+	<?php $ordered_products = array_unique( $ordered_products ); ?>
+	<ul class="column-3 ordered-products disc">
+		<?php foreach ( $ordered_products as $product_id ) {
+			echo '<li><a href="' . get_permalink($product_id) . '">' . get_the_title($product_id) . '</a></li>';
+		} ?>
+	</ul>
+<?php }
+add_action( 'woocommerce_before_my_account', 'upandup_woo_recent_products' );
+
 /************************
  * Store Notices
 ************************/
