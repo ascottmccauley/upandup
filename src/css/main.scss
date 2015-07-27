@@ -97,7 +97,7 @@ button, .button, input[type="submit"], a {
 }
 
 // centered-square thumbnails with img source set to background-image: url(...);
-.square-thumb { 
+.square-thumb {
 	background-color: #fff;
 	background-size: contain;
 	background-repeat: no-repeat;
@@ -191,7 +191,7 @@ nav.top-bar, nav.second-bar {
 	}
 	button, .button {
 		height: 2.1rem;
-		line-height: 1rem;		
+		line-height: 1rem;
 	}
 	input {
 		height: 2.1rem;
@@ -219,7 +219,7 @@ nav.top-bar, nav.second-bar {
 // Center Topbar
 #primary-navigation {
 	text-align: center;
-	section.top-bar-section { 
+	section.top-bar-section {
 		display: table;
 		margin: 0 auto;
 		li {
@@ -234,7 +234,7 @@ nav.top-bar, nav.second-bar {
 // Sticky Topbar
 .fixed {
 	#primary-navigation {
-		border-bottom: 2px solid $grey;	
+		border-bottom: 2px solid $grey;
 	}
 }
 
@@ -284,7 +284,7 @@ nav.second-bar {
 		text-shadow: none;
 		color: transparent;
 	}
-	
+
 }
 
 body.with-sidebar .middle.tab-bar-section {
@@ -333,10 +333,22 @@ body.no-sidebar .tab-bar .left-small {
 ///////
 #main {
 	@include grid-column(12);
-	margin-top: 1em;
+	padding-top: 1em;
 	padding-left: 1rem;
 	padding-right: 1rem;
-    padding-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+//homepage styling
+body.home #main {
+	background: $grey;
+	.entry-content {
+		background: $white;
+		padding-bottom: 1rem;
+		padding-top: 1rem;
+		.slick-slide, .small-6 img {
+			border: 1px solid $tan;
+		}
+	}
 }
 body.with-sidebar #main {
 	@media #{$medium-up} {
@@ -373,7 +385,7 @@ body.with-sidebar #main {
 		.meta-tags { }
 		.meta-count { }
 		.meta-comments { }
-		.meta-edit { 
+		.meta-edit {
 			visibility: hidden;
 		}
 	}
@@ -389,7 +401,7 @@ body.with-sidebar #main {
 }
 
 // Post Formats
-.hentry.excerpt { 
+.hentry.excerpt {
 	&.format-aside { }
 	&.format-gallery { }
 	&.format-image { }
@@ -413,16 +425,16 @@ body.tax-resource_category {
 	.loop {
 		@include block-grid(2);
 		@media #{$medium-up} {
-			@include block-grid(4);	
+			@include block-grid(4);
 		}
 		@media #{$large-up} {
-			@include block-grid(6);	
+			@include block-grid(6);
 		}
 	}
 }
 .resource.has-post-thumbnail {
 	figcaption {
-		text-align: center;	
+		text-align: center;
 	}
 }
 
@@ -533,19 +545,19 @@ ul.page-numbers {
 		display: block;
 		margin: 0;
 	}
-	a.logout {}	
+	a.logout {}
 	textarea {
 		min-height: 8em; // ~ 6 lines
 	}
 }
 
 // Reply Form
-ol #respond { 
+ol #respond {
 	@include panel;
 	@include grid-column(12, $float:left, $pull:0);
 }
 @media #{$small-up} {
-	ol #respond { 
+	ol #respond {
 		@include grid-column(12, $float:left, $pull:0);
 	}
 	#wp-temp-form-div + #comments {
@@ -595,7 +607,7 @@ li.comment {
 	}
 	section {	}
 	footer {
-		time { 
+		time {
 			a {
 				@include button($padding:$button-tny, $bg:$secondary-color, $radius:9999em);
 				@include inset-shadow();
@@ -612,7 +624,7 @@ li.comment {
 
 @media #{$small-up} {
 	ol.comment-list ol.comment {
-		@include grid-column($offset:2, $collapse:null);	
+		@include grid-column($offset:2, $collapse:null);
 	}
 	li.comment {
 		figure.avatar {
@@ -682,7 +694,7 @@ li.comment > section {
 	code {}
 	del {}
 	em {}
-	i {} 
+	i {}
 	q {}
 	strike {}
 	strong {}
@@ -701,7 +713,7 @@ li.comment > section {
 		@include grid-column(4, $pull:8, $float: left);
 		margin-top: 1rem;
 		padding-bottom: 20px;
-		
+
 		// Widgets
 		.widget {
 			overflow: hidden;
@@ -711,7 +723,7 @@ li.comment > section {
 			}
 			@include grid-column(12);
 		}
-		
+
 	}
 	@media #{$large-up} {
 		@include grid-column(3, $pull:9, $float: left);
@@ -759,14 +771,14 @@ li.comment > section {
 		a {
 			color: $white;
 			&:hover {
-					
+
 			}
 		}
 	}
 }
 
 @media #{$small-up} {
-	#footer { 
+	#footer {
 		.copyright, .inline-list {
 			float: left;
 		}
@@ -786,7 +798,7 @@ li.comment > section {
 			}
 		}
 		.image-link {
-			
+
 			img {
 				border: 2px solid #fff;
 			}
