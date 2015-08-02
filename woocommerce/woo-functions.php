@@ -136,7 +136,7 @@ function woocommerce_output_content_wrapper_end() {
 remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 0 );
 // add_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 5, 0 );
 
-// Add login/account and mini-cart to secondary-navbar
+// Add login/account and mini-cart to secondary-navbar and product categories to primary-navbar
 function upandup_woo_add_to_nav( $items, $args ) {
 
 	$locations = get_nav_menu_locations();
@@ -145,6 +145,21 @@ function upandup_woo_add_to_nav( $items, $args ) {
 	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
 			$items .= '<li class="login"><a href="' . wp_login_url( urlencode( get_permalink( wc_get_page_id( 'shop' ) ) ) ) . '">Log In</a></li>';
+		} else {
+			$args = array(
+				'taxonomy' => 'product_cat',
+				'order' => 'ASC',
+				'orderby' => 'name',
+				'show_count' => false,
+				'hierarchical' => true,
+				'title_li' => '',
+				'hide_empty' => true,
+				'show_option_none' => '',
+				'echo' => 0,
+			);
+			$categories = wp_list_categories( $args );
+			$shop_link = '<a href="' . get_permalink( woocommerce_get_page_id( 'shop' ) ) . '">Products</a>';
+			$items = '<li class="has-dropdown">' . $shop_link . '<ul class="dropdown">' . $categories . '</ul></li>' . $items;
 		}
 	}
 

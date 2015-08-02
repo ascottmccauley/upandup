@@ -92,33 +92,33 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 // Creates a new walker for the `mobile` menu to follow the default styling for Zurb Foundation's off-canvas menu
 class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 	function check_current($classes) {
-		return preg_match('/(current[-_])|active|dropdown/', $classes);
+		return preg_match( '/(current[-_])|active|dropdown/', $classes );
 	}
 
-	function start_lvl(&$output, $depth = 0, $args = array()) {
+	function start_lvl( &$output, $depth = 0, $args = array() ) {
 		$output .= "\n<ul class='right-submenu'>\n<li class='back'><a href='#'>Back</a></li>\n";
 	}
 
-	function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0) {
+	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 		$item_html = '';
-		parent::start_el($item_html, $item, $depth, $args);
+		parent::start_el( $item_html, $item, $depth, $args );
 
-		if (stristr($item_html, 'li class="divider')) {
-			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html);
-		}elseif (stristr($item_html, 'li class="nav-header')) {
-			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html);
+		if ( stristr( $item_html, 'li class="divider' ) ) {
+			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
+		}elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
+			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
 		}
 
 		$output .= $item_html;
 	}
 
-	function display_element($element, &$children_elements, $max_depth, $depth = 0, $args, &$output) {
-		$element->is_dropdown = !empty($children_elements[$element->ID]);
+	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
+		$element->is_dropdown = ! empty( $children_elements[$element->ID] );
 
 		if ( $element->is_dropdown ) {
 			if ( $depth === 0 ) {
 				$element->classes[] = 'has-submenu';
-			}elseif ($depth === 1) {
+			}elseif ( $depth === 1 ) {
 				$element->classes[] = 'has-submenu';
 			}
 		}
@@ -128,6 +128,25 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 		parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
 	}
 }
+
+// change children to dropdown for wp_list_categories
+function upandup_list_categories( $html ) {
+	$html = preg_replace( '/\sclass=\'children\'/', ' class=\'dropdown\'', $html );
+	return $html;
+}
+add_filter( 'wp_list_categories', 'upandup_list_categories' );
+
+// change wp_list_categories css to include 'has-dropdown' when there are children
+function upandup_category_css_class( $css_classes, $category, $depth, $args ) {
+	// check if the category has any children and add the has-dropdown css_class
+	$children = get_term_children( $category->term_id, $category->taxonomy );
+	if ( $children ) {
+		return array( $category->slug, 'has-dropdown' );
+	} else {
+		return array( $category->slug );
+	}
+}
+add_filter( 'category_css_class', 'upandup_category_css_class', 1, 4 );
 
 // Add offcanvas menu to #footer
 function upandup_offcanvas_footer_menu () {
