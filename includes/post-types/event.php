@@ -21,13 +21,13 @@ function event_register_post_types() {
 		'feeds'      => true,
 		'ep_mask'    => EP_PERMALINK,
 	));
-
+	
 	$supports = apply_filters('event_post_type_supports', array(
 		'title',
 		'thumbnail',
 		'excerpt'
 	));
-
+	
 	$labels = apply_filters('event_post_type_labels', array(
 		'name'               => __( 'Events',                   'event' ),
 		'singular_name'      => __( 'Event',                    'event' ),
@@ -43,7 +43,7 @@ function event_register_post_types() {
 		'not_found_in_trash' => __( 'No events found in trash', 'event' ),
 		'all_items'          => __( 'Events',                   'event' ),
 	));
-
+	
 	$args = apply_filters('event_post_type_args', array(
 		'description'         => '',
 		'public'              => true,
@@ -66,7 +66,7 @@ function event_register_post_types() {
 		'supports'						=> $supports,
 		'labels'							=> $labels,
 	));
-
+	
 	register_post_type('event', $args);
 }
 add_action( 'init', 'event_register_post_types' );
@@ -79,7 +79,7 @@ function event_register_taxonomies() {
 		'hierarchical' => true,
 		'ep_mask'      => EP_NONE
 	));
-
+	
 	$labels = apply_filters('event_category_taxonomy_labels', array(
 		'name'                       => __( 'Event Categories',                  				 'event' ),
 		'singular_name'              => __( 'Event Category',                    				 'event' ),
@@ -100,7 +100,7 @@ function event_register_taxonomies() {
 		'parent_item'                => null,
 		'parent_item_colon'          => null,
 	));
-
+	
 	$args = apply_filters('event_category_taxonomy_args', array(
 		'public'            => true,
 		'show_ui'           => true,
@@ -112,7 +112,7 @@ function event_register_taxonomies() {
 		'rewrite'						=> $rewrite,
 		'labels'						=> $labels,
 	));
-
+	
 	register_taxonomy('event_category', array('event'), $args);
 }
 add_action( 'init', 'event_register_taxonomies' );
@@ -142,7 +142,7 @@ function event_date_callback($post) {
 	if($event_start_date) {
 		$event_start_date_display = date('F j, Y', strtotime($event_start_date));
 	}
-
+	
 	$event_end_date = get_post_meta($post->ID, '_event_end_date', true);
 	if($event_end_date) {
 		$event_end_date_display = date('F j, Y', strtotime($event_end_date));
@@ -153,7 +153,7 @@ function event_date_callback($post) {
 			<input type="text" class="event-start-date-select" name="event-start-date-select" value="<?php if($event_start_date) { echo $event_start_date_display; } ?>" />
 			<input type="hidden" name="event-start-date" class="event-start-date" value="<?php if($event_start_date) { echo $event_start_date; } ?>" />
 		</p>
-		<p>
+		<p>	
 			<label>End Date (optional)</label>
 			<input type="text" class="event-end-date-select" name="event-end-date-select" value="<?php if($event_end_date) { echo $event_end_date_display; } ?>" />
 			<input type="hidden" name="event-end-date" class="event-end-date" value="<?php if($event_end_date) { echo $event_end_date; } ?>" />
@@ -169,11 +169,11 @@ function event_location_callback($post) {
 	<div class="metabox">
 		<p>
 			<label>Location</label>
-			<input type="text" class="event-location" id="event-location" name="event-location" value="<?php echo $event_location; ?>" />
+			<input type="text" class="event-location" id="event-location" name="event-location" value="<?php echo $event_location; ?>" /> 
 		</p>
 		<p>
 			<label>Venue (optional)</label>
-			<input type="text" class="event-venue" id="event-venue" name="event-venue" value="<?php echo $event_venue; ?>" />
+			<input type="text" class="event-venue" id="event-venue" name="event-venue" value="<?php echo $event_venue; ?>" /> 
 		</p>
 	</div>
 <?php }
@@ -185,7 +185,7 @@ function event_url_callback($post) {
 	<div class="metabox">
 		<p>
 			<label>URL:</label>
-			<input type="url" class="event-url" name="event-url" value="<?php echo $event_url; ?>" onblur="var validURL = this.value.replace(/ /g,''); if(!~validURL.indexOf('http') && validURL != '') { validURL ='http://' + validURL; } this.value = validURL;" />
+			<input type="url" class="event-url" name="event-url" value="<?php echo $event_url; ?>" onblur="var validURL = this.value.replace(/ /g,''); if(!~validURL.indexOf('http') && validURL != '') { validURL ='http://' + validURL; } this.value = validURL;" /> 
 		</p>
 	</div>
 <?php }
@@ -196,20 +196,29 @@ function event_update_post_meta($post_id) {
 	$is_autosave = wp_is_post_autosave( $post_id );
 	$is_revision = wp_is_post_revision( $post_id );
 	$is_valid_nonce = ( isset( $_POST[ 'nonce' ] ) && wp_verify_nonce( $_POST[ 'nonce' ], 'nonce_event_action' ) ) ? 'true' : 'false';
-
+ 
 	// Exits script depending on save status
 	if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
 		return;
 	}
 
-	update_post_meta($post_id, '_event_start_date', $_POST['event-start-date']);
-	update_post_meta($post_id, '_event_end_date', $_POST['event-start-date']);
+	if(!empty($_POST['event-start-date'])) {
+		update_post_meta($post_id, '_event_start_date', $_POST['event-start-date']);
+		update_post_meta($post_id, '_event_end_date', $_POST['event-start-date']);
+	}
 	if(!empty($_POST['event-end-date'])) {
 		update_post_meta($post_id, '_event_end_date', $_POST['event-end-date']);
 	}
-	update_post_meta($post_id, '_event_location', $_POST['event-location']);
-	update_post_meta($post_id, '_event_venue', $_POST['event-venue']);
-	update_post_meta($post_id, '_event_url', $_POST['event-url']);
+	
+	if(!empty($_POST['event-location'])) {
+		update_post_meta($post_id, '_event_location', $_POST['event-location']);
+	}
+	if(!empty($_POST['event-venue'])) {
+		update_post_meta($post_id, '_event_venue', $_POST['event-venue']);
+	}
+	if(!empty($_POST['event-url'])) {
+		update_post_meta($post_id, '_event_url', $_POST['event-url']);
+	}
 }
 add_action('save_post', 'event_update_post_meta');
 

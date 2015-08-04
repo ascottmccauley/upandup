@@ -5,11 +5,11 @@
  * Taxonomy:
  * resource_category - hierarchical
  *
- *
+ * 
  * Meta:
  * thumbnail
  * _resource_media - int - attachment ID of downloadable resource
- *
+ * 
 **/
 
 // Register Post Type
@@ -21,13 +21,13 @@ function upandup_resource_register_post_types() {
 		'feeds'      => true,
 		'ep_mask'    => EP_PERMALINK,
 	));
-
+	
 	$supports = apply_filters('upandup_resource_post_type_supports', array(
 		'title',
 		'thumbnail',
 		'excerpt'
 	));
-
+	
 	$labels = apply_filters('upandup_resource_post_type_labels', array(
 		'name'               => __( 'Resources',                   'upandup' ),
 		'singular_name'      => __( 'Resource',                    'upandup' ),
@@ -43,7 +43,7 @@ function upandup_resource_register_post_types() {
 		'not_found_in_trash' => __( 'No resources found in trash', 'upandup' ),
 		'all_items'          => __( 'Resources',                   'upandup' ),
 	));
-
+	
 	$args = apply_filters('upandup_resource_post_type_args', array(
 		'description'         => '',
 		'public'              => true,
@@ -66,7 +66,7 @@ function upandup_resource_register_post_types() {
 		'supports'						=> $supports,
 		'labels'							=> $labels,
 	));
-
+	
 	register_post_type('resource', $args);
 }
 add_action( 'init', 'upandup_resource_register_post_types' );
@@ -79,7 +79,7 @@ function upandup_resource_register_taxonomies() {
 		'hierarchical' => true,
 		'ep_mask'      => EP_NONE
 	));
-
+	
 	$labels = apply_filters('upandup_resource_category_taxonomy_labels', array(
 		'name'                       => __( 'Resource Categories',                  				 'upandup' ),
 		'singular_name'              => __( 'Resource Category',                    				 'upandup' ),
@@ -100,7 +100,7 @@ function upandup_resource_register_taxonomies() {
 		'parent_item'                => null,
 		'parent_item_colon'          => null,
 	));
-
+	
 	$args = apply_filters('upandup_resource_category_taxonomy_args', array(
 		'public'            => true,
 		'show_ui'           => true,
@@ -112,7 +112,7 @@ function upandup_resource_register_taxonomies() {
 		'rewrite'						=> $rewrite,
 		'labels'						=> $labels,
 	));
-
+	
 	register_taxonomy('resource_category', array('resource'), $args);
 }
 add_action( 'init', 'upandup_resource_register_taxonomies' );
@@ -146,7 +146,7 @@ function upandup_resource_media_callback($post) {
 			} ?>
 		</div>
 		<p>
-			<input type="hidden" class="mediaID" id="mediaID" name="mediaID" value="<?php echo $resource_media; ?>" />
+			<input type="hidden" class="mediaID" id="mediaID" name="mediaID" value="<?php echo $resource_media; ?>" /> 
 			<input class="media-upload-button"  type="button" value="Choose File" />
 		</p>
 	</div>
@@ -158,12 +158,15 @@ function upandup_resource_update_post_meta($post_id) {
 	$is_autosave = wp_is_post_autosave( $post_id );
 	$is_revision = wp_is_post_revision( $post_id );
 	$is_valid_nonce = ( isset( $_POST[ 'upandup_nonce' ] ) && wp_verify_nonce( $_POST[ 'upandup_nonce' ], 'upandup_nonce_resource_action' ) ) ? 'true' : 'false';
-
+ 
 	// Exits script depending on save status
 	if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
 		return;
 	}
-	update_post_meta($post_id, '_resource_media', $_POST['mediaID']);
+		
+	if(isset($_POST['mediaID'])) {
+		update_post_meta($post_id, '_resource_media', $_POST['mediaID']);
+	}
 }
 add_action('save_post', 'upandup_resource_update_post_meta');
 
@@ -176,17 +179,17 @@ function upandup_resource_media_js() {
 	  	jQuery(document).ready(function($){
 	  	  // Uploading files
 	  	  var file_frame;
-
+	  	  
   	    jQuery('.media-upload-button').live('click', function( event ){
-
+  	  
 	      event.preventDefault();
-
+	  
 	      // If the media frame already exists, reopen it.
 	      if ( file_frame ) {
         file_frame.open();
         return;
 	      }
-
+	  
 	      // Create the media frame.
 	      file_frame = wp.media.frames.file_frame = wp.media({
         title: jQuery( this ).data( 'uploader_title' ),
@@ -195,7 +198,7 @@ function upandup_resource_media_js() {
         },
         multiple: false,  // Set to true to allow multiple files to be selected
 	      });
-
+	  
 	      // When an image is selected, run a callback.
 	      file_frame.on( 'select', function() {
 	        // We set multiple to false so only get one image from the uploader
@@ -206,13 +209,13 @@ function upandup_resource_media_js() {
 	        }else {
 	        	jQuery('.resource-media').html('<p><a class="media-upload-button" target="_blank" href=""><img src="'+ attachment.icon + '" /></a></p><p>Title: ' + attachment.title + '.' + attachment.subtype + '</p><p><a target="_blank" href="' + attachment.url + '">URL:</a> <input type="text" readonly onclick="this.select()" value="' + attachment.url + '" /></p>');
 	        }
-
+	  			
 	      });
-
+	  		
 	      file_frame.open();
   	  });
 	  });
-	 </script>
+	 </script> 
 	<?php }
 }
 add_action('admin_head', 'upandup_resource_media_js');
