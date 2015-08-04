@@ -15,13 +15,13 @@ function upandup_slide_register_post_types() {
 		'feeds'      => true,
 		'ep_mask'    => EP_PERMALINK,
 	));
-	
+
 	$supports = apply_filters('upandup_slide_post_type_supports', array(
 		'title',
 		'thumbnail',
 		'excerpt'
 	));
-	
+
 	$labels = apply_filters('upandup_slide_post_type_labels', array(
 		'name'               => __( 'Slides',                   'upandup' ),
 		'singular_name'      => __( 'Slide',                    'upandup' ),
@@ -37,7 +37,7 @@ function upandup_slide_register_post_types() {
 		'not_found_in_trash' => __( 'No slides found in trash', 'upandup' ),
 		'all_items'          => __( 'Slides',                   'upandup' ),
 	));
-	
+
 	$args = apply_filters('upandup_slide_post_type_args', array(
 		'description'         => '',
 		'public'              => true,
@@ -60,7 +60,7 @@ function upandup_slide_register_post_types() {
 		'supports'						=> $supports,
 		'labels'							=> $labels,
 	));
-	
+
 	register_post_type('slide', $args);
 }
 add_action( 'init', 'upandup_slide_register_post_types' );
@@ -73,7 +73,7 @@ function upandup_slide_register_taxonomies() {
 		'hierarchical' => false,
 		'ep_mask'      => EP_NONE
 	));
-	
+
 	$labels = apply_filters('upandup_slideshow_taxonomy_labels', array(
 		'name'                       => __( 'Slideshows',                  					'upandup' ),
 		'singular_name'              => __( 'Slideshow',                    				'upandup' ),
@@ -94,7 +94,7 @@ function upandup_slide_register_taxonomies() {
 		'parent_item'                => null,
 		'parent_item_colon'          => null,
 	));
-	
+
 	$args = apply_filters('upandup_slideshow_taxonomy_args', array(
 		'public'            => true,
 		'show_ui'           => true,
@@ -106,7 +106,7 @@ function upandup_slide_register_taxonomies() {
 		'rewrite'						=> $rewrite,
 		'labels'						=> $labels,
 	));
-	
+
 	register_taxonomy('slideshow', array('slide'), $args);
 }
 add_action( 'init', 'upandup_slide_register_taxonomies' );
@@ -130,7 +130,7 @@ function upandup_slide_url_callback($post) {
 	<div class="metabox">
 		<p>
 			<label>URL:</label>
-			<input type="url" class="slide-url" name="slide-url" value="<?php echo $slide_url; ?>" onblur="var validURL = this.value; if(!~validURL.indexOf('http') && validURL != '' && validURL != 'http://') { validURL ='http://' + validURL; } this.value = validURL;" /> 
+			<input type="url" class="slide-url" name="slide-url" value="<?php echo $slide_url; ?>" onblur="var validURL = this.value; if(!~validURL.indexOf('http') && validURL != '' && validURL != 'http://') { validURL ='http://' + validURL; } this.value = validURL;" />
 		</p>
 	</div>
 <?php }
@@ -141,13 +141,13 @@ function upandup_slide_update_post_meta( $post_id ) {
 	$is_autosave = wp_is_post_autosave( $post_id );
 	$is_revision = wp_is_post_revision( $post_id );
 	$is_valid_nonce = ( isset( $_POST[ 'upandup_nonce' ] ) && wp_verify_nonce( $_POST[ 'upandup_nonce' ], 'upandup_nonce_slide_action' ) ) ? 'true' : 'false';
- 
+
 	// Exits script depending on save status
 	if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
 		return;
 	}
 
-	if(!empty($_POST['slide-url'])) {
+	if( ! empty( $_POST['slide-url'] ) ) {
 		update_post_meta($post_id, '_slide_url', $_POST['slide-url']);
 	}
 }
