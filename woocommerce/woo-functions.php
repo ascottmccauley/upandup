@@ -270,7 +270,8 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 		if ( file_exists( $upload_path . '/products/' . $size . '/' . $sku . '.jpg' ) ) {
 				$img_url = $upload_url . '/products/' . $size . '/' . $sku . '.jpg';
 		} else {
-			$img_url = '';
+			// load placeholder image
+			$img_url = $upload_url . '/products/placeholder.jpg';
 		}
 	}
 
@@ -395,20 +396,15 @@ function upandup_woo_body_class( $classes ) {
 
 	if ( is_product_category() ) {
 		$current_category = $wp_query->get_queried_object();
+		// add 'parent' class for top-level categories
 		if ( $current_category->parent == 0 ) {
 			if ( ! woocommerce_products_will_display() ) {
 				$classes[] = 'parent';
 			}
 			$classes[] = $current_category->slug;
 		} else {
-			$categories = get_the_terms( $post->ID, 'product_cat' );
-			if ( is_array( $categories ) && ! empty( $categories ) ) {
-				foreach ( $categories as $category ) {
-					if ( $category->parent == 0 ) {
-						$classes[] = $category->slug;
-					}
-				}
-			}
+			$parent = get_term_by( 'term_taxonomy_id', $current_category->parent, $current_category->taxonomy );
+			$classes[] = $parent->slug;
 		}
 	}
 
@@ -444,14 +440,8 @@ function upandup_woo_html_class( $output ) {
 		if ( $current_category->parent == 0 && ! woocommerce_products_will_display() ) {
 			$output .= 'class="parent ' . $current_category->slug .'"';
 		} else {
-			$categories = get_the_terms( $post->ID, 'product_cat' );
-			if ( is_array( $categories ) && ! empty( $categories ) ) {
-				foreach ( $categories as $category ) {
-					if ( $category->parent == 0 ) {
-						$output .= 'class="' . $category->slug . '"';
-					}
-				}
-			}
+			$parent = get_term_by( 'term_taxonomy_id', $current_category->parent, $current_category->taxonomy );
+			$output .= 'class="' . $parent->slug . '"';
 		}
 	}
 
@@ -652,15 +642,17 @@ function upandup_woo_recent_products() {
 				array_push( $ordered_products, $item['product_id'] );
 			}
 		}
-	} ?>
-	<h2>Recently Ordered Products</h2>
-	<?php $ordered_products = array_unique( $ordered_products ); ?>
-	<ul class="column-3 ordered-products disc">
-		<?php foreach ( $ordered_products as $product_id ) {
-			echo '<li><a href="' . get_permalink($product_id) . '">' . get_the_title($product_id) . '</a></li>';
-		} ?>
-	</ul>
-<?php }
+		if( is_array( $ordered_products ) ) {
+			$ordered_products = array_unique( $ordered_products ); ?>
+			<h2>Recently Ordered Products</h2>
+			<ul class="column-3 ordered-products disc">
+				<?php foreach ( $ordered_products as $product_id ) {
+					echo '<li><a href="' . get_permalink($product_id) . '">' . get_the_title($product_id) . '</a></li>';
+				} ?>
+			</ul>
+		<?php }
+	}
+}
 add_action( 'woocommerce_before_my_account', 'upandup_woo_recent_products' );
 
 /************************
