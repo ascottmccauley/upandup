@@ -92,7 +92,12 @@ button, .button, input[type="submit"], a {
 		.column-#{$i} {
 			column-count: $i;
 			column-gap: 1rem;
-			list-style-position: inside;
+			li {
+				margin-left: 1rem;
+			}
+			* {
+				break-inside: avoid;
+			}
 		}
 	}
 }
