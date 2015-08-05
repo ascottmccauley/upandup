@@ -6,6 +6,11 @@
  */
 ?>
 <?php
+// Rebuild search index regularly
+if ( ! wp_next_scheduled( 'relevanssi_build_index' ) ) {
+	wp_schedule_event( time(), 'daily', 'relevanssi_build_index' );
+}
+
 // Shortcodes
 $shortcodes = scandir( get_stylesheet_directory()  . '/includes/shortcodes' );
 // Remove '.' and '..' from array
