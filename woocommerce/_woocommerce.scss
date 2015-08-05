@@ -23,7 +23,7 @@ html, body {
 				cursor: $cursor-default-value;
 				color: $crumb-font-color-current;
 			}
-			
+
 			&:hover, &:hover a,
 			&:focus, &:focus a { text-decoration: none; }
 		}
@@ -209,10 +209,10 @@ li.product {
 			}
 			&:hover {
 				h5 {
-					transform: translateY(-300%);	
+					transform: translateY(-300%);
 				}
 				&::before {
-					bottom: -2px;	
+					bottom: -2px;
 				}
 			}
 		}
@@ -223,7 +223,7 @@ li.product {
 				transform: translateY(-300%);
 			}
 			&~.product-info a::before {
-				bottom: 0;	
+				bottom: 0;
 			}
 		}
 	}
@@ -231,7 +231,7 @@ li.product {
 		display: none;
 	}
 	a.product_type_grouped {
-		display: none;	
+		display: none;
 	}
 	.add_to_cart_button {
 		backface-visibility: hidden;
@@ -265,10 +265,10 @@ li.product {
 		}
 		&:hover {
 			h5 {
-				transform: translateY(300%);	
+				transform: translateY(300%);
 			}
 			&::before {
-				top: 0;	
+				top: 0;
 			}
 		}
 	}
@@ -359,7 +359,7 @@ li.product.product_cat-replacement-chains {
 	}
 }
 .zoom:hover {
-	background-size: 200%;
+	background-size: 130%;
 }
 form.cart  {
 	.quantity {
@@ -369,7 +369,7 @@ form.cart  {
 		@include button-size($padding:$button-tny);
 	}
 	h4 {
-		clear: both;	
+		clear: both;
 	}
 }
 
@@ -420,17 +420,17 @@ form.cart  {
 	// Empty Cart Button
 	.empty-cart-button {
 		&::before {
-			content: $fa-var-trash;	
+			content: $fa-var-trash;
 		}
 		&::after {
 			content: $fa-var-warning;
 		}
 	}
-	
+
 	// Update Cart Button
 	.update-cart-button {
 		&::before, &::after {
-			content: $fa-var-refresh;	
+			content: $fa-var-refresh;
 		}
 		&:hover::after {
 			content: $fa-var-refresh;
@@ -440,10 +440,10 @@ form.cart  {
 			-o-transition: rotate(3600deg);
 		}
 	}
-	
+
 	// Checkout Button
 	.checkout-button {
-		
+
 	}
 }
 
@@ -538,7 +538,7 @@ form.cart  {
 		height: 100%;
 		margin: 0;
 		&:hover {
-			background: rgba(0,0,0,.1);	
+			background: rgba(0,0,0,.1);
 		}
 		&.wc-backward {
 			float: left;
