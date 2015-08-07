@@ -1423,9 +1423,9 @@ $input-placeholder-font-color: black;
 // $topbar-link-hover-lightness: -10%; // Darken by 10%
  $topbar-link-bg: transparent;
  $topbar-link-bg-color-hover: $secondary-color;
- $topbar-link-bg-hover: $secondary-color;
+ $topbar-link-bg-hover: $primary-color;
  $topbar-link-bg-active: $secondary-color;
- $topbar-link-bg-active-hover: scale-color($topbar-link-bg-active, $lightness: -20%);
+ $topbar-link-bg-active-hover: $topbar-link-bg-hover;
 // $topbar-link-font-family: $body-font-family;
 // $topbar-link-text-transform: none;
  $topbar-link-padding: $topbar-height / 3;
@@ -1438,7 +1438,9 @@ $input-placeholder-font-color: black;
 // Style the top bar dropdown elements
  $topbar-dropdown-bg: transparent;
  $topbar-dropdown-link-color: $topbar-link-color-hover;
+ $topbar-dropdown-link-color-hover: $topbar-link-color-hover;
  $topbar-dropdown-link-bg: $topbar-link-bg-color-hover;
+ $topbar-dropdown-link-bg-hover: $topbar-link-bg-hover;
 // $topbar-dropdown-link-weight: $font-weight-normal;
 // $topbar-dropdown-toggle-size: 5px;
  $topbar-dropdown-toggle-color: $topbar-link-color;
