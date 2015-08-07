@@ -19,6 +19,13 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
 <form class="cart" method="post" enctype='multipart/form-data'>
 	<table cellspacing="0" class="group_table">
+		<thead>
+			<tr>
+				<th colspan="2" class="label text-center"><label for="qty_all">Complete Set Of <?php echo count( $grouped_products ); ?></label></th>
+				<th><input class="qty-all" name="qty-all" type="number" value="0"></th>
+				<th><button type="submit" class="group_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button></th>
+			</tr>
+		</thead>
 		<tbody>
 			<?php
 				foreach ( $grouped_products as $product_id ) :
@@ -50,7 +57,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 							<?php else : ?>
 								<?php
 									$quantites_required = true;
-									woocommerce_quantity_input( array( 'input_name' => 'quantity[' . $product_id . ']', 'input_value' => '0', 'min_value' => apply_filters( 'woocommerce_quantity_input_min', 0, $product ), 'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product ) ) );
+									woocommerce_quantity_input( array( 'input_name' => 'quantity[' . $product_id . ']', 'input_value' => apply_filters( 'woocommerce_quantity_input_min', 0, $product ), 'min_value' => apply_filters( 'woocommerce_quantity_input_min', 0, $product ), 'max_value' => apply_filters( 'woocommerce_quantity_input_max', $product->backorders_allowed() ? '' : $product->get_stock_quantity(), $product ) ) );
 								?>
 							<?php endif; ?>
 						</td>
@@ -85,7 +92,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
 		<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
 
-		<button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
+		<button type="submit" class="group_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
 
 		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
 

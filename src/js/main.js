@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 			jQuery('#commentform #submit').attr('disabled', true);
 		}
 	});
-	
+
 	// Magnific Popup Lightbox
 	jQuery('.gallery').each(function() { // the containers for all your galleries
 		jQuery(this).magnificPopup({
@@ -84,12 +84,12 @@ jQuery(document).ready(function() {
 			focus: ''
 		});
 	});
-	
+
 	// Slideshows
 	jQuery('.slideshow').each(function() {
 		jQuery(this).slick({ infinite: true, speed: 300, fade: true, slidesToShow: 1, autoplay: true, autoplaySpeed: 5000, arrows: false });
 	});
-	
+
 	// Sticky Footer
 	function stickyFooter() {
 		var footer = jQuery('#footer');
@@ -108,11 +108,19 @@ jQuery(document).ready(function() {
 	jQuery(window).on("resize", stickyFooter);
 	setTimeout(stickyFooter, 3000); //kludge
 	stickyFooter();
-	
+
 	// Collapsible Lists
 	jQuery('dt').on('click', function() {
 		jQuery(this).toggleClass('collapse');
 		jQuery(this).siblings('dd').slideToggle();
 	});
-	
+
+  // Quantity changer
+  jQuery('.qty-all').on('input', function() {
+    jQuery('.qty').val(jQuery(this).val());
+  });
+
+  // Change footer 'copyrights' to '©' + date.
+  var currentYear = (new Date).getFullYear();
+  jQuery('.menu-copyrights a').text('© ' + currentYear);
 });
