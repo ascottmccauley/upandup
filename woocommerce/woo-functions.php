@@ -159,7 +159,8 @@ function upandup_woo_add_to_nav( $items, $args ) {
 			);
 			$categories = wp_list_categories( $args );
 			$shop_link = '<a href="' . get_permalink( woocommerce_get_page_id( 'shop' ) ) . '">Products</a>';
-			$items = '<li class="has-dropdown">' . $shop_link . '<ul class="dropdown">' . $categories . '</ul></li>' . $items;
+			$active = is_woocommerce() ? ' active': '';
+			$items = '<li class="has-dropdown' . $active . '">' . $shop_link . '<ul class="dropdown">' . $categories . '</ul></li>' . $items;
 		}
 	}
 
@@ -170,7 +171,8 @@ function upandup_woo_add_to_nav( $items, $args ) {
 			$items .= '<li class="search has-form">' . get_product_search_form( $echo = false ) . '</li>';
 
 			// Add Login/Account Link
-			$items .= '<li class="account has-dropdown"><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '">Account</a><ul class="dropdown"><li><a href="' . wp_logout_url( home_url() ) . '">Log Out</a></li></ul></li>';
+			$items .= '<li class="account"><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '">Account</a></li>';
+			$items .= '<li><a href="' . wp_logout_url( home_url() ) . '">Log Out</a></li>';
 		}
 
 		// Add Minicart Link
@@ -548,7 +550,7 @@ function upandup_woo_add_to_cart_text() {
 			return __( 'Buy', 'woocommerce' );
 			break;
 		case 'grouped':
-			return __( 'Select Product(s)', 'woocommerce' );
+			return __( 'Buy', 'woocommerce' );
 			break;
 		case 'simple':
 			return __( 'Buy', 'woocommerce' );
