@@ -626,6 +626,9 @@ function custom_override_checkout_fields( $fields ) {
 }
 add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 
+/************************
+ * account page
+************************/
 function upandup_woo_recent_products() {
 	// get recent orders
 	$customer_orders = get_posts( apply_filters( 'woocommerce_my_account_my_orders_query', array(
@@ -647,11 +650,23 @@ function upandup_woo_recent_products() {
 		if( is_array( $ordered_products ) ) {
 			$ordered_products = array_unique( $ordered_products ); ?>
 			<h2>Recently Ordered Products</h2>
-			<ul class="column-3 ordered-products disc">
+			<table>
 				<?php foreach ( $ordered_products as $product_id ) {
-					echo '<li><a href="' . get_permalink($product_id) . '">' . get_the_title($product_id) . '</a></li>';
-				} ?>
-			</ul>
+					$product_data = get_post( $product_id );
+					if ( 'product' !== $product_data->post_type ) {
+						continue;
+					}
+					$_product = wc_get_product( $product_data ); ?>
+					<tr>
+						<td>
+							<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
+						</td>
+						<td>
+							<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
+						</td>
+					</tr>
+				<?php } ?>
+			</table>
 		<?php }
 	}
 }
@@ -695,16 +710,15 @@ function relevanssi_remove_punct_not_numbers( $a ) {
 	$a = str_replace("–", ' ', $a);
 	$a = str_replace("×", ' ', $a);
 
-        $a = preg_replace('/((?!(\.\d)):punct:)+/u', ' ', $a);
+  $a = preg_replace('/((?!(\.\d)):punct:)+/u', ' ', $a);
 	//$a = preg_replace('/:punct:+/u', ' ', $a);
-        $a = preg_replace('/:space:+/', ' ', $a);
+  $a = preg_replace('/:space:+/', ' ', $a);
 	$a = trim($a);
 
         return $a;
 }
 
 if ( function_exists( 'relevanssi_remove_punct' ) ) {
-
 	remove_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct');
 	add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct_not_numbers');
 
