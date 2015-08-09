@@ -20,6 +20,7 @@ $order = wc_get_order( $order_id );
 		<tr>
 			<th class="product-name"><?php _e( 'Product', 'woocommerce' ); ?></th>
 			<th class="product-total"><?php _e( 'Total MSRP', 'woocommerce' ); ?></th>
+			<th class="prodct-reorder"><?php _e( 'Reorder', 'woocommerce' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -69,6 +70,9 @@ $order = wc_get_order( $order_id );
 						</td>
 						<td class="product-total">
 							<?php echo $order->get_formatted_line_subtotal( $item ); ?>
+						</td>
+						<td class="product-reorder">
+							<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
 						</td>
 					</tr>
 					<?php
