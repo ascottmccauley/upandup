@@ -1441,6 +1441,8 @@ $input-placeholder-font-color: black;
  $topbar-dropdown-link-color-hover: $topbar-link-color-hover;
  $topbar-dropdown-link-bg: $topbar-link-bg-color-hover;
  $topbar-dropdown-link-bg-hover: $topbar-link-bg-hover;
+ $topbar-dropdown-link-bg-active: $topbar-link-bg-hover;
+ $topbar-dropdown-link-bg-active-hover: scale-color($topbar-dropdown-link-bg-active, $lightness: -10%);
 // $topbar-dropdown-link-weight: $font-weight-normal;
 // $topbar-dropdown-toggle-size: 5px;
  $topbar-dropdown-toggle-color: $topbar-link-color;
