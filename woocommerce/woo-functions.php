@@ -139,8 +139,8 @@ remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20, 
 // Add login/account and mini-cart to secondary-navbar and product categories to primary-navbar
 function upandup_woo_add_to_nav( $items, $args ) {
 
-	$menu_object = groundup_get_menu_object( $args->menu );
-	
+	$menu_object = wp_get_nav_menu_object( $args->menu );
+
 	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
 			$items .= '<li class="login"><a href="' . wp_login_url( urlencode( get_permalink( wc_get_page_id( 'shop' ) ) ) ) . '">Log In</a></li>';

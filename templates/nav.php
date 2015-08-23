@@ -15,8 +15,12 @@ if ( ! wp_is_mobile() ) { ?>
 				<section class="top-bar-section">
 					<?php wp_nav_menu( array(
 						'menu' => $menu_object->term_id,
+						'link_before' => '',
+						'before' => '',
+						'after' => '',
 						'menu_class' => 'right',
-						// 'walker'=> new Upandup_Topbar_Walker,
+						'walker'=> new Upandup_Topbar_Walker,
+						'fallback_cb' => '',
 					) ); ?>
 				</section>
 			</nav>
@@ -34,9 +38,13 @@ if ( ! wp_is_mobile() ) { ?>
 				$menu_object = groundup_get_menu_object( 'Primary' );
 				wp_nav_menu( array(
 					'menu' => $menu_object->term_id,
+					'link_before' => '',
+					'before' => '',
+					'after' => '',
 					'container' => false,
 					'menu_class' => 'left',
-					// 'walker'=> new Upandup_Topbar_Walker,
+					'walker'=> new Upandup_Topbar_Walker,
+					'fallback_cb' => '',
 				) ); ?>
 			</section>
 		</nav>

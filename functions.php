@@ -63,7 +63,7 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 		$output .= "\n<ul class='dropdown'>\n";
 	}
 
-	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
+	function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
 		$item_html = '';
 		parent::start_el( $item_html, $item, $depth, $args, $id = 0 );
 
@@ -78,15 +78,9 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 	}
 
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
-		$element->is_dropdown = ! empty( $children_elements[$element->ID] );
-
-		if ( $element->is_dropdown ) {
-			if ( $depth === 0 ) {
-				$element->classes[] = 'has-dropdown';
-			}elseif ( $depth === 1 ) {
-				$element->classes[] = 'has-dropdown';
-			}
-		}
+		$element->has_children = ! empty( $children_elements[ $element->ID ] );
+		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-dropdown' : '';
+		$element->classes[] = ( $element->current || $element->current_item_ancestor ) ? 'active' : '';
 		if ( $element->current || $element->current_item_ancestor ) {
 			$element->classes[] = 'active';
 		}
@@ -107,7 +101,7 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 
 	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 		$item_html = '';
-		parent::start_el( $item_html, $item, $depth, $args, $id = 0 );
+		parent::start_el( $output, $item, $depth, $args, $id );
 
 		if ( stristr( $item_html, 'li class="divider' ) ) {
 			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
@@ -119,19 +113,13 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 	}
 
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
-		$element->is_dropdown = ! empty( $children_elements[$element->ID] );
-
-		if ( $element->is_dropdown ) {
-			if ( $depth === 0 ) {
-				$element->classes[] = 'has-submenu';
-			}elseif ( $depth === 1 ) {
-				$element->classes[] = 'has-submenu';
-			}
-		}
+		$element->has_children = ! empty( $children_elements[ $element->ID ] );
+		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-dropdown' : '';
+		$element->classes[] = ( $element->current || $element->current_item_ancestor ) ? 'active' : '';
 		if ( $element->current || $element->current_item_ancestor ) {
 			$element->classes[] = 'active';
 		}
-		parent::display_element($element, $children_elements, $max_depth, $depth, $args, $output);
+		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
 	}
 }
 
