@@ -115,8 +115,8 @@ do_action( 'woocommerce_before_cart' ); ?>
 					</div>
 				<?php } ?>
 				<a class="button warning empty-cart-button" href="<?php echo $woocommerce->cart->get_cart_url(); ?>?empty-cart"><?php _e( 'Empty Cart', 'woocommerce' ); ?></a>
-				<button type="submit" class="button info update-cart-button" name="update_cart"><?php _e( 'Update Cart', 'woocommerce' ); ?></button>
-				
+				<button type="submit" class="button info update-cart-button button" name="update_cart" value="<?php esc_attr_e( 'Update Cart', 'woocommerce' ); ?>"><?php _e( 'Update Cart', 'woocommerce' ); ?></button>
+
 				<?php do_action( 'woocommerce_cart_actions' ); ?>
 
 				<?php wp_nonce_field( 'woocommerce-cart' ); ?>
