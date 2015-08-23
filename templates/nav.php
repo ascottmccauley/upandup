@@ -9,15 +9,14 @@
 if ( ! wp_is_mobile() ) { ?>
 	<div class="sticky hide-for-small">
 		<?php // See if secondary_menu has any items
-		$locations = get_nav_menu_locations();
-		$menu_object = get_term( $locations['secondary'], 'nav_menu' );
-		if ( $menu_object->count != 0 || is_user_logged_in() ) { ?>
+		$menu_object = groundup_get_menu_object( 'Secondary' );
+		if ( $menu_object->count > 0 || is_user_logged_in() ) { ?>
 			<nav id="secondary-navigation" class="second-bar top-bar" role="navigation" data-topbar>
 				<section class="top-bar-section">
 					<?php wp_nav_menu( array(
-						'theme_location' => 'secondary',
+						'menu' => $menu_object->term_id,
 						'menu_class' => 'right',
-						'walker'=> new Upandup_Topbar_Walker,
+						// 'walker'=> new Upandup_Topbar_Walker,
 					) ); ?>
 				</section>
 			</nav>
@@ -31,11 +30,13 @@ if ( ! wp_is_mobile() ) { ?>
 		} ?>
 		<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
 			<section class="top-bar-section">
-				<?php wp_nav_menu( array(
-					'theme_location' => 'primary',
+				<?php
+				$menu_object = groundup_get_menu_object( 'Primary' );
+				wp_nav_menu( array(
+					'menu' => $menu_object->term_id,
 					'container' => false,
 					'menu_class' => 'left',
-					'walker'=> new Upandup_Topbar_Walker,
+					// 'walker'=> new Upandup_Topbar_Walker,
 				) ); ?>
 			</section>
 		</nav>
