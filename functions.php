@@ -53,73 +53,50 @@ function upandup_wrapper_end() {
 add_action( 'wp_footer', 'upandup_wrapper_end', 999 );
 
 // Top Bar walker
-// Creates a new walker for the `primary` menu to follow the default styling for Zurb Foundation's top bar
 class Upandup_Topbar_Walker extends Walker_Nav_Menu {
-	function check_current( $classes ) {
-		return preg_match( '/(current[-_])|active|dropdown/', $classes );
-	}
-
-	function start_lvl( &$output, $depth = 0, $args = array() ) {
-		$output .= "\n<ul class='dropdown'>\n";
-	}
-
-	function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
-		$item_html = '';
-		parent::start_el( $item_html, $item, $depth, $args, $id = 0 );
-
-		if ( stristr( $item_html, 'li class="divider' ) ) {
-			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
-		}elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
-			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
-		}
-
-		$output .= $item_html;
-
-	}
-
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 		$element->has_children = ! empty( $children_elements[ $element->ID ] );
-		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-dropdown' : '';
 		$element->classes[] = ( $element->current || $element->current_item_ancestor ) ? 'active' : '';
-		if ( $element->current || $element->current_item_ancestor ) {
-			$element->classes[] = 'active';
-		}
+		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-dropdown' : '';
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
+	}
+	function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+		$item_html = '';
+		parent::start_el( $item_html, $object, $depth, $args );
+		// $output .= ( 0 == $depth ) ? '<li class="divider"></li>' : '';
+		$classes = empty( $object->classes ) ? array() : (array) $object->classes;
+		if ( in_array( 'label', $classes ) ) {
+			// $output .= '<li class="divider"></li>';
+			$item_html = preg_replace( '/<a[^>]*>(.*)<\/a>/iU', '<label>$1</label>', $item_html );
+		}
+	if ( in_array( 'divider', $classes ) ) {
+		$item_html = preg_replace( '/<a[^>]*>( .* )<\/a>/iU', '', $item_html );
+	}
+		$output .= $item_html;
+	}
+	function start_lvl( &$output, $depth = 0, $args = array() ) {
+		$output .= "\n<ul class=\"sub-menu dropdown\">\n";
 	}
 }
 
-// Off Canvas walker
-// Creates a new walker for the `mobile` menu to follow the default styling for Zurb Foundation's off-canvas menu
 class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
-	function check_current($classes) {
-		return preg_match( '/(current[-_])|active|dropdown/', $classes );
-	}
-
-	function start_lvl( &$output, $depth = 0, $args = array() ) {
-		$output .= "\n<ul class='right-submenu'>\n<li class='back'><a href='#'>Back</a></li>\n";
-	}
-
-	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
-		$item_html = '';
-		parent::start_el( $output, $item, $depth, $args, $id );
-
-		if ( stristr( $item_html, 'li class="divider' ) ) {
-			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
-		}elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
-			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
-		}
-
-		$output .= $item_html;
-	}
-
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 		$element->has_children = ! empty( $children_elements[ $element->ID ] );
-		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-dropdown' : '';
 		$element->classes[] = ( $element->current || $element->current_item_ancestor ) ? 'active' : '';
-		if ( $element->current || $element->current_item_ancestor ) {
-			$element->classes[] = 'active';
-		}
+		$element->classes[] = ( $element->has_children && 1 !== $max_depth ) ? 'has-submenu' : '';
 		parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
+	}
+	function start_el( &$output, $object, $depth = 0, $args = array(), $current_object_id = 0 ) {
+		$item_html = '';
+		parent::start_el( $item_html, $object, $depth, $args );
+		$classes = empty( $object->classes ) ? array() : (array) $object->classes;
+		if ( in_array( 'label', $classes ) ) {
+			$item_html = preg_replace( '/<a[^>]*>(.*)<\/a>/iU', '<label>$1</label>', $item_html );
+		}
+		$output .= $item_html;
+	}
+	function start_lvl( &$output, $depth = 0, $args = array() ) {
+		$output .= "\n<ul class=\"left-submenu\">\n<li class=\"back\"><a href=\"#\">". __( 'Back', 'upandup' ) ."</a></li>\n";
 	}
 }
 
