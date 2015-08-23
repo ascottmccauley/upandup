@@ -59,21 +59,22 @@ class Upandup_Topbar_Walker extends Walker_Nav_Menu {
 		return preg_match( '/(current[-_])|active|dropdown/', $classes );
 	}
 
-	function start_lvl(&$output, $depth = 0, $args = array()) {
+	function start_lvl( &$output, $depth = 0, $args = array() ) {
 		$output .= "\n<ul class='dropdown'>\n";
 	}
 
-	function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0) {
+	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 		$item_html = '';
-		parent::start_el( $item_html, $item, $depth, $args );
+		parent::start_el( $item_html, $item, $depth, $args, $id = 0 );
 
 		if ( stristr( $item_html, 'li class="divider' ) ) {
-			$item_html = preg_replace( '/<a[^>]*>.*?<\/a>/iU', '', $item_html );
-		} elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
-			$item_html = preg_replace( '/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
+			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
+		}elseif ( stristr( $item_html, 'li class="nav-header' ) ) {
+			$item_html = preg_replace('/<a[^>]*>(.*)<\/a>/iU', '$1', $item_html );
 		}
 
 		$output .= $item_html;
+
 	}
 
 	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
@@ -106,7 +107,7 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 
 	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 		$item_html = '';
-		parent::start_el( $item_html, $item, $depth, $args );
+		parent::start_el( $item_html, $item, $depth, $args, $id = 0 );
 
 		if ( stristr( $item_html, 'li class="divider' ) ) {
 			$item_html = preg_replace('/<a[^>]*>.*?<\/a>/iU', '', $item_html );
@@ -158,17 +159,10 @@ function upandup_offcanvas_footer_menu () {
 	echo '<a class="exit-off-canvas"></a>';
 	echo '<aside class="right-off-canvas-menu">';
 
-	$locations = get_nav_menu_locations();
-	$menu_object = get_term( $locations['mobile'], 'nav_menu' );
-	if ( $menu_object->count != 0 ) {
+	$menu_object = groundup_get_menu_object( 'Mobile' ) ?: groundup_get_menu_object( 'Primary' );
+	if ( $menu_object->count > 0 ) {
 		wp_nav_menu( array(
-			'theme_location' => 'mobile',
-			'menu_class' => 'off-canvas-list',
-			'walker'=> new Upandup_Offcanvas_Walker,
-		) );
-	} else {
-		wp_nav_menu( array(
-			'theme_location' => 'primary',
+			'menu' => $menu_object->term_id,
 			'menu_class' => 'off-canvas-list',
 			'walker'=> new Upandup_Offcanvas_Walker,
 		) );
