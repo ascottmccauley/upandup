@@ -15,9 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function upandup_shop_private() {
 	if ( ! is_user_logged_in() ) {
 		if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
-			$redirect = urlencode( $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
-			// wp_redirect( wp_login_url( $redirect ) );
-			wp_redirect( wp_login_url() ); // eliminate redirect for now.
+			$redirect = home_url() . $_SERVER["REQUEST_URI"];
+			wp_redirect( wp_login_url( $redirect ) );
 			exit;
 		}
 	}
@@ -143,7 +142,7 @@ function upandup_woo_add_to_nav( $items, $args ) {
 
 	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
-			$items .= '<li class="login"><a href="' . wp_login_url( urlencode( get_permalink( wc_get_page_id( 'shop' ) ) ) ) . '">Log In</a></li>';
+			$items .= '<li class="login"><a href="' . wp_login_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">Log In</a></li>';
 		} else {
 			$args = array(
 				'taxonomy' => 'product_cat',
@@ -648,24 +647,26 @@ function upandup_woo_recent_products() {
 		}
 		if( is_array( $ordered_products ) ) {
 			$ordered_products = array_unique( $ordered_products ); ?>
-			<h2>Recently Ordered Products</h2>
-			<table>
-				<?php foreach ( $ordered_products as $product_id ) {
-					$product_data = get_post( $product_id );
-					if ( 'product' !== $product_data->post_type ) {
-						continue;
-					}
-					$_product = wc_get_product( $product_data ); ?>
-					<tr>
-						<td>
-							<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
-						</td>
-						<td>
-							<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
-						</td>
-					</tr>
-				<?php } ?>
-			</table>
+			<div class="medium-6 columns">
+				<h2>Recent Products</h2>
+				<table>
+					<?php foreach ( $ordered_products as $product_id ) {
+						$product_data = get_post( $product_id );
+						if ( 'product' !== $product_data->post_type ) {
+							continue;
+						}
+						$_product = wc_get_product( $product_data ); ?>
+						<tr>
+							<td>
+								<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
+							</td>
+							<td>
+								<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
+							</td>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
 		<?php }
 	}
 }

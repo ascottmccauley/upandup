@@ -1,6 +1,6 @@
 <?php
 /**
- * Template for the resource_category taxonomy "Lead Tests"
+ * Template for the resource_category taxonomy "Product Tests"
  *
  * Includes a searchbar at the top that only searches lead-tests
  * Searches through the UPLOADS/lead-tests/ dir for all .pdfs and lists them
@@ -13,9 +13,8 @@
  ?>
 <?php // only available for logged in users
 if ( ! is_user_logged_in() ) {
- $redirect = urlencode( $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
- // wp_redirect( wp_login_url( $redirect ) );
- wp_redirect( wp_login_url() ); // eliminate redirect for now.
+  $redirect = home_url() . $_SERVER["REQUEST_URI"];
+  wp_redirect( wp_login_url( $redirect ) );
  exit;
 } ?>
 <?php // check $_GET[] for a specific lead-test to search for
