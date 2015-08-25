@@ -314,8 +314,6 @@ add_filter( 'woocommerce_subcategory_count_html', function() { return false; } )
 remove_action( 'woocommerce_before_shop_loop','woocommerce_result_count', 20);
 // Remove Catalog Ordering
 remove_action( 'woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30);
-// Remove Rating
-remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
 
 // Replace Category Thumbnail
 remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
@@ -376,7 +374,12 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 // Replace thumbnail function
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+// Remove Rating
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+// Remove Price
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 
+// Add thumbnail first
 function upandup_woo_template_loop_product_thumbnail() {
 	global $post;
 	global $product;
@@ -388,7 +391,29 @@ function upandup_woo_template_loop_product_thumbnail() {
 		echo '<a href="' . get_the_permalink() . '" class="square-thumb placeholder" style="background: white;"></a>';
 	}
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
+add_action( 'woocommerce_before_shop_loop_item', 'upandup_woo_template_loop_product_thumbnail', 10 );
+
+// Add product info wrapper
+function upandup_before_shop_loop_item() {
+	echo '<div class="product-info">';
+}
+add_action( 'woocommerce_before_shop_loop_item', 'upandup_before_shop_loop_item', 20 );
+
+function upandup_after_shop_loop_item() {
+	echo '</div>';
+}
+add_action( 'woocommerce_after_shop_loop_item', 'upandup_after_shop_loop_item', 5 );
+
+// remove .button class from "BUY" link and wrapp it in an <h3>
+function upandup_woo_loop_add_to_cart_link( $add_to_cart_text, $product ) {
+  $add_to_cart_text = str_replace( '">', '"><h3>', $add_to_cart_text );
+	$add_to_cart_text = str_replace( '</a>', '</h3></a>', $add_to_cart_text );
+	$add_to_cart_text = str_replace( '"button ', '"', $add_to_cart_text );
+	return $add_to_cart_text;
+};
+
+// add the filter
+add_filter( 'woocommerce_loop_add_to_cart_link', 'upandup_woo_loop_add_to_cart_link', 10, 2 );
 
 // Add parent category to body class
 // Add 'parent' class if only 1 category exists
