@@ -121,6 +121,19 @@ add_filter( 'groundup_sidebars', 'upandup_woo_sidebars' );
 update_option( 'woocommerce_lock_down_admin', 'yes' );
 
 /************************
+ * text changes
+************************/
+function upandup_woo_gettext( $translated_text, $text, $domain ) {
+	switch ( $translated_text ) {
+		case 'Price' :
+			$translated_text = __( 'MSRP', 'woocommerce' );
+			break;
+	}
+	return $translated_text;
+}
+add_filter( 'gettext', 'upandup_woo_gettext', 20, 3 );
+
+/************************
  * global
 ************************/
 // Change WooCommerce wrappers
@@ -718,6 +731,27 @@ function relevanssi_remove_punct_not_numbers( $a ) {
         return $a;
 }
 
+/************************
+ * Emails
+************************/
+
+// Add account number to customer details in emails
+function upandup_woo_email_customer_details_fields( $fields, $sent_to_admin, $order ) {
+	$user = get_user_by( 'id', $order->customer_user );
+	$account = array(
+		'label' => __( 'Account', 'upandup' ),
+		'value' => wptexturize( $user->user_login ),
+	);
+	// Add account to beginning of associative array
+	$fields = array( 'account' => $account ) + $fields;
+	return $fields;
+}
+add_filter( 'woocommerce_email_customer_details_fields', 'upandup_woo_email_customer_details_fields', 5, 3 );
+
+/************************
+ * Hacks
+************************/
+// Have relevanssi work with products starting with a decimal
 if ( function_exists( 'relevanssi_remove_punct' ) ) {
 	remove_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct');
 	add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct_not_numbers');
