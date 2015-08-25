@@ -141,7 +141,9 @@ body.pre-teen.parent ul.products {
 			}
 		}
 	}
-	h4 {
+	h3 {
+		background: inherit;
+		border: inherit;
 		font-size: $h5-font-size;
 		padding-top: .5em; // prevent image overlap
 		position: relative;
@@ -152,10 +154,10 @@ body.pre-teen.parent ul.products {
 }
 
 body.shop .product-category {
-	&.adults a, &.adults h4 { background: $grey; border-color: $grey; }
-	&.childrens a, &.childrens h4 { background: $pink; border-color: $pink; }
-	&.pre-teen a, &.pre-teen h4 { background: $purple; border-color: $purple; }
-	&.replacement-chains a, &.replacement-chains h4 { background: $green; border-color: $green; }
+	&.adults a { background: $grey; border-color: $grey; }
+	&.childrens a { background: $pink; border-color: $pink; }
+	&.pre-teen a { background: $purple; border-color: $purple; }
+	&.replacement-chains a { background: $green; border-color: $green; }
 }
 
 

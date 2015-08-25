@@ -28,7 +28,7 @@ if ( empty( $woocommerce_loop['columns'] ) ) {
 // Increase loop count
 $woocommerce_loop['loop'] ++;
 ?>
-<li <?php wc_product_cat_class(); ?>>
+<li <?php wc_product_cat_class( $category->slug ); ?>>
 	<?php do_action( 'woocommerce_before_subcategory', $category ); ?>
 
 	<a href="<?php echo get_term_link( $category->slug, 'product_cat' ); ?>">
