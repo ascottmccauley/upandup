@@ -6,6 +6,9 @@
  */
 ?>
 <?php
+// correct path to /media folder
+update_option( 'upload_path', str_replace( '/wp/', '/', ABSPATH ) . 'media' );
+
 // Rebuild search index regularly
 if ( ! wp_next_scheduled( 'relevanssi_build_index' ) ) {
 	wp_schedule_event( time(), 'daily', 'relevanssi_build_index' );
@@ -124,7 +127,11 @@ function upandup_offcanvas_footer_menu () {
 	echo '<a class="exit-off-canvas"></a>';
 	echo '<aside class="right-off-canvas-menu">';
 
-	$menu_object = groundup_get_menu_object( 'Mobile' ) ?: groundup_get_menu_object( 'Primary' );
+	$menu_object = groundup_get_menu_object( 'Mobile' );
+	// Use 'primary' as a fallback if 'mobile' menu is empty
+	if ( ! $menu_object->count > 0 ) {
+		$menu_object =  groundup_get_menu_object( 'Primary' );
+	}
 	if ( $menu_object->count > 0 ) {
 		wp_nav_menu( array(
 			'menu' => $menu_object->term_id,
@@ -135,6 +142,26 @@ function upandup_offcanvas_footer_menu () {
 	echo '</aside>';
 }
 add_action( 'wp_footer', 'upandup_offcanvas_footer_menu' );
+
+// Add Favicons
+function upandup_favicons() {
+	$img_dir = get_stylesheet_directory_uri() . '/assets/img/'; ?>
+	<link rel="apple-touch-icon" sizes="57x57" href="<?php echo $img_dir; ?>apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="<?php echo $img_dir; ?>apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="<?php echo $img_dir; ?>apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="<?php echo $img_dir; ?>apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="<?php echo $img_dir; ?>apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="<?php echo $img_dir; ?>apple-touch-icon-120x120.png">
+	<link rel="icon" type="image/png" href="<?php echo $img_dir; ?>favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="<?php echo $img_dir; ?>favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="<?php echo $img_dir; ?>favicon-16x16.png" sizes="16x16">
+	<link rel="manifest" href="<?php echo $img_dir; ?>manifest.json">
+	<meta name="apple-mobile-web-app-title" content="Marathon">
+	<meta name="application-name" content="Marathon">
+	<meta name="msapplication-TileColor" content="#686158">
+	<meta name="theme-color" content="#686158">
+<?php }
+add_action( 'wp_head', 'upandup_favicons' );
 
 // Add Extra Logos to #footer
 function upandup_extra_logos() {
