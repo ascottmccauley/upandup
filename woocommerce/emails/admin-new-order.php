@@ -26,13 +26,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<tr>
 			<th scope="col" style="text-align:left; border: 1px solid #eee;"><?php _e( 'Product', 'woocommerce' ); ?></th>
 			<th scope="col" style="text-align:left; border: 1px solid #eee;"><?php _e( 'Quantity', 'woocommerce' ); ?></th>
-			<th scope="col" style="text-align:left; border: 1px solid #eee;"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
+			<!-- <th scope="col" style="text-align:left; border: 1px solid #eee;"><?php _e( 'MSRP', 'woocommerce' ); ?></th> -->
 		</tr>
 	</thead>
 	<tbody>
 		<?php echo $order->email_order_items_table( false, true ); ?>
 	</tbody>
-	<tfoot>
+	<!-- <tfoot>
 		<?php
 			if ( $totals = $order->get_order_item_totals() ) {
 				$i = 0;
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				}
 			}
 		?>
-	</tfoot>
+	</tfoot> -->
 </table>
 
 <?php do_action( 'woocommerce_email_after_order_table', $order, true, false ); ?>

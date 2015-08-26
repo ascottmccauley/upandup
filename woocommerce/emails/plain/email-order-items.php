@@ -35,7 +35,7 @@ foreach ( $items as $item_id => $item ) :
 		echo "\n" . sprintf( __( 'Quantity: %s', 'woocommerce' ), $item['qty'] );
 
 		// Cost
-		echo "\n" . sprintf( __( 'Cost: %s', 'woocommerce' ), $order->get_formatted_line_subtotal( $item ) );
+		// echo "\n" . sprintf( __( 'Cost: %s', 'woocommerce' ), $order->get_formatted_line_subtotal( $item ) );
 
 		// Download URLs
 		if ( $show_download_links && $_product->exists() && $_product->is_downloadable() ) {

@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 	<tbody>
 		<?php echo $order->email_order_items_table( false, true ); ?>
 	</tbody>
-	<tfoot>
+	<!-- <tfoot>
 		<?php
 			if ( $totals = $order->get_order_item_totals() ) {
 				$i = 0;
@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
 				}
 			}
 		?>
-	</tfoot>
+	</tfoot> -->
 </table>
 
 <?php do_action( 'woocommerce_email_after_order_table', $order, true, false ); ?>

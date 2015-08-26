@@ -27,11 +27,11 @@ echo "\n" . $order->email_order_items_table( false, true, '', '', '', true );
 
 echo "==========\n\n";
 
-if ( $totals = $order->get_order_item_totals() ) {
-	foreach ( $totals as $total ) {
-		echo $total['label'] . "\t " . $total['value'] . "\n";
-	}
-}
+// if ( $totals = $order->get_order_item_totals() ) {
+// 	foreach ( $totals as $total ) {
+// 		echo $total['label'] . "\t " . $total['value'] . "\n";
+// 	}
+// }
 
 echo "\n" . sprintf( __( 'View order: %s', 'woocommerce'), admin_url( 'post.php?post=' . $order->id . '&action=edit' ) ) . "\n";
 
