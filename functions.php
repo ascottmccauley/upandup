@@ -6,6 +6,9 @@
  */
 ?>
 <?php
+// correct path to /media folder
+update_option( 'upload_path', str_replace( '/wp/', '/', ABSPATH ) . 'media' );
+
 // Rebuild search index regularly
 if ( ! wp_next_scheduled( 'relevanssi_build_index' ) ) {
 	wp_schedule_event( time(), 'daily', 'relevanssi_build_index' );

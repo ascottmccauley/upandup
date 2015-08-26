@@ -267,7 +267,7 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 		} elseif ( $size == 'thumbnail' ) {
 			$size = 'thumb';
 		}
-		var_dump($upload_path . '/products/' . $size . '/' . $sku . '.jpg');
+
 		if ( file_exists( $upload_path . '/products/' . $size . '/' . $sku . '.jpg' ) ) {
 				$img_url = $upload_url . '/products/' . $size . '/' . $sku . '.jpg';
 		} else {
@@ -714,7 +714,7 @@ function relevanssi_remove_punct_not_numbers( $a ) {
   $a = preg_replace('/:space:+/', ' ', $a);
 	$a = trim($a);
 
-        return $a;
+  return $a;
 }
 
 if ( function_exists( 'relevanssi_remove_punct' ) ) {
