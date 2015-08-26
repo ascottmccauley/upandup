@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<thead>
 			<tr>
 				<th class="product-name"><?php _e( 'Product', 'woocommerce' ); ?></th>
-				<th class="product-MSRP"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
+				<!-- <th class="product-MSRP"><?php _e( 'MSRP', 'woocommerce' ); ?></th> -->
 			</tr>
 		</thead>
 		<tbody>
@@ -29,11 +29,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<td class="product-name">
 							<?php echo apply_filters( 'woocommerce_cart_item_name', $_product->get_title(), $cart_item, $cart_item_key ); ?>
 						</td>
-						<td class="product-MSRP">
+						<!-- <td class="product-MSRP">
 							<?php echo apply_filters( 'woocommerce_checkout_cart_item_quantity', '<span class="product-quantity">' . sprintf(' %s &times;', $cart_item['quantity'] ) . '</span>', $cart_item, $cart_item_key ); ?>
 							<?php echo apply_filters( 'woocommerce_cart_item_subtotal', WC()->cart->get_product_price( $_product )) ?>
 							<?php echo WC()->cart->get_item_data( $cart_item ); ?>
-						</td>
+						</td> -->
 					</tr>
 				<?php	}
 			}

@@ -26,7 +26,7 @@ do_action( 'woocommerce_before_cart' ); ?>
 		<tr>
 			<th class="product-remove hide-for-small"></th>
 			<th class="product-name text-center" colspan="2"><?php _e( 'Product', 'woocommerce' ); ?></th>
-			<th class="product-price"><?php _e( 'MSRP', 'woocommerce' ); ?></th>
+			<!-- <th class="product-price"><?php _e( 'MSRP', 'woocommerce' ); ?></th> -->
 			<th class="product-quantity"><?php _e( 'Quantity', 'woocommerce' ); ?></th>
 		</tr>
 	</thead>
@@ -73,11 +73,11 @@ do_action( 'woocommerce_before_cart' ); ?>
 						?>
 					</td>
 
-					<td class="product-price">
+					<!-- <td class="product-price">
 						<?php
 							echo apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $_product ), $cart_item, $cart_item_key );
 						?>
-					</td>
+					</td> -->
 
 					<td class="product-quantity">
 						<?php
