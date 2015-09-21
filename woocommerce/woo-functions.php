@@ -780,5 +780,6 @@ add_filter( 'woocommerce_email_customer_details_fields', 'upandup_woo_email_cust
 if ( function_exists( 'relevanssi_remove_punct' ) ) {
 	remove_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct');
 	add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct_not_numbers');
-
 }
+// Bring back shipping rates
+add_filter( 'woocommerce_enable_deprecated_additional_flat_rates', function() { return true; } );
