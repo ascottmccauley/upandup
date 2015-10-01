@@ -345,14 +345,19 @@ body.no-sidebar .tab-bar .left-small {
   padding-bottom: 1rem;
 }
 //homepage styling
-body.home #main {
-	background: $grey;
-	.entry-content {
-		background: $white;
-		padding-bottom: 1rem;
-		padding-top: 1rem;
-		.slick-slide, .small-6 img {
-			border: 1px solid $tan;
+body.home {
+	.inner-wrap {
+		background: $grey;
+	}
+	#main {
+		background: $grey;
+		.entry-content {
+			background: $white;
+			padding-bottom: 1rem;
+			padding-top: 1rem;
+			.slick-slide, .small-6 img {
+				border: 1px solid $tan;
+			}
 		}
 	}
 }
