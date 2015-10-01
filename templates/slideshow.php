@@ -25,7 +25,7 @@ if ( ! empty( $slideshow ) ) {
 			<?php while ( $slideshow_query->have_posts() ) : $slideshow_query->the_post(); ?>
 				<?php $slide_url = get_post_meta( get_the_ID(), '_slide_url', true );
 					if ( $slide_url != '' ) {
-						echo '<a class="slide" href="' . $slide_url . '">';
+						echo '<a class="slide" target="_blank" href="' . $slide_url . '">';
 					}else {
 						echo '<div>';
 					} ?>
