@@ -122,5 +122,5 @@ jQuery(document).ready(function() {
 
   // Change footer 'copyrights' to '©' + date.
   var currentYear = (new Date).getFullYear();
-  jQuery('.menu-copyrights a').text('© ' + currentYear);
+  jQuery('.menu-copyrights a').text('© ' + currentYear + ' Marathon Company, Inc.');
 });
