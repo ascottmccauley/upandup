@@ -404,11 +404,15 @@ function upandup_after_shop_loop_item() {
 }
 add_action( 'woocommerce_after_shop_loop_item', 'upandup_after_shop_loop_item', 5 );
 
-// remove .button class from "BUY" link and wrapp it in an <h3>
+// if product doesn't have a price, hide the link, otherwise remove .button class from "BUY" link and wrap it in an <h3>
 function upandup_woo_loop_add_to_cart_link( $add_to_cart_text, $product ) {
-  $add_to_cart_text = str_replace( '">', '"><h3>', $add_to_cart_text );
-	$add_to_cart_text = str_replace( '</a>', '</h3></a>', $add_to_cart_text );
-	$add_to_cart_text = str_replace( '"button ', '"', $add_to_cart_text );
+	if ( $product->price != '' ) {
+	  $add_to_cart_text = str_replace( '">', '"><h3>', $add_to_cart_text );
+		$add_to_cart_text = str_replace( '</a>', '</h3></a>', $add_to_cart_text );
+		$add_to_cart_text = str_replace( '"button ', '"', $add_to_cart_text );
+	} else {
+		$add_to_cart_text = '';
+	}
 	return $add_to_cart_text;
 };
 
