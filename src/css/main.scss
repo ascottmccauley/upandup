@@ -127,7 +127,7 @@ html, body {
 // Header
 /////////
 #header {
-	background-color: $primary-color;
+	background-color: #a4bdcb;
 	overflow: hidden;
 	padding: 1rem auto;
 	text-align: center;
@@ -346,15 +346,15 @@ body.no-sidebar .tab-bar .left-small {
 }
 //homepage styling
 body.home #main {
-	background: $grey;
-	.entry-content {
-		background: $white;
-		padding-bottom: 1rem;
-		padding-top: 1rem;
-		.slick-slide, .small-6 img {
-			border: 1px solid $tan;
-		}
-	}
+	// background: $grey;
+	// .entry-content {
+	// 	background: $white;
+	// 	padding-bottom: 1rem;
+	// 	padding-top: 1rem;
+	// 	.slick-slide, .small-6 img {
+	// 		border: 1px solid $tan;
+	// 	}
+	// }
 }
 body.with-sidebar #main {
 	@media #{$medium-up} {
