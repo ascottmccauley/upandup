@@ -53,7 +53,7 @@ if ( $attachment_ids ) {
 	$upload_path = $upload_dir['path'];
 	$upload_url = $upload_dir['url'];
 	$sku = $product->get_sku();
-	
+
 	echo '<ul class="thumbnails small-block-grid-4">';
 		// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
 		foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
@@ -71,7 +71,8 @@ if ( $children ) {
 	foreach( $children as $child ) {
 		$child_product = wc_get_product( $child );
 		$img_url = upandup_woo_img_url( 'small', $child_product );
-		$img_link = get_permalink( $child );
+		$img_link = upandup_woo_img_url( 'large', $child_product );
+		// $img_link = get_permalink( $child ); // causes problems with .gallery javascript looking for an image instead of just linking
 		if ( $img_url != '' ) {
 			echo '<li><a href="' . $img_link . '" class="th square-thumb" style="background-image: url(\'' . $img_url . '\');"></a></li>';
 		}

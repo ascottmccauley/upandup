@@ -141,7 +141,9 @@ body.pre-teen.parent ul.products {
 			}
 		}
 	}
-	h4 {
+	h3 {
+		background: inherit;
+		border: inherit;
 		font-size: $h5-font-size;
 		padding-top: .5em; // prevent image overlap
 		position: relative;
@@ -152,10 +154,10 @@ body.pre-teen.parent ul.products {
 }
 
 body.shop .product-category {
-	&.adults a, &.adults h4 { background: $grey; border-color: $grey; }
-	&.childrens a, &.childrens h4 { background: $pink; border-color: $pink; }
-	&.pre-teen a, &.pre-teen h4 { background: $purple; border-color: $purple; }
-	&.replacement-chains a, &.replacement-chains h4 { background: $green; border-color: $green; }
+	&.adults a { background: $grey; border-color: $grey; }
+	&.childrens a { background: $pink; border-color: $pink; }
+	&.pre-teen a { background: $purple; border-color: $purple; }
+	&.replacement-chains a { background: $green; border-color: $green; }
 }
 
 
@@ -175,10 +177,11 @@ li.product {
 		transform: rotateX(-20deg);
 		-webkit-transform: rotateX(-20deg);
 	}
-	h5 {
+	h3 {
 		backface-visibility: hidden;
 		color: $primary-color;
 		display: inline-block;
+		font-size: $h5-font-size;
 		height: 100%;
 		margin-bottom: 0;
 		@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
@@ -198,7 +201,7 @@ li.product {
 			position: relative;
 			&::before {
 				color: $primary-color;
-				content: 'View Details';
+				content: 'VIEW DETAILS';
 				height: 100%;
 				@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
 				left: 0;
@@ -208,7 +211,7 @@ li.product {
 				width: 100%;
 			}
 			&:hover {
-				h5 {
+				h3 {
 					transform: translateY(-300%);
 				}
 				&::before {
@@ -219,7 +222,7 @@ li.product {
 	}
 	a.square-thumb {
 		&:hover {
-			&~.product-info h5 {
+			&~.product-info h3 {
 				transform: translateY(-300%);
 			}
 			&~.product-info a::before {
@@ -240,6 +243,7 @@ li.product {
 		display: block;
 		height: 2rem;
 		overflow: hidden;
+		padding: 0; //remove padding from .button
 		position: relative;
 		&.added {
 			display: none;
@@ -264,7 +268,7 @@ li.product {
 			color: scale-color($success-color, $lightness: -60%);
 		}
 		&:hover {
-			h5 {
+			h3 {
 				transform: translateY(300%);
 			}
 			&::before {

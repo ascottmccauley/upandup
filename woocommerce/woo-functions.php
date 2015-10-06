@@ -15,9 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 function upandup_shop_private() {
 	if ( ! is_user_logged_in() ) {
 		if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
-			$redirect = urlencode( $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] );
-			// wp_redirect( wp_login_url( $redirect ) );
-			wp_redirect( wp_login_url() ); // eliminate redirect for now.
+			$redirect = home_url() . $_SERVER["REQUEST_URI"];
+			wp_redirect( wp_login_url( $redirect ) );
 			exit;
 		}
 	}
@@ -122,6 +121,19 @@ add_filter( 'groundup_sidebars', 'upandup_woo_sidebars' );
 update_option( 'woocommerce_lock_down_admin', 'yes' );
 
 /************************
+ * text changes
+************************/
+function upandup_woo_gettext( $translated_text, $text, $domain ) {
+	switch ( $translated_text ) {
+		case 'Price' :
+			$translated_text = __( 'MSRP', 'woocommerce' );
+			break;
+	}
+	return $translated_text;
+}
+add_filter( 'gettext', 'upandup_woo_gettext', 20, 3 );
+
+/************************
  * global
 ************************/
 // Change WooCommerce wrappers
@@ -143,7 +155,7 @@ function upandup_woo_add_to_nav( $items, $args ) {
 
 	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
-			$items .= '<li class="login"><a href="' . wp_login_url( urlencode( get_permalink( wc_get_page_id( 'shop' ) ) ) ) . '">Log In</a></li>';
+			$items .= '<li class="login"><a href="' . wp_login_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">Log In</a></li>';
 		} else {
 			$args = array(
 				'taxonomy' => 'product_cat',
@@ -302,8 +314,6 @@ add_filter( 'woocommerce_subcategory_count_html', function() { return false; } )
 remove_action( 'woocommerce_before_shop_loop','woocommerce_result_count', 20);
 // Remove Catalog Ordering
 remove_action( 'woocommerce_before_shop_loop','woocommerce_catalog_ordering', 30);
-// Remove Rating
-remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5);
 
 // Replace Category Thumbnail
 remove_action( 'woocommerce_before_subcategory_title', 'woocommerce_subcategory_thumbnail', 10 );
@@ -364,7 +374,12 @@ if ( ! function_exists( 'upandup_woo_subcategory_thumbnail' ) ) {
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_show_product_loop_sale_flash', 10 );
 // Replace thumbnail function
 remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+// Remove Rating
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_rating', 5 );
+// Remove Price
+remove_action( 'woocommerce_after_shop_loop_item_title', 'woocommerce_template_loop_price', 10 );
 
+// Add thumbnail first
 function upandup_woo_template_loop_product_thumbnail() {
 	global $post;
 	global $product;
@@ -376,7 +391,33 @@ function upandup_woo_template_loop_product_thumbnail() {
 		echo '<a href="' . get_the_permalink() . '" class="square-thumb placeholder" style="background: white;"></a>';
 	}
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'upandup_woo_template_loop_product_thumbnail', 10 );
+add_action( 'woocommerce_before_shop_loop_item', 'upandup_woo_template_loop_product_thumbnail', 10 );
+
+// Add product info wrapper
+function upandup_before_shop_loop_item() {
+	echo '<div class="product-info">';
+}
+add_action( 'woocommerce_before_shop_loop_item', 'upandup_before_shop_loop_item', 20 );
+
+function upandup_after_shop_loop_item() {
+	echo '</div>';
+}
+add_action( 'woocommerce_after_shop_loop_item', 'upandup_after_shop_loop_item', 5 );
+
+// if product doesn't have a price, hide the link, otherwise remove .button class from "BUY" link and wrap it in an <h3>
+function upandup_woo_loop_add_to_cart_link( $add_to_cart_text, $product ) {
+	if ( $product->price != '' ) {
+	  $add_to_cart_text = str_replace( '">', '"><h3>', $add_to_cart_text );
+		$add_to_cart_text = str_replace( '</a>', '</h3></a>', $add_to_cart_text );
+		$add_to_cart_text = str_replace( '"button ', '"', $add_to_cart_text );
+	} else {
+		$add_to_cart_text = '';
+	}
+	return $add_to_cart_text;
+};
+
+// add the filter
+add_filter( 'woocommerce_loop_add_to_cart_link', 'upandup_woo_loop_add_to_cart_link', 10, 2 );
 
 // Add parent category to body class
 // Add 'parent' class if only 1 category exists
@@ -625,6 +666,32 @@ function custom_override_checkout_fields( $fields ) {
 }
 add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 
+// make billing phone not required and billing_email not usernaame
+function upandup_woo_billing_fields( $address_fields ) {
+	$address_fields['billing_phone']['required'] = false;
+	$address_fields['billing_email']['required'] = true;
+	return $address_fields;
+}
+add_filter( 'woocommerce_billing_fields', 'upandup_woo_billing_fields', 10, 1 );
+
+// ignore default value of billing_email
+function upandup_woo_checkout_get_value( $value, $input ) {
+	if ( $input == 'billing_email' ) {
+		if ( is_user_logged_in() ) {
+			$current_user = wp_get_current_user();
+			// return billing email or nothing
+			if ( $meta = get_user_meta( $current_user->ID, $input, true ) ) {
+				return $meta;
+			} else {
+				return ''; //important that this is not `null`
+			}
+		}
+	}
+}
+add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 10, 2 );
+
+// TODO: update user_login after billing_email changes - decide whether or not to email the user about the change?
+
 /************************
  * account page
 ************************/
@@ -648,24 +715,26 @@ function upandup_woo_recent_products() {
 		}
 		if( is_array( $ordered_products ) ) {
 			$ordered_products = array_unique( $ordered_products ); ?>
-			<h2>Recently Ordered Products</h2>
-			<table>
-				<?php foreach ( $ordered_products as $product_id ) {
-					$product_data = get_post( $product_id );
-					if ( 'product' !== $product_data->post_type ) {
-						continue;
-					}
-					$_product = wc_get_product( $product_data ); ?>
-					<tr>
-						<td>
-							<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
-						</td>
-						<td>
-							<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
-						</td>
-					</tr>
-				<?php } ?>
-			</table>
+			<div class="medium-6 columns">
+				<h2>Recent Products</h2>
+				<table>
+					<?php foreach ( $ordered_products as $product_id ) {
+						$product_data = get_post( $product_id );
+						if ( 'product' !== $product_data->post_type ) {
+							continue;
+						}
+						$_product = wc_get_product( $product_data ); ?>
+						<tr>
+							<td>
+								<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
+							</td>
+							<td>
+								<a href="<?php echo esc_url( $_product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
+							</td>
+						</tr>
+					<?php } ?>
+				</table>
+			</div>
 		<?php }
 	}
 }
@@ -717,14 +786,39 @@ function relevanssi_remove_punct_not_numbers( $a ) {
   return $a;
 }
 
+/************************
+ * Emails
+************************/
+
+// Add account number to customer details in emails
+function upandup_woo_email_customer_details_fields( $fields, $sent_to_admin, $order ) {
+	$user = get_user_by( 'id', $order->customer_user );
+	$account = array(
+		'label' => __( 'Account', 'upandup' ),
+		'value' => wptexturize( $user->user_login ),
+	);
+	// Add account to beginning of associative array
+	$fields = array( 'account' => $account ) + $fields;
+	return $fields;
+}
+add_filter( 'woocommerce_email_customer_details_fields', 'upandup_woo_email_customer_details_fields', 5, 3 );
+
+/************************
+ * Hacks
+************************/
+// Have relevanssi work with products starting with a decimal
 if ( function_exists( 'relevanssi_remove_punct' ) ) {
 	remove_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct');
 	add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct_not_numbers');
-
 }
+<<<<<<< HEAD
 
 /************************
  * Jewelmark Changes
 ************************/
 // Remove Pricing
 remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price' );
+=======
+// Bring back shipping rates
+add_filter( 'woocommerce_enable_deprecated_additional_flat_rates', function() { return true; } );
+>>>>>>> Marathon

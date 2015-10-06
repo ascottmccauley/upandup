@@ -5,7 +5,7 @@
  * @subpackage upandup
  */
 ?>
-<?php 
+<?php
 // Get meta specific to resources
 $resourceID = get_post_meta( $post->ID, '_resource_media', true );
 $resourceURL = wp_get_attachment_url( $resourceID );
@@ -15,14 +15,18 @@ $thumbnail = get_the_post_thumbnail( $post->ID, 'medium' );
 if ( $thumbnail != '' ) { ?>
 	<li <?php post_class( 'unstyled' ); ?>>
 		<section class="entry-content">
-			<a href="<?php echo $resourceURL; ?>" rel="alternate" title="<?php the_title_attribute(); ?>" class="bookmark" target="_blank" type="<?php echo $resourceType; ?>">
+			<?php if ($resourceURL != '') { ?>
+				<a href="<?php echo $resourceURL; ?>" rel="alternate" title="<?php the_title_attribute(); ?>" class="bookmark" target="_blank" type="<?php echo $resourceType; ?>">
+			<?php } ?>
 				<figure>
 					<?php echo $thumbnail; ?>
 				</figure>
 				<figcaption>
 					<?php the_title(); ?>
 				</figcaption>
-			</a>
+			<?php if ($resourceURL != '') { ?>
+				</a>
+			<?php } ?>
 		</section>
 	</li>
 <?php } else { ?>

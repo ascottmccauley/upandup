@@ -34,6 +34,9 @@ if ( ! apply_filters( 'woocommerce_order_item_visible', true, $item ) ) {
 	<td class="product-total">
 		<?php echo $order->get_formatted_line_subtotal( $item ); ?>
 	</td>
+	<td class="product-reorder">
+		<a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>" class="button tiny">Buy</a>
+	</td>
 </tr>
 <?php if ( $order->has_status( array( 'completed', 'processing' ) ) && ( $purchase_note = get_post_meta( $product->id, '_purchase_note', true ) ) ) : ?>
 <tr class="product-purchase-note">
