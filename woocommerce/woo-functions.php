@@ -662,6 +662,32 @@ function custom_override_checkout_fields( $fields ) {
 }
 add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 
+// make billing phone not required and billing_email not usernaame
+function upandup_woo_billing_fields( $address_fields ) {
+	$address_fields['billing_phone']['required'] = false;
+	$address_fields['billing_email']['required'] = true;
+	return $address_fields;
+}
+add_filter( 'woocommerce_billing_fields', 'upandup_woo_billing_fields', 10, 1 );
+
+// ignore default value of billing_email
+function upandup_woo_checkout_get_value( $value, $input ) {
+	if ( $input == 'billing_email' ) {
+		if ( is_user_logged_in() ) {
+			$current_user = wp_get_current_user();
+			// return billing email or nothing
+			if ( $meta = get_user_meta( $current_user->ID, $input, true ) ) {
+				return $meta;
+			} else {
+				return ''; //important that this is not `null`
+			}
+		}
+	}
+}
+add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 10, 2 );
+
+// TODO: update user_login after billing_email changes - decide whether or not to email the user about the change?
+
 /************************
  * account page
 ************************/
