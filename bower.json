@@ -11,12 +11,14 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "~2.1.3",
-    "foundation": "~5.5.1",
+    "css3pie": "*",
     "fontawesome": "~4.3.0",
+    "foundation": "~5.5.1",
+    "jquery": "~2.1.3",
     "magnific-popup": "~1.0.0",
-    "slick-carousel": "~1.5.0",
-    "sass-burger": "~1.1.1"
+    "respond": "~1.4.2",
+    "sass-burger": "~1.1.1",
+    "slick-carousel": "~1.5.0"
   },
   "authors": [
     "ascottmccauley <scott@ascottmccauley.com>"

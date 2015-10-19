@@ -160,6 +160,7 @@ function upandup_favicons() {
 	<meta name="application-name" content="Marathon">
 	<meta name="msapplication-TileColor" content="#686158">
 	<meta name="theme-color" content="#686158">
+	<meta http-equiv="X-UA-Compatible" content="IE=10; IE=9; IE=8; IE=EDGE" />
 <?php }
 add_action( 'wp_head', 'upandup_favicons' );
 
@@ -194,6 +195,13 @@ function upandup_modernizr() {
 	wp_enqueue_script( 'modernizr', get_stylesheet_directory_uri() . '/assets/js/modernizr.js', null, null, false );
 }
 add_action( 'wp_enqueue_scripts', 'upandup_modernizr' );
+
+function upandup_ie() {
+	global $wp_scripts;
+	wp_enqueue_script( 'ie', get_stylesheet_directory_uri() . '/assets/js/ie.js', null, null, false );
+	$wp_scripts->add_data( 'ie', 'conditional', 'IE' );
+}
+add_action( 'wp_enqueue_scripts', 'upandup_ie' );
 
 function groundup_defer_script( $tag, $handle ) {
 	if ( $handle != 'jquery' && $handle != 'modernizr' ) {

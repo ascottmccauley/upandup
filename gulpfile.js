@@ -86,7 +86,7 @@ gulp.task('css', function() {
 // # js
 // `gulp js` - runs JSHint on all scripts from `src/js` and bower files, and then compiles, combines and minify to `assets/js/main.js`
 gulp.task('js', ['jquery'], function() {
-	return gulp.src(bower(['!**/jquery.js', '**/*.js']))
+	return gulp.src(bower(['!**/jquery.js', '!**/css3pie/*', '!**/respond/*', '**/*.js']))
 		.pipe($.plumber({errorHandler: onError}))
 		.pipe($.addSrc(paths.js.src + '**/*.js'))
 		.pipe(filters.js)
@@ -106,6 +106,18 @@ gulp.task('jquery', function() {
 		.pipe($.addSrc(paths.bower + '/foundation/js/vendor/modernizr.js'))
 		.pipe($.plumber({errorHandler: onError}))
 		.pipe($.print())
+		.pipe($.uglify())
+		.pipe(gulp.dest(paths.js.build))
+});
+
+// # ie
+// `gulp ie` -includes fixes for IE nonsense
+gulp.task('ie', function() {
+	return gulp.src(paths.bower + '/respond/dest/respond.src.js')
+		.pipe($.addSrc(paths.bower + '/css3pie/PIE.js'))
+		.pipe($.plumber({errorHandler: onError}))
+		.pipe($.print())
+		.pipe($.concat('ie.js'))
 		.pipe($.uglify())
 		.pipe(gulp.dest(paths.js.build))
 });
@@ -137,5 +149,5 @@ gulp.task('img', function () {
 		.pipe($.addSrc(paths.img.src + + '**/*.ico'))
 		.pipe($.addSrc(paths.bower + '**/*.ico'))
 		.pipe(gulp.dest(paths.img.build))
-});	
-		
+});
+
