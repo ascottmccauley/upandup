@@ -125,6 +125,9 @@ update_option( 'woocommerce_lock_down_admin', 'yes' );
 ************************/
 function upandup_woo_gettext( $translated_text, $text, $domain ) {
 	switch ( $translated_text ) {
+		case 'Total' :
+			$translated_text = __( 'Total MSRP', 'woocommerce' );
+			break;
 		case 'Price' :
 			$translated_text = __( 'MSRP', 'woocommerce' );
 			break;
@@ -623,6 +626,12 @@ function upandup_woo_upsell_text($text) {
 }
 add_filter( 'upandup_woo_upsell_text', 'upandup_woo_upsell_text' );
 
+// add cross sells to the single product page.
+add_action( 'woocommerce_after_single_product_summary', 'woocommerce_cross_sell_display', 20 );
+
+// TODO: modify cross sells to choose 5 random products
+
+
 /************************
  * cart page
 ************************/
@@ -645,9 +654,6 @@ add_action( 'init', 'upandup_woo_empty_cart' );
 /************************
  * checkout page
 ************************/
-// Move Shipping Choice to after Order Notes:
-add_action( 'woocommerce_after_order_notes', 'wc_cart_totals_shipping_html', 20 );
-
 // Remove login form
 update_option( 'woocommerce_enable_guest_checkout', 'no' );
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10 );
@@ -658,6 +664,13 @@ remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_
 
 // Start out with same shipping address
 add_filter( 'woocommerce_ship_to_different_address_checked', '__return_false' );
+
+// hide '(free)' and other costs from shipping labels
+function upandup_woo_cart_shipping_method_full_label( $label, $method ) {
+	$label = $method->label;
+	return $label;
+}
+add_filter( 'woocommerce_cart_shipping_method_full_label', 'upandup_woo_cart_shipping_method_full_label', 10, 2 );
 
 // Change # of rows for Order Notes
 function custom_override_checkout_fields( $fields ) {

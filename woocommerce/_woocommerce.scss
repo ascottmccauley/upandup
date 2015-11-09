@@ -452,12 +452,20 @@ form.cart  {
 }
 
 /***** Checkout *****/
+.woocommerce-billing-fields, .woocommerce-shipping-fields, .woocommerce-checkout-review-order {
+	@media #{$medium-up} {
+		@include grid-column($columns:6);
+	}
+	@media #{$large-up} {
+		@include grid-column($columns:4);
+	}
+}
 #ship-to-different-address-checkbox {
 	margin-bottom: 0;
 }
 
 // Special case - hide payment options
-.checkout #payment {
+.checkout #payment .payment_methods {
 	@include hide;
 }
 
