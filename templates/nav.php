@@ -7,7 +7,7 @@
 ?>
 <?php // Desktop Menu
 if ( ! wp_is_mobile() ) { ?>
-	<div class="sticky hide-for-small">
+	<div class="sticky hide-for-small hide-for-touch">
 		<?php // See if secondary_menu has any items
 		$menu_object = groundup_get_menu_object( 'Secondary' );
 		if ( $menu_object->count > 0 || is_user_logged_in() ) { ?>
@@ -51,7 +51,7 @@ if ( ! wp_is_mobile() ) { ?>
 	</div>
 <?php } ?>
 
-<nav class="tab-bar show-for-small">
+<nav class="tab-bar show-for-small show-for-touch">
 	<section class="left-small">
 		<a class="left-off-canvas-toggle menu-button"><span></span></a>
 	</section>
