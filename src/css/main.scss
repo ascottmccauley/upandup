@@ -320,6 +320,11 @@ body.no-sidebar .tab-bar .left-small {
 		z-index: 966;
 	}
 }
+
+#searchsubmit {
+	background-color: $primary-color;
+}
+
 .move-left .right-off-canvas-toggle span, .move-right .left-off-canvas-toggle span {
 	@include burger-to-cross;
 }

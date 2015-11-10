@@ -13,7 +13,7 @@
 				<input id="search" class="search-query round" type="text" value="<?php if (is_search()) { echo get_search_query(); } ?>" name="s" placeholder="<?php _e(' Search', 'fin'); ?>" required>
 			</div>
 			<div class="small-3 columns">
-				<button class="button postfix round secondary" class="searchsubmit"><i class="icon-search"></i><span class="hide"><?php _(' search'); ?></span></button>
+				<button class="button postfix round" id="searchsubmit"><i class="icon-search"></i><span class="hide"><?php _(' search'); ?></span></button>
 			</div>
 		</div>
 	</div>
