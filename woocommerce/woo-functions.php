@@ -703,8 +703,6 @@ function upandup_woo_checkout_get_value( $value, $input ) {
 }
 add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 10, 2 );
 
-// TODO: update user_login after billing_email changes - decide whether or not to email the user about the change?
-
 /************************
  * account page
 ************************/
