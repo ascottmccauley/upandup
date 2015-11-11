@@ -1,3 +1,13 @@
 // Stylesheet for the backend
 
 @import "settings";
+
+// hide things from woocommerce import plugins // kludge
+.woocommerce_page_woocommerce_csv_import_suite, .woocommerce_page_customer_csv_import_suite {
+  .tool-box .submit a:first-child:not(:last-child) {
+    @include hide;
+  }
+  .woocommerce-message, .updated {
+    @include hide;
+  }
+}
