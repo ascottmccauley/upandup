@@ -99,7 +99,8 @@ class Upandup_Offcanvas_Walker extends Walker_Nav_Menu {
 		$output .= $item_html;
 	}
 	function start_lvl( &$output, $depth = 0, $args = array() ) {
-		$output .= "\n<ul class=\"left-submenu\">\n<li class=\"back\"><a href=\"#\">". __( 'Back', 'upandup' ) ."</a></li>\n";
+		$output .= '<ul class="right-submenu">';
+		$output .= '<li class="back"><a href="#">' . __( 'Back', 'upandup' ) . '</a></li>';
 	}
 }
 
@@ -126,22 +127,60 @@ add_filter( 'category_css_class', 'upandup_category_css_class', 1, 4 );
 function upandup_offcanvas_footer_menu () {
 	echo '<a class="exit-off-canvas"></a>';
 	echo '<aside class="right-off-canvas-menu">';
+	echo '<ul class="off-canvas-list">';
 
+	// Use 'mobile' menu or 'secondary' + 'primary' as a fallback
 	$menu_object = groundup_get_menu_object( 'Mobile' );
-	// Use 'primary' as a fallback if 'mobile' menu is empty
-	if ( ! $menu_object->count > 0 ) {
-		$menu_object =  groundup_get_menu_object( 'Primary' );
-	}
 	if ( $menu_object->count > 0 ) {
 		wp_nav_menu( array(
+			'container' => '',
+			'items_wrap' => '%3$s',
 			'menu' => $menu_object->term_id,
-			'menu_class' => 'off-canvas-list',
+			'menu_class' => '',
 			'walker'=> new Upandup_Offcanvas_Walker,
 		) );
+	} else {
+		echo '<li><label class="off-canvas-label">Pages</label></li>';
+		$menu_object =  groundup_get_menu_object( 'Primary' );
+		if ( $menu_object->count > 0 ) {
+			wp_nav_menu( array(
+				'container' => '',
+				'items_wrap' => '%3$s',
+				'menu' => $menu_object->term_id,
+				'menu_class' => '',
+				'walker'=> new Upandup_Offcanvas_Walker,
+			) );
+		}
+		$menu_object =  groundup_get_menu_object( 'Secondary' );
+		echo '<li><label class="off-canvas-label">Functions</label></li>';
+		// if ( $menu_object->count > 0 ) {
+			wp_nav_menu( array(
+				'container' => '',
+				'items_wrap' => '%3$s',
+				'menu' => $menu_object->term_id,
+				'menu_class' => '',
+				'walker'=> new Upandup_Offcanvas_Walker,
+				'fallback_cb' => '',
+			) );
+		// }
 	}
+	echo '</ul>';
 	echo '</aside>';
 }
 add_action( 'wp_footer', 'upandup_offcanvas_footer_menu' );
+
+// Conditional Sidebar Ads
+// Add custom ads to sidebar depending on current category
+function upandup_before_widgets( $sidebar ) {
+	if ( is_product_category( 'adults-lockets' ) ) { ?>
+		<section class="widget ads">
+			<a href="http://locketstudio.com" target="_blank">
+				<img alt="ad" src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/sidebar-lockets.jpg" />
+			</a>
+		</section>
+	<?php }
+}
+add_action( 'groundup_before_widgets', 'upandup_before_widgets' );
 
 // Add Favicons
 function upandup_favicons() {

@@ -278,7 +278,7 @@ nav.second-bar {
 	line-height: $topbar-height;
 	margin: 0 auto;
 }
-// Off Canvas Menu
+
 .middle.tab-bar-section {
 	border-right: solid 1px scale-color($tabbar-bg, $lightness: 10%);
 	h1 a {
@@ -328,6 +328,11 @@ body.no-sidebar .tab-bar .left-small {
 .move-left .right-off-canvas-toggle span, .move-right .left-off-canvas-toggle span {
 	@include burger-to-cross;
 }
+@media #{$medium-up} {
+	.left-off-canvas-toggle {
+		@include hide;
+	}
+}
 
 .right-off-canvas-menu, .left-off-canvas-menu {
 	li.active a {
@@ -337,6 +342,19 @@ body.no-sidebar .tab-bar .left-small {
 			background: $topbar-link-bg-active-hover;
 			color: $topbar-link-color-active-hover;
 		}
+	}
+}
+
+.right-off-canvas-menu {
+	#searchbar {
+		margin-left: 5px;
+		margin-right: 5px;
+	}
+	#searchsubmit {
+		background-color: $secondary-color;
+	}
+	li.cart a {
+		border-bottom: none !important;
 	}
 }
 
@@ -749,6 +767,19 @@ li.comment > section {
 #sidebar-default { }
 #sidebar-home { }
 #sidebar-single { }
+
+.widget.ads {
+	a {
+		@include single-transition;
+		border: 1px solid scale-color($secondary-color, $lightness: 40%);
+		display: inline-block;
+		opacity: 1;
+		&:hover {
+			border-color: $secondary-color;
+			opacity: .8
+		}
+	}
+}
 
 // Footer
 /////////

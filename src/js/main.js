@@ -123,4 +123,13 @@ jQuery(document).ready(function() {
   // Change footer 'copyrights' to '©' + date.
   var currentYear = (new Date).getFullYear();
   jQuery('.menu-copyrights a').text('© ' + currentYear + ' Marathon Company, Inc.');
+
+  // Change dropdowns in off-canvas menus to submenus
+  var dropdowns = jQuery('.right-off-canvas-menu').find('.dropdown');
+    dropdowns.removeClass('dropdown');
+    dropdowns.addClass('right-submenu');
+    dropdowns.prepend('<li class="back show-for-small-only"><a href="#">Back</a></li>');
+  var dropdownButtons = jQuery('.right-off-canvas-menu').find('.has-dropdown');
+    dropdownButtons.removeClass('has-dropdown');
+    dropdownButtons.addClass('has-submenu');
 });
