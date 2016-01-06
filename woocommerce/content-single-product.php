@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  	echo get_the_password_form();
  	return;
  }
- 
+
  /**
   * woocommerce_before_single_product_summary hook
   *
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
   * @hooked woocommerce_show_product_images - 20
  **/
  do_action( 'woocommerce_before_single_product_summary' ); ?>
- 
+
 <section itemscope itemtype="<?php echo woocommerce_get_product_schema(); ?>" id="product-<?php the_ID(); ?>" <?php post_class( 'row' ); ?>>
 	<?php // Check to see if product has images before determining layout
 	global $product;
@@ -51,7 +51,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			 * @hooked woocommerce_template_single_meta - 40
 			 * @hooked woocommerce_template_single_sharing - 50
 			**/
-			
+
 			do_action( 'woocommerce_single_product_summary' ); ?>
 	</div>
 	<?php
