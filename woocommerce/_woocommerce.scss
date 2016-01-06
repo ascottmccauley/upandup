@@ -4,7 +4,68 @@ html, body {
 	&.childrens.parent, &.childrens .woocommerce-breadcrumb { background: $pink; }
 	&.pre-teen.parent, &.pre-teen .woocommerce-breadcrumb { background: $purple; }
 	&.replacement-chains.parent, &.replacement-chains .woocommerce-breadcrumb { background: $green; }
+	&.cape-cod-jewelry.parent, &.cape-cod-jewelry .woocommerce-breadcrumb { background: $blue; }
+	&.convertible-collection.parent, &.convertible-collection .woocommerce-breadcrumb { background: $yellow; }
 }
+
+body.shop .product-category {
+	&.adults a { background: $grey; border-color: $grey; }
+	&.childrens a { background: $pink; border-color: $pink; }
+	&.pre-teen a { background: $purple; border-color: $purple; }
+	&.replacement-chains a { background: $green; border-color: $green; }
+	&.cape-cod-jewelry a { background: $blue; border-color: $blue; }
+	&.convertible-collection a { background: $yellow; border-color: $yellow; }
+}
+
+li.product.product_cat-adults {
+	.square-thumb {
+		border: 2px solid $grey;
+	}
+	.product-info, .add_to_cart_button {
+		background: $grey;
+	}
+}
+li.product.product_cat-childrens {
+	.square-thumb {
+		border: 2px solid $pink;
+	}
+	.product-info, .add_to_cart_button {
+		background: $pink;
+	}
+}
+li.product.product_cat-pre-teen {
+	.square-thumb {
+		border: 2px solid $purple;
+	}
+	.product-info, .add_to_cart_button {
+		background: $purple;
+	}
+}
+li.product.product_cat-replacement-chains {
+	.square-thumb {
+		border: 2px solid $green;
+	}
+	.product-info, .add_to_cart_button {
+		background: $green;
+	}
+}
+li.product.product_cat-cape-cod-jewelry {
+	.square-thumb {
+		border: 2px solid $blue;
+	}
+	.product-info, .add_to_cart_button {
+		background: $blue;
+	}
+}
+li.product.product_cat-convertible-collection {
+	.square-thumb {
+		border: 2px solid $yellow;
+	}
+	.product-info, .add_to_cart_button {
+		background: $yellow;
+	}
+}
+
 .woocommerce-breadcrumb {
 	@include crumb-container;
 	text-align: center;
@@ -97,9 +158,14 @@ body.no-sidebar ul.products {
 }
 
 // category specific grids
-body.shop.no-sidebar ul.products {
+body.shop.no-sidebar ul.products, body.pre-teen.parent ul.products, body.cape-cod-jewelry.parent ul.products {
 	@media #{$medium-up} {
 		@include block-grid($per-row: 2);
+	}
+}
+body.convertible-collection.parent ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 3);
 	}
 }
 body.adults.parent ul.products {
@@ -112,11 +178,7 @@ body.childrens.parent ul.products {
 		@include block-grid($per-row: 5);
 	}
 }
-body.pre-teen.parent ul.products {
-	@media #{$medium-up} {
-		@include block-grid($per-row: 2);
-	}
-}
+
 
 .product-category {
 	a {
@@ -151,13 +213,6 @@ body.pre-teen.parent ul.products {
 		white-space: nowrap;
 		z-index: 4;
 	}
-}
-
-body.shop .product-category {
-	&.adults a { background: $grey; border-color: $grey; }
-	&.childrens a { background: $pink; border-color: $pink; }
-	&.pre-teen a { background: $purple; border-color: $purple; }
-	&.replacement-chains a { background: $green; border-color: $green; }
 }
 
 
@@ -298,39 +353,6 @@ li.product {
 			margin-left: 1rem;
 			opacity: 1;
 		}
-	}
-}
-
-li.product.product_cat-adults {
-	.square-thumb {
-		border: 2px solid $grey;
-	}
-	.product-info, .add_to_cart_button {
-		background: $grey;
-	}
-}
-li.product.product_cat-childrens {
-	.square-thumb {
-		border: 2px solid $pink;
-	}
-	.product-info, .add_to_cart_button {
-		background: $pink;
-	}
-}
-li.product.product_cat-pre-teen {
-	.square-thumb {
-		border: 2px solid $purple;
-	}
-	.product-info, .add_to_cart_button {
-		background: $purple;
-	}
-}
-li.product.product_cat-replacement-chains {
-	.square-thumb {
-		border: 2px solid $green;
-	}
-	.product-info, .add_to_cart_button {
-		background: $green;
 	}
 }
 

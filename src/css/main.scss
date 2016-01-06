@@ -62,6 +62,8 @@ p, .entry-summary, .entry-content, .widget, .comment > section {
 hr {
 	border-bottom: 2px solid rgba(255,255,255, .1);
 	border-top: 2px solid rgba(0,0,0, .1);
+	margin-top: 1em;
+	margin-bottom: 1em;
 	color: $body-font-color;
 	@include clearfix;
 }
@@ -77,6 +79,16 @@ del {
 
 .unstyled {
 	@include unstyled;
+}
+
+.text-left * {
+	text-align: left;
+}
+.text-right * {
+	text-align: right;
+}
+.text-center * {
+	text-align: center;
 }
 
 button, .button, input[type="submit"], a {
@@ -129,13 +141,14 @@ html, body {
 #header {
 	background-color: $primary-color;
 	overflow: hidden;
+	min-height: 220px;
 	padding: 1rem auto;
 	text-align: center;
 	width: 100%;
 	a, a:visited, a:hover {  }
 	figure {
-		margin: 0 auto;
-		max-width: 100%;
+		margin: 50px auto;
+		max-width: 55%;
 		height: auto;
 		padding: 1rem;
 		text-align: center;
@@ -161,7 +174,7 @@ html, body {
 	}
 }
 
-.logo.kiddiekraft, .logo.steppingstones, .logo.locketstudio {
+.logo.kiddiekraft, .logo.steppingstones, .logo.locketstudio, .logo.lestage, .logo.convertible, .logo.cape-cod {
 	position: absolute;
 	z-index: 44;
 	@media #{$small-only} {
@@ -175,13 +188,28 @@ html, body {
 }
 
 .logo.steppingstones {
-	left: 15px;
+	left: 18px;
 	top: 70px;
 }
 
 .logo.locketstudio {
-	right: 10px;
-	top: 35px;
+	left: 30px;
+	top: 137px;
+}
+
+.logo.lestage {
+	right: 17px;
+	top: 5px;
+}
+
+.logo.convertible {
+	right: 20px;
+	top: 70px;
+}
+
+.logo.cape-cod {
+	right: 7px;
+	top: 130px;
 }
 
 // Menu/Nav

@@ -205,9 +205,12 @@ add_action( 'wp_head', 'upandup_favicons' );
 
 // Add Extra Logos to #footer
 function upandup_extra_logos() {
-	echo '<a href="#" class="logo kiddiekraft"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-kiddiekraft.png"></a>';
-	echo '<a href="#" class="logo steppingstones"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-steppingstones.png"></a>';
+	echo '<a href="http://marathon-co.com/product-category/childrens" class="logo kiddiekraft"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-kiddiekraft.png"></a>';
+	echo '<a href="http://marathon-co.com/product-category/pre-teen" class="logo steppingstones"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-steppingstones.png"></a>';
 	echo '<a href="http://locketstudio.com" target="_blank" class="logo locketstudio"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-locketstudio.png"></a>';
+	echo '<a href="http://marathon-co.com/product-category/convertible-collection" class="logo lestage"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-lestage.png"></a>';
+	echo '<a href="http://marathon-co.com/product-category/cape-cod-jewelry" class="logo cape-cod"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-cape-cod.png"></a>';
+	echo '<a href="http://marathon-co.com/product-category/convertible-collection" class="logo convertible"><img src="' . get_stylesheet_directory_uri() . '/assets/img/logo-convertible.png"></a>';
 }
 add_action( 'wp_footer', 'upandup_extra_logos' );
 
