@@ -41,9 +41,11 @@ html, body {
 				input#wp-submit {
 					@include button($bg: $success-color, $padding: $button-med, $radius: $button-radius, $full-width: true);
 					@include single-transition(background-color);
+					box-shadow: none;
 					background-image: none;
 					height: auto;
 					margin-bottom: 0;
+					text-shadow: none;
 				}
 			}
 		}
