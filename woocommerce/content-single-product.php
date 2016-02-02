@@ -18,6 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  	echo get_the_password_form();
  	return;
  }
+	global $product;
+ $children = $product->get_children();
 
  /**
   * woocommerce_before_single_product_summary hook

@@ -1,7 +1,7 @@
 /**** Global ****/
 html, body {
-	&.adults.parent, &.adults .woocommerce-breadcrumb { background: $grey; }
-	&.childrens.parent, &.childrens .woocommerce-breadcrumb { background: $pink; }
+	&.adult.parent, &.adult .woocommerce-breadcrumb { background: $grey; }
+	&.children.parent, &.children .woocommerce-breadcrumb { background: $pink; }
 	&.pre-teen.parent, &.pre-teen .woocommerce-breadcrumb { background: $purple; }
 	&.replacement-chains.parent, &.replacement-chains .woocommerce-breadcrumb { background: $green; }
 	&.cape-cod-jewelry.parent, &.cape-cod-jewelry .woocommerce-breadcrumb { background: $blue; }
@@ -9,15 +9,15 @@ html, body {
 }
 
 body.shop .product-category {
-	&.adults a { background: $grey; border-color: $grey; }
-	&.childrens a { background: $pink; border-color: $pink; }
+	&.adult a { background: $grey; border-color: $grey; }
+	&.children a { background: $pink; border-color: $pink; }
 	&.pre-teen a { background: $purple; border-color: $purple; }
 	&.replacement-chains a { background: $green; border-color: $green; }
 	&.cape-cod-jewelry a { background: $blue; border-color: $blue; }
 	&.convertible-collection a { background: $yellow; border-color: $yellow; }
 }
 
-li.product.product_cat-adults {
+li.product.product_cat-adult {
 	.square-thumb {
 		border: 2px solid $grey;
 	}
@@ -25,7 +25,7 @@ li.product.product_cat-adults {
 		background: $grey;
 	}
 }
-li.product.product_cat-childrens {
+li.product.product_cat-children {
 	.square-thumb {
 		border: 2px solid $pink;
 	}
@@ -168,12 +168,12 @@ body.convertible-collection.parent ul.products {
 		@include block-grid($per-row: 3);
 	}
 }
-body.adults.parent ul.products {
+body.adult.parent ul.products {
 	@media #{$medium-up} {
 		@include block-grid($per-row: 4);
 	}
 }
-body.childrens.parent ul.products {
+body.children.parent ul.products {
 	@media #{$medium-up} {
 		@include block-grid($per-row: 5);
 	}

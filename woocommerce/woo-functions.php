@@ -283,20 +283,19 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '' ) {
 			$size = 'thumb';
 		}
 
+		$children = $_product->get_children();
+
 		if ( file_exists( $upload_path . '/products/' . $size . '/' . $sku . '.jpg' ) ) {
 				$img_url = $upload_url . '/products/' . $size . '/' . $sku . '.jpg';
+		} elseif ( $children ) {
+			// Check to see if this is a grouped product and load the first child image instead!
+			$firstChild = wc_get_product( $children[0] );
+			if ( $firstChild ) {
+				$img_url = upandup_woo_img_url( $size, $children[0] );
+			}
 		} else {
 			// load placeholder image
-			$img_url = $upload_url . '/products/placeholder.jpg';
-		}
-	}
-
-	// Check to see if this is a grouped product and load the first child image instead!
-	$children = $_product->get_children();
-	if ( $children ) {
-		$firstChild = wc_get_product( $children[0] );
-		if ( $firstChild ) {
-			$img_url = upandup_woo_img_url( $size, $children[0] );
+			$img_url = get_stylesheet_directory_uri() . '/assets/img/placeholder.jpg';
 		}
 	}
 
@@ -493,6 +492,13 @@ function upandup_woo_html_class( $output ) {
 	return $output;
 }
 add_filter( 'language_attributes', 'upandup_woo_html_class' );
+
+// add product-cat to classlist
+function upandup_woo_product_cat_class( $classes, $class, $category ) {
+	$classes[] = $category->slug;
+	return $classes;
+}
+add_filter( 'product_cat_class', 'upandup_woo_product_cat_class', 10, 4 );
 
 
 /************************
@@ -709,7 +715,7 @@ add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 
 function upandup_woo_recent_products() {
 	// get recent orders
 	$customer_orders = get_posts( apply_filters( 'woocommerce_my_account_my_orders_query', array(
-		'numberposts' => 10,
+		'numberposts' => 30,
 		'meta_key'    => '_customer_user',
 		'meta_value'  => get_current_user_id(),
 		'post_type'   => wc_get_order_types( 'view-orders' ),
@@ -725,16 +731,16 @@ function upandup_woo_recent_products() {
 			}
 		}
 		if( is_array( $ordered_products ) ) {
-			$ordered_products = array_unique( $ordered_products ); ?>
+			// trim list to 10 unique products;
+			$ordered_products = array_slice( array_unique( $ordered_products ), 0, 10 ); ?>
 			<div class="medium-6 columns">
 				<h2>Recent Products</h2>
 				<table>
 					<?php foreach ( $ordered_products as $product_id ) {
-						$product_data = get_post( $product_id );
-						if ( 'product' !== $product_data->post_type ) {
+						$_product = wc_get_product( $product_id );
+						if( $_product === false ) {
 							continue;
-						}
-						$_product = wc_get_product( $product_data ); ?>
+						} ?>
 						<tr>
 							<td>
 								<a href="<?php echo get_permalink( $product_id ); ?>"><?php echo $_product->get_title(); ?></a>
