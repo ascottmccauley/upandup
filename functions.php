@@ -223,6 +223,20 @@ function upandup_page_title( $page_title ) {
 }
 add_filter( 'page_title', 'upandup_page_title' );
 
+// Add modernizr stop parent from deferring it
+function upandup_modernizr() {
+	wp_enqueue_script( 'modernizr', get_stylesheet_directory_uri() . '/assets/js/modernizr.js', null, null, false );
+}
+add_action( 'wp_enqueue_scripts', 'upandup_modernizr' );
+
+function groundup_defer_script( $tag, $handle ) {
+	if ( $handle != 'jquery' && $handle != 'modernizr' ) {
+		$tag = str_replace(' src', ' defer="defer" src', $tag );
+	}
+	return $tag;
+}
+
+// IE shims
 function upandup_ie_fix() {
 	echo '<!--[if lt IE 9]>
   <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
@@ -233,21 +247,9 @@ function upandup_ie_fix() {
 }
 add_action( 'wp_head', 'upandup_ie_fix' );
 
-function upandup_modernizr() {
-	wp_enqueue_script( 'modernizr', get_stylesheet_directory_uri() . '/assets/js/modernizr.js', null, null, false );
-}
-add_action( 'wp_enqueue_scripts', 'upandup_modernizr' );
-
 function upandup_ie() {
 	global $wp_scripts;
 	wp_enqueue_script( 'ie', get_stylesheet_directory_uri() . '/assets/js/ie.js', null, null, false );
 	$wp_scripts->add_data( 'ie', 'conditional', 'IE' );
 }
 add_action( 'wp_enqueue_scripts', 'upandup_ie' );
-
-function groundup_defer_script( $tag, $handle ) {
-	if ( $handle != 'jquery' && $handle != 'modernizr' ) {
-		$tag = str_replace(' src', ' defer="defer" src', $tag );
-	}
-	return $tag;
-}
