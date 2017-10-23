@@ -921,6 +921,31 @@ add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 
 /************************
  * account pages
 ************************/
+// Add account number to My Account pages
+function upandup_woocommerce_edit_account_form() {
+	$user_id = get_current_user_id();
+  $user = get_userdata( $user_id );
+
+  if ( !$user )
+    return;
+
+  $account_number = get_user_meta( $user_id, 'account_number', true );
+	?>
+
+	<p class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">
+		<label for="account_number"><?php _e( 'Account Number', 'woocommerce' ); ?> </label>
+		<input disabled type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="account_number" id="account_number" value="<?php echo $account_number; ?>" />
+	</p>
+
+<?php }
+add_action( 'woocommerce_edit_account_form_start', 'upandup_woocommerce_edit_account_form' );
+
+// do not save account_number data, because we do not want the customer to update it.
+// function upandup_woocommerce_save_account_details( $user_id ) {
+//   update_user_meta( $user_id, 'account_number', htmlentities( $_POST[ 'account_number' ] ) );
+// }
+// add_action( 'woocommerce_save_account_details', 'upandup_woocommerce_save_account_details' );
+
 // remove duplicitave menu from account page
 remove_action( 'woocommerce_account_navigation', 'woocommerce_account_navigation' );
 
