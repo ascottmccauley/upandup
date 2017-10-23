@@ -12,8 +12,8 @@
 // Import Slick-Carousel
 $slick-font-path: "../fonts/";
 $slick-loader-path: "../img/";
-@import "../../bower_components/slick-carousel/slick/slick";
-@import "../../bower_components/slick-carousel/slick/slick-theme";
+@import "../../bower_components/slick-carousel/slick/slick.scss";
+@import "../../bower_components/slick-carousel/slick/slick-theme.scss";
 
 // Import Magnific Popup
 @import "../../bower_components/Magnific-Popup/src/css/main";
@@ -93,6 +93,10 @@ del {
 
 button, .button, input[type="submit"], a {
 	cursor: pointer;
+}
+mark {
+	background-color: inherit;
+	font-weight: bold;
 }
 
 .full {
@@ -438,6 +442,9 @@ body.with-sidebar #main {
 			float: left;
 			margin-right: 2rem;
 		}
+	}
+	a:hover {
+		text-decoration: underline;
 	}
 	footer {
 		.meta-time { }

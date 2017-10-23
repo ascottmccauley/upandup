@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * [button]
  *
@@ -15,9 +15,9 @@ function shortcode_button( $atts, $content = null ) {
 		'url'  => '',
 		'link' => '',
 		'style' => '', /* radius, round */
-		'text' => '', 
+		'text' => '',
 		), $atts ) );
-	
+
 	if($text == ''){
 		$text = do_shortcode($content);
 	}
@@ -28,16 +28,16 @@ function shortcode_button( $atts, $content = null ) {
 		$url = $atts[0];
 	}
 	// Add http:// if user did not include it
-	if(!strpos($url, 'http') === 0) { 
-		$url = 'http://' . $url;
+	if(!strpos($url, 'http') === 0) {
+		$url = 'https://' . $url;
 	}
 	$url .= ' href="' . $url . '"';
 	
-	$output = '<a href="' . $url . '" class="button '. $style;
+	$output = '<a ' . $url . '" class="button '. $style;
 	$output .= '">';
 	$output .= $text;
 	$output .= '</a>';
-	
+
 	return $output;
 }
-add_shortcode('button', 'shortcode_button'); 
+add_shortcode('button', 'shortcode_button');

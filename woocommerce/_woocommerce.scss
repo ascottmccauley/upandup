@@ -114,7 +114,6 @@ input[type="number"] {
 	visibility: hidden !important;
 }
 
-
 .woocommerce-pagination {
 	@include pagination-container(true);
 }
@@ -139,6 +138,10 @@ ul.products {
 	@media #{$xxlarge-up} {
 		@include block-grid($per-row: 9);
 	}
+}
+
+.cross-sells > h2 {
+	font-size: $h4-font-size;
 }
 
 /**** product categories ****/
@@ -179,7 +182,6 @@ body.children.parent ul.products {
 	}
 }
 
-
 .product-category {
 	a {
 		background: $white;
@@ -203,7 +205,7 @@ body.children.parent ul.products {
 			}
 		}
 	}
-	h3 {
+	.woocommerce-loop-category__title {
 		background: inherit;
 		border: inherit;
 		font-size: $h5-font-size;
@@ -224,7 +226,7 @@ li.product {
 		backface-visibility: hidden;
 		border: 2px solid $tan;
 		overflow: hidden;
-		@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+		transition: box-shadow .2s, transform .3s, background .5s, background-size .1s;
 		transform-origin: bottom;
 	}
 	&:hover .square-thumb {
@@ -232,7 +234,7 @@ li.product {
 		transform: rotateX(-20deg);
 		-webkit-transform: rotateX(-20deg);
 	}
-	h3 {
+	.woocommerce-loop-product__title, .woocommerce-loop-product__buy {
 		backface-visibility: hidden;
 		color: $primary-color;
 		display: inline-block;
@@ -266,7 +268,7 @@ li.product {
 				width: 100%;
 			}
 			&:hover {
-				h3 {
+				.woocommerce-loop-product__title {
 					transform: translateY(-300%);
 				}
 				&::before {
@@ -275,14 +277,12 @@ li.product {
 			}
 		}
 	}
-	a.square-thumb {
-		&:hover {
-			&~.product-info h3 {
-				transform: translateY(-300%);
-			}
-			&~.product-info a::before {
-				bottom: 0;
-			}
+	.woocommerce-LoopProduct-link:hover {
+		&~.product-info .woocommerce-loop-product__title {
+			transform: translateY(-300%);
+		}
+		&~.product-info a::before {
+			bottom: 0;
 		}
 	}
 	span.price {
@@ -323,7 +323,7 @@ li.product {
 			color: scale-color($success-color, $lightness: -60%);
 		}
 		&:hover {
-			h3 {
+			.woocommerce-loop-product__buy {
 				transform: translateY(300%);
 			}
 			&::before {
@@ -362,30 +362,38 @@ li.product {
 	}
 }
 
-.thumbnails {
-	margin-top: 1rem;
-}
-
 .upsells {
-	@include grid-column(12);
+	@include grid-column($columns: 12);
 	margin-top: 1rem;
 }
 
 .upsells ul.products { }
 
 /***** single-product ****/
-.product-image {
-	background-position: center;
-	background-repeat: no-repeat;
-	background-size: 100%;
-	@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
-	min-height: 10rem;
-	img {
-		visibility: hidden;
+body.single-product {
+	.product {
+		@include grid-row();
+	}
+	.summary {
+		@include grid-column($columns:12);
+		@media #{$medium-up} {
+			@include grid-column($columns:6, $push:6);
+		}
 	}
 }
-.zoom:hover {
-	background-size: 130%;
+.woocommerce-product-gallery__image {
+	@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
+	align-items: center;
+	display: flex;
+	margin-bottom: 1rem;
+	min-height: 300px;
+	> a {
+		margin: 0 auto;
+	}
+}
+.woocommerce-product-gallery__thumbnail a.active {
+	box-shadow: 2px 2px 2px rgba(0,0,0,.5);
+	opacity: .5;
 }
 form.cart  {
 	.quantity {
@@ -399,17 +407,20 @@ form.cart  {
 	}
 }
 
-.thumbnails {
-	margin-top: 1rem;
+.cross-sells {
+	clear: both;
 }
 
 /***** Cart *****/
-.cart {
-	.actions {
-		text-align: right;
-	}
-	.checkout-button, .update-cart-button, .empty-cart-button {
+.shop_table .actions {
+	text-align: right;
+}
+.woocommerce-cart-form__contents .actions {
+	width: 100%;
+	.checkout-button, .update-cart-button, .empty-cart-button, .downloads, input[name="update_cart"] {
 		color: $white;
+		@include button($padding: $button-sml);
+		margin: 1rem;
 		position: relative;
 		&::before {
 			color: $white;
@@ -444,7 +455,9 @@ form.cart  {
 	}
 
 	// Empty Cart Button
-	.empty-cart-button {
+	// TODO: figure out how to replace input element with something that supports ::before and ::after
+	input[name="update_cart"] {
+		float: left;
 		&::before {
 			content: $fa-var-trash;
 		}
@@ -453,8 +466,19 @@ form.cart  {
 		}
 	}
 
+	// Downloads button
+	.downloads {
+		float: left;
+		&::before {
+			content: $fa-var-photo;
+		}
+		&::after {
+			content: $fa-var-cloud-download;
+		}
+	}
+
 	// Update Cart Button
-	.update-cart-button {
+	.update-cart-button, input[name="update_cart"] {
 		&::before, &::after {
 			content: $fa-var-refresh;
 		}
@@ -469,12 +493,12 @@ form.cart  {
 
 	// Checkout Button
 	.checkout-button {
-
+		float: right;
 	}
 }
 
 /***** Checkout *****/
-.woocommerce-billing-fields, .woocommerce-shipping-fields, .woocommerce-checkout-review-order {
+.woocommerce-billing-fields, .woocommerce-shipping-fields, .woocommerce-additional-fields, .woocommerce-checkout-review-order {
 	@media #{$medium-up} {
 		@include grid-column($columns:6);
 	}
@@ -551,7 +575,7 @@ form.cart  {
 		.count {
 			display: none;
 		}
-		&.filtered a {
+		&.chosen a {
 			opacity: .75;
 			&::before {
 				content: $fa-var-check-square-o;
@@ -561,22 +585,24 @@ form.cart  {
 }
 
 /**** Store Notices ****/
-.alert-box {
+.woocommerce-message {
+	@include alert-base;
+	@include alert-style($success-color);
 	color: $white;
+	font-size: $h5-font-size;
 	line-height: 3rem;
 	overflow: hidden;
 	padding: 0;
 	text-align: center;
 	a.button {
 		background: rgba(255,255,255,.2);
-		height: 100%;
+		height: auto;
 		margin: 0;
 		&:hover {
 			background: rgba(0,0,0,.1);
 		}
 		&.wc-backward {
 			float: left;
-			margin-left: 2.5rem;
 			padding-left: 1rem;
 			&::before {
 				content: $fa-var-chevron-left;
@@ -594,4 +620,66 @@ form.cart  {
 			}
 		}
 	}
+}
+
+
+
+/**** Account ****/
+.shop_table_responsive {
+	margin: 0 auto;
+	td {
+		white-space: nowrap;
+		width: 1px;
+	}
+}
+.button.view, .button.order-again {
+	padding: $button-tny;
+	margin-right: 1rem;
+}
+.reorder-item {
+	float: left;
+	margin-right: 1rem;
+}
+
+// Engraving
+////////////
+.engraving_container {
+	display: block;
+	float: left;
+	position: relative;
+}
+.engraving_locket {
+	display: block;
+}
+.engraving_text {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 300px;
+	width: 200px;
+	position: absolute;
+}
+.engraving_display {
+	color: rgba(155,155,155,.5);
+	font-size: 28px;
+	line-height: 1;
+	opacity: .6;
+	position: absolute;
+	text-align: center;
+	text-shadow: -1px -1px 0px rgba(0,0,0,.9), -1px 1px 0px rgba(255,255,255,.9);
+	white-space: pre;
+}
+.engraving_options {
+	float: left;
+	margin-left: 3rem;
+	margin-top: 2rem;
+}
+.font1 {
+	font-family: cursive;
+}
+.font2 {
+	font-family: monospace;
+}
+.font3 {
+	font-family: sans-serif;
 }

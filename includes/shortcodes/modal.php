@@ -25,9 +25,12 @@ class Modal_Shortcode {
 		'visits' => '',
 		), $atts ) );
 
+		// PROBLEM USING VISITS because of non-unique cookie
+
 		// check if the user has past the number of visits to show this modal for
-		if ( isset ( $visits ) && groundup_return_visit() <= $visits ) {
+		if ( is_int ( $visits ) && groundup_return_visit() <= $visits || $visits == '' ) {
 			// get unique modal number
+
 			$modalNum = 'modal-' . substr(uniqid(), -4); //last 4 digits of uniqid will suffice
 			if($text == '') {
 				$text = $content;
@@ -54,13 +57,13 @@ class Modal_Shortcode {
 				}
 				</script>';
 			}
-
 			add_action('wp_footer', array( __CLASS__, 'footer' ), 300);
 
 			return $button;
 		}
 	}
 	public static function footer() {
+		var_dump('testing popups');
 		echo self::$modal;
 	}
 }

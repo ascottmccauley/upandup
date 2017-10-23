@@ -4,7 +4,13 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     2.0.14
+ * @version     3.1.0
+**/
+
+/** Changes
+* use custom function upandup_woo_img_url to just get image directly instead of attachment
+*
+*
 **/
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,17 +19,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $post, $woocommerce, $product;
 
-$img_url = upandup_woo_img_url( 'medium' );
-if ( ! empty( $img_url ) ) { ?>
+$thumbnail = upandup_woo_img_url( 'medium' );
+if ( ! empty( $thumbnail ) ) {
+	$full_size_image   = upandup_woo_img_url( 'original' );
+	$full_size_image_dimensions = getimagesize( $full_size_image );
+	$image_title = basename( $thumbnail, '.jpg' );
+
+	$attributes = array(
+		'title'                   => $image_title,
+		'data-src'                => $full_size_image,
+		'data-large_image_width'  => $full_size_image_dimensions[0],
+		'data-large_image_height' => $full_size_image_dimensions[1],
+	);
+
+	$html  = '<div class="th woocommerce-product-gallery__image "><a href="#">';
+	$html .= '<img src="' . $thumbnail . '" ' . urldecode( http_build_query( $attributes, '', ' ' ) ) . ' />';
+	$html .= '</a></div>';
+	?>
 
 	<div class="small-12 medium-6 medium-pull-6 columns gallery images">
 
 		<?php
-		$image_title = esc_attr( get_the_title( get_post_thumbnail_id() ) );
-		$image_link = upandup_woo_img_url( 'original' );
-		$image = '<img src="' . $img_url . '" />';
 
-		echo apply_filters( 'woocommerce_single_product_image_html', sprintf( '<a href="%s" style="background-image: url(%s);" itemprop="image" class="zoom th product-image" title="%s">%s</a>', $image_link, $img_url, $image_title, $image ), $post->ID );
+		echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, get_post_thumbnail_id( $post->ID ) );
 
 		do_action( 'woocommerce_product_thumbnails' ); ?>
 

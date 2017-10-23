@@ -2,80 +2,134 @@
 /**
  * Single Product Thumbnails
  *
+ * This template can be overridden by copying it to yourtheme/woocommerce/single-product/product-thumbnails.php.
+ *
+ * HOWEVER, on occasion WooCommerce will need to update template files and you
+ * (the theme developer) will need to copy the new files to your theme to
+ * maintain compatibility. We try to do this as little as possible, but it does
+ * happen. When this occurs the version of the template file will be bumped and
+ * the readme will list any important changes.
+ *
+ * @see 	    https://docs.woocommerce.com/document/template-structure/
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     2.3.0
+ * @version     3.1.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly
+	exit;
 }
 
-global $post, $product, $woocommerce;
+global $post, $product;
 
-$attachment_ids = $product->get_gallery_attachment_ids();
+$upload_dir = wp_upload_dir();
+$upload_path = $upload_dir['path'];
+$upload_url = set_url_scheme( $upload_dir['url'] );
 
-if ( $attachment_ids ) {
-	$loop 		= 0;
-	$columns 	= apply_filters( 'woocommerce_product_thumbnails_columns', 4 );
-	?>
-	<ul class="small-block-grid-<?php echo $columns; ?> thumbnails">
+$downloads = array();
 
-		<?php foreach ( $attachment_ids as $attachment_id ) {
+// get main thumbnail that will only be shown if more thumbnails are found
+$thumbnail = upandup_woo_img_url( 'thumbnail' );
+if ( ! empty( $thumbnail ) ) {
+  $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
+	$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
+	$full_size_image_dimensions = getimagesize( $full_size_image );
+	$image_title = basename( $thumbnail, '.jpg' );
 
-			$classes = array( 'zoom' );
+  array_push( $downloads, $full_size_image );
 
-			if ( $loop == 0 || $loop % $columns == 0 )
-				$classes[] = 'first';
+	$attributes = array(
+		'title'                   => $image_title,
+		'data-src'                => $full_size_image,
+    'data-medium_image'       => $medium_size_image,
+		'data-large_image'        => $full_size_image,
+		'data-large_image_width'  => $full_size_image_dimensions[0],
+		'data-large_image_height' => $full_size_image_dimensions[1],
+	);
 
-			if ( ( $loop + 1 ) % $columns == 0 )
-				$classes[] = 'last';
+  $first_html = '<ul class="small-block-grid-4 thumbnails">';
+	$first_html .= '<li class="woocommerce-product-gallery__thumbnail">';
+	$first_html .= '<a class="th square-thumb active" style="background-image: url(\'' . $thumbnail . '\');"' . urldecode( http_build_query( $attributes, '', ' ' ) ) . ' /></a>';
+	$first_html .= '</li>';
+}
 
-			$image_link = wp_get_attachment_url( $attachment_id );
+$sku = $product->get_sku();
 
-			if ( ! $image_link )
-				continue;
+// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
+foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
+  $thumbnail = str_replace( $upload_path, $upload_url, $img_path );
+  $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
+	$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
+	$source_image = str_replace( 'thumb', 'source', $thumbnail );
+  $full_size_image_dimensions = getimagesize( $full_size_image );
+	$image_title     = $image_title = basename( $thumbnail, '.jpg' );
 
-			$image       = wp_get_attachment_image( $attachment_id, apply_filters( 'single_product_small_thumbnail_size', 'small' ) );
-			$image_class = esc_attr( implode( ' ', $classes ) );
-			$image_title = esc_attr( get_the_title( $attachment_id ) );
+  array_push( $downloads, $source_image );
 
-			echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', sprintf( '<li><a href="%s" class="%s" title="%s">%s</a></li>', $image_link, $image_class, $image_title, $image ), $attachment_id, $post->ID, $image_class );
+  $attributes = array(
+		'title'                   => $image_title,
+		'data-src'                => $full_size_image,
+    'data-medium_image'       => $medium_size_image,
+		'data-large_image'        => $full_size_image,
+		'data-large_image_width'  => $full_size_image_dimensions[0],
+		'data-large_image_height' => $full_size_image_dimensions[1],
+	);
 
-			$loop++;
-		}
+	$html  = '<li class="woocommerce-product-gallery__thumbnail">';
+	$html .= '<a class="th square-thumb" style="background-image: url(\'' . $thumbnail . '\');"' . urldecode( http_build_query( $attributes, '', ' ' ) ) . ' /></a>';
+	$html .= '</li>';
 
-	?></ul>
-	<?php
-} else {
-	// check /media/sku-$size.jpg and /media/sku.jpg
-	$upload_dir = wp_upload_dir();
-	$upload_path = $upload_dir['path'];
-	$upload_url = $upload_dir['url'];
-	$sku = $product->get_sku();
+  // show main thumbnail now.
+  if( '' != $first_html ) {
+    echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $first_html, $thumbnail );
+    $first_html = '';
+  }
 
-	echo '<ul class="thumbnails small-block-grid-4">';
-		// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
-		foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
-				$img_url = str_replace( $upload_path, $upload_url, $img_path );
-				$img_link = str_replace( 'thumb', 'large', $img_url );
-				echo '<li><a href="' . $img_link . '" class="th square-thumb" style="background-image: url(\'' . $img_url . '\');"></a></li>';
-		}
-	echo '</ul>';
+  echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $thumbnail );
 }
 
 // For grouped product, add grouped children image
 $children = $product->get_children();
 if ( $children ) {
-	echo '<ul class="thumbnails small-block-grid-4">';
 	foreach( $children as $child ) {
 		$child_product = wc_get_product( $child );
-		$img_url = upandup_woo_img_url( 'small', $child_product );
-		$img_link = upandup_woo_img_url( 'large', $child_product );
-		// $img_link = get_permalink( $child ); // causes problems with .gallery javascript looking for an image instead of just linking
-		if ( $img_url != '' ) {
-			echo '<li><a href="' . $img_link . '" class="th square-thumb" style="background-image: url(\'' . $img_url . '\');"></a></li>';
+		$thumbnail = upandup_woo_img_url( 'thumbnail', $child_product );
+		if( $thumbnail != '' ) {
+      $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
+    	$full_size_image = str_replace( 'thumb', 'large', $thumbnail );
+			$source_image = str_replace( 'thumb', 'source', $thumbnail );
+			$full_size_image_dimensions = getimagesize( $full_size_image );
+			$image_title     = $image_title = basename( $thumbnail, '.jpg' );
+
+      array_push( $downloads, $source_image );
+
+			$attributes = array(
+				'title'                   => $image_title,
+				'data-src'                => $full_size_image,
+        'data-medium_image'       => $medium_size_image,
+				'data-large_image'        => $full_size_image,
+				'data-large_image_width'  => $full_size_image_dimensions[0],
+				'data-large_image_height' => $full_size_image_dimensions[1],
+			);
+
+			$html  = '<li class="woocommerce-product-gallery__thumbnail">';
+			$html .= '<a class="th square-thumb" style="background-image: url(\'' . $thumbnail . '\');"' . urldecode( http_build_query( $attributes, '', ' ' ) ) . ' /></a>';
+			$html .= '</li>';
+
+      // show main thumbnail now.
+      if( '' != $first_html ) {
+        echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $first_html, $thumbnail );
+        $first_html = '';
+      }
+
+			echo apply_filters( 'woocommerce_single_product_image_thumbnail_html', $html, $thumbnail );
 		}
 	}
-	echo '</ul>';
+}
+
+if( '' == $first_html ) {
+  echo '</ul>';
+}
+if( current_user_can( 'download_images' ) ) {
+	echo '<button id="download" class="small secondary" data-files="' . implode( ' ', $downloads ) . '">Download All Images</button>';
 }

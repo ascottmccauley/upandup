@@ -21,28 +21,28 @@ if (!window.getComputedStyle) {
 
 //IE8 polyfill for requestAnimationFrame
 (function() {
-    var lastTime = 0;
-    var vendors = ['webkit', 'moz'];
-    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-        window.cancelAnimationFrame =
-          window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-    }
+  var lastTime = 0;
+  var vendors = ['webkit', 'moz'];
+  for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+      window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+      window.cancelAnimationFrame =
+        window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+  }
 
-    if (!window.requestAnimationFrame)
-        window.requestAnimationFrame = function(callback, element) {
-            var currTime = new Date().getTime();
-            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
-              timeToCall);
-            lastTime = currTime + timeToCall;
-            return id;
-        };
+  if (!window.requestAnimationFrame)
+      window.requestAnimationFrame = function(callback, element) {
+          var currTime = new Date().getTime();
+          var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+          var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+            timeToCall);
+          lastTime = currTime + timeToCall;
+          return id;
+      };
 
-    if (!window.cancelAnimationFrame)
-        window.cancelAnimationFrame = function(id) {
-            clearTimeout(id);
-        };
+  if (!window.cancelAnimationFrame)
+      window.cancelAnimationFrame = function(id) {
+          clearTimeout(id);
+      };
 }());
 
 /*! A fix for the iOS orientationchange zoom bug.
@@ -95,21 +95,83 @@ jQuery(document).ready(function() {
 		}
 	});
 
-	// Magnific Popup Lightbox
-	jQuery('.gallery').each(function() { // the containers for all your galleries
-		jQuery(this).magnificPopup({
-			delegate: 'a', // the selector for gallery item
-			gallery:{enabled:true},
-			type:'image',
-			image: {
-				titleSrc: function (item) {
-					return '<a href="' + item.src + '" download="' + item.el.attr('title') + '" target="_blank" class="button btn">Download Image</a>';
-				},
-				verticalFit: true
-			},
-			focus: ''
-		});
-	});
+  // Archive Thumbnail image swap
+  //TODO: duplicate thumbail and fade in.
+  // KLUDGE
+  var hoverInterval;
+  var k = 1;
+  var swap = null;
+  var imageArray = null;
+  function fadeBackgroundImage() {
+    if(k >= imageArray.length) {
+      k = 0;
+    }
+    console.log(k);
+    jQuery(swap).css('background-image', "url(" + imageArray[k++] + ")");
+  }
+
+  jQuery('.archive-thumbnail').each(function() {
+    var images = jQuery(this).data('images').split(' ');
+    if(images[0]!=''){
+      // preload alternate images
+      images.forEach(function(img){
+        new Image().src = img;
+      });
+      jQuery(this).on('mouseover', function() {
+        k=1;
+        swap = this;
+        imageArray = images;
+        hoverInterval = setInterval(fadeBackgroundImage, 3000);
+        fadeBackgroundImage();
+      });
+      jQuery(this).on('mouseout', function() {
+        clearInterval(hoverInterval);
+        jQuery(this).css('background-image', "url(" + images[0] + ")");
+      });
+    }
+  });
+
+  // Single-Product zoom
+  jQuery('.woocommerce-product-gallery__image').each(function() {
+    var img = jQuery('.woocommerce-product-gallery__image img');
+    var tolerance = 1.5; // amount that large_image has to be larger
+    var large_image = img.data('src');
+    var large_image_height = img.data('large_image_height');
+    var large_image_width = img.data('large_image_width');
+    var image_width = img.width();
+    var image_height = img.height();
+    if(large_image_height > tolerance * image_height && large_image_width > tolerance * image_width){
+      new Image().src = large_image;
+      jQuery(this).zoom({ on: 'mouseover' });
+    }
+  });
+
+  // Single-Product Thumbnail image swap
+  jQuery('.woocommerce-product-gallery__thumbnail a').each(function() {
+    jQuery(this).on('click', function() {
+      jQuery('.thumbnails').find('.active').removeClass('active');
+      jQuery(this).addClass('active');
+      var tolerance = 1.5; // amount that large_image has to be larger
+      var medium_image = jQuery(this).data('medium_image');
+      var img = new Image()
+      var large_image = jQuery(this).data('large_image');
+      var large_image_height = jQuery(this).data('large_image_height');
+      var large_image_width = jQuery(this).data('large_image_width');
+      img.onload = function() {
+        var image_width = this.width;
+        var image_height = this.height;
+        new Image().src = large_image;
+        var main_image = jQuery('.woocommerce-product-gallery__image');
+        var newHTML = '<a href="#"><img src="' +  medium_image + '" data-src="' +  large_image + '" data-large_image_height="' +  large_image_height + '" data-large_image_width="' +  large_image_width + '"></a>';
+        jQuery('.woocommerce-product-gallery__image').html(newHTML);
+        if(large_image_height > tolerance * image_height && large_image_width > tolerance * image_width){
+          new Image().src = large_image;
+          jQuery('.woocommerce-product-gallery__image').zoom({ on: 'mouseover' });
+        }
+      }
+      img.src = medium_image;
+    });
+  });
 
 	// Slideshows
 	jQuery('.slideshow').each(function() {
@@ -158,4 +220,5 @@ jQuery(document).ready(function() {
   var dropdownButtons = jQuery('.right-off-canvas-menu').find('.has-dropdown');
     dropdownButtons.removeClass('has-dropdown');
     dropdownButtons.addClass('has-submenu');
-});
+
+}); // end document.ready

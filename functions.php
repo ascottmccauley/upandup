@@ -253,3 +253,81 @@ function upandup_ie() {
 	$wp_scripts->add_data( 'ie', 'conditional', 'IE' );
 }
 add_action( 'wp_enqueue_scripts', 'upandup_ie' );
+
+/************************
+ * Temporary
+************************/
+// Add popup once for users that have logged-in
+// TODO: This should eventually be extracted into a separate post-type with settings
+// TODO: This should eventually store a field in the user db to see if it has been seen
+function upandup_tmp_popup() {
+	// check if this has been shown before for the user
+	$popup_ver = 'testing1';
+	if( is_user_logged_in() ) {
+		$user_id = get_current_user_id();
+		if ( $popup_ver !== get_user_meta( $user_id,  'popups', true ) )  {
+			// get contents of popup
+			$page = get_page_by_title( 'Popup' );
+			if ( $page ) {
+				$content = apply_filters( 'the_content', $page->post_content );
+
+				// show the popup
+				$modalNum = 'modal-' . substr(uniqid(), -4); //last 4 digits of uniqid will suffice
+
+				$modal = '<div id="' . $modalNum . '" class="reveal-modal ' . $size . '" role="dialog" data-reveal>';
+				// get content from posts
+				$modal .= $content;
+				$modal .= '<a href="#" style="button" class="close-reveal-modal">&times;</a>';
+				$modal .= '</div>';
+
+				$modalScript = '<script style="text/javascript">
+				var popuptimer = setInterval(popuptime, 1000);
+				function popuptime() {
+					if (typeof jQuery("#' . $modalNum . '").foundation == "function") {
+						jQuery("#' . $modalNum . '").foundation("reveal","open");
+						clearInterval(popuptimer);
+					}
+				}
+				</script>';
+
+				echo $modal;
+				echo $modalScript;
+
+				// update user_meta to show that the modal has been seen
+				update_usermeta( $user_id, 'popups', $popup_ver );
+			}
+		}
+	}
+}
+add_action( 'wp_footer', 'upandup_tmp_popup' );
+
+
+// Change field description for log in
+// STUPID WP, this only works for manually insertted login forms see function below for text replacement
+function upandup_login_form_defaults( $defaults ) {
+	$defaults['label_username'] = 'Account Number';
+	var_dump($defaults);
+	echo '<h1>HEY, WTF</h1>';
+	return $defaults;
+}
+add_filter( 'login_form_defaults', 'upandup_login_form_defaults' );
+
+// Change default login username label
+add_filter( 'gettext', 'upandup_login_label' );
+add_filter( 'ngettext', 'upandup_login_label' );
+function upandup_login_label( $translated ) {
+   $translated = str_ireplace( 'Username or Email Address', 'Account Number', $translated );
+   return $translated;
+}
+
+// Add Login Warning
+function groundup_login_error_message( $error ) {
+	global $errors;
+	$err_codes = $errors->get_error_codes();
+
+	// Invalid username or password.
+	if ( in_array( 'invalid_username', $err_codes ) || in_array( 'incorrect_password', $err_codes ) ) {
+		$error = '<strong>ERROR</strong>: Invalid account number or password. <br/ >Your account will be locked out after 10 unsuccessful attempts.<br />Please contact us if you do not know your account number or password.';
+	}
+	return $error;
+}

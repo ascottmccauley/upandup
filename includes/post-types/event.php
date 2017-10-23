@@ -228,7 +228,7 @@ function event_meta_scripts() {
 	if( $post_type == 'event' ) {
 		// enqueue datepicker
 		wp_enqueue_script('jquery-ui-datepicker', array('jquery', 'jquery-ui-core'));
-		wp_register_style('jquery-ui', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
+		wp_register_style('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
 		wp_enqueue_style('jquery-ui'); ?>
 		<script type="text/javascript">
 			jQuery(document).ready(function(){
