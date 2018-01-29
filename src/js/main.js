@@ -81,6 +81,10 @@ if (!window.getComputedStyle) {
 })( this );
 
 jQuery(document).ready(function() {
+  jQuery('#back').on('click', function(e) {
+    e.preventDefault()
+    window.history.go(-2);
+  });
 	jQuery(document).foundation({
 		accordion: { multi_expand: true }
 	});

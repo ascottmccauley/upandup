@@ -13,6 +13,7 @@ $include-html-classes: false;
 html, body {
 	background-color: $secondary-color;
 	#login {
+		// .pw-weak { display: none !important;}
 		h1 a {
 			background-image: url(../img/logo.png);
 			background-position: top;
@@ -49,7 +50,9 @@ html, body {
 				}
 			}
 		}
-		#nav {display: none;}
+		#nav {
+			// display: none;
+		}
 		#nav, #backtoblog {
 			color: $primary-color;
 			margin: 10px;

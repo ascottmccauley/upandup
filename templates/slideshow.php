@@ -23,14 +23,14 @@ if ( ! empty( $slideshow ) ) {
 	if ( $slideshow_query->have_posts() ) { ?>
 		<div class="slideshow <?php echo $slideshow; ?>">
 			<?php while ( $slideshow_query->have_posts() ) : $slideshow_query->the_post(); ?>
-				<?php $slide_url = get_post_meta( get_the_ID(), '_slide_url', true );
+				<?php $slide_url = set_url_scheme( get_post_meta( get_the_ID(), '_slide_url', true ) );
 					if ( $slide_url != '' ) {
 						echo '<a class="slide" target="_blank" href="' . $slide_url . '">';
 					}else {
 						echo '<div>';
 					} ?>
 					<?php if ( has_post_thumbnail() ) {
-						the_post_thumbnail('large');
+						set_url_scheme( the_post_thumbnail( 'large' ) );
 						if ( has_excerpt() ) { ?>
 							<div class="caption"><?php the_excerpt(); ?></div>
 						<?php }

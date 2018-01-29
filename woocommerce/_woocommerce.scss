@@ -381,6 +381,7 @@ body.single-product {
 		}
 	}
 }
+
 .woocommerce-product-gallery__image {
 	@include single-transition($property:all, $speed:200ms, $ease:ease-in-out);
 	align-items: center;
@@ -389,21 +390,32 @@ body.single-product {
 	min-height: 300px;
 	> a {
 		margin: 0 auto;
+
 	}
 }
+.no-flexboxlegacy .woocommerce-product-gallery__image, .noflexbox .woocommerce-product-gallery__image {
+	display: block; // IE Fallback
+}
+
 .woocommerce-product-gallery__thumbnail a.active {
 	box-shadow: 2px 2px 2px rgba(0,0,0,.5);
 	opacity: .5;
 }
 form.cart  {
+	@include grid-row();
 	.quantity {
+		label {
+			float: left;
+			margin-right: 1em;
+			padding-top: .5em;
+		}
+		.qty {
+			float: left;
+		}
+	}
+	.button {
+		@include button-size($padding: $button-tny);
 		float: left;
-	}
-	.single_add_to_cart_button {
-		@include button-size($padding:$button-tny);
-	}
-	h4 {
-		clear: both;
 	}
 }
 
@@ -415,6 +427,21 @@ form.cart  {
 .shop_table .actions {
 	text-align: right;
 }
+
+// fix img inside table
+table.cart {
+	tr.cart_item {
+		height: 120px;
+	}
+	td.product-thumbnail {
+		width: 80px;
+		text-align: center;
+		img {
+			max-height: 120px;
+		}
+	}
+}
+
 .woocommerce-cart-form__contents .actions {
 	width: 100%;
 	.checkout-button, .update-cart-button, .empty-cart-button, .downloads, input[name="update_cart"] {
@@ -499,12 +526,16 @@ form.cart  {
 
 /***** Checkout *****/
 .woocommerce-billing-fields, .woocommerce-shipping-fields, .woocommerce-additional-fields, .woocommerce-checkout-review-order {
-	@media #{$medium-up} {
-		@include grid-column($columns:6);
-	}
-	@media #{$large-up} {
-		@include grid-column($columns:4);
-	}
+	@include grid-column( $columns: 4);
+	// @media #{$medium-up} {
+	// 	@include grid-column($columns:6);
+	// }
+	// @media #{$large-up} {
+	// 	@include grid-column($columns:4);
+	// }
+}
+.woocommerce-billing-fields {
+	// display: none;
 }
 #ship-to-different-address-checkbox {
 	margin-bottom: 0;
@@ -622,7 +653,9 @@ form.cart  {
 	}
 }
 
-
+.woocommerce-message.notice {
+	@include alert-style($info-color);
+}
 
 /**** Account ****/
 .shop_table_responsive {
@@ -639,6 +672,25 @@ form.cart  {
 .reorder-item {
 	float: left;
 	margin-right: 1rem;
+}
+
+.requestImages {
+	@include button-icon();
+	&::after {
+		content: $fa-var-file-image-o;
+	}
+}
+.requestImages.submitting {
+	&::after {
+		content: $fa-var-spinner;
+		-webkit-animation: fa-spin 1s infinite steps(8);
+	          animation: fa-spin 1s infinite steps(8);
+	}
+}
+.requestImages.success {
+	&::after {
+		content: $fa-var-check-circle;
+	}
 }
 
 // Engraving
@@ -682,4 +734,83 @@ form.cart  {
 }
 .font3 {
 	font-family: sans-serif;
+}
+
+////// Image Request Page ////////
+html body.page-template-page-image-request.with-sidebar {
+	#main {
+		@media #{$medium-up} {
+			@include grid-column(12, $push:0, $float: left);
+			@include grid-column(12, $push:0, $float: left);
+			padding-bottom: 20px;
+			padding-right: 2rem;
+		}
+		@media #{$large-up} {
+			@include grid-column(12, $push:0, $float: left);
+			padding-right: 2rem;
+		}
+	}
+}
+
+li.imageRequestItem {
+	perspective: 600px;
+	.square-thumb {
+		box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
+		backface-visibility: hidden;
+		border: 2px solid $tan;
+		overflow: hidden;
+		transition: box-shadow .2s, transform .3s, background .5s, background-size .1s;
+		transform-origin: bottom;
+	}
+	&:hover .square-thumb {
+		box-shadow: 0px -10px 10px -10px rgba(0,0,0,.5);
+		transform: rotateX(-20deg);
+		-webkit-transform: rotateX(-20deg);
+	}
+	.woocommerce-loop-product__title, .woocommerce-loop-product__buy {
+		backface-visibility: hidden;
+		color: $primary-color;
+		display: inline-block;
+		font-size: $h5-font-size;
+		height: 100%;
+		margin-bottom: 0;
+		text-align: center;
+		width: 100%;
+	}
+	.product-info {
+		background-color: $grey;
+		border-bottom: 1px solid $white;
+		overflow: hidden;
+		position: relative;
+		a {
+			backface-visibility: hidden;
+			display: block;
+			height: 2rem;
+			overflow: hidden;
+			position: relative;
+		}
+	}
+}
+
+.imageRequestItem.selected {
+	opacity: .75;
+	.product-info {
+		background-color: $success-color;
+	}
+}
+
+.requestImagesForm ul.products {
+	@include block-grid($per-row: 4);
+	@media #{$medium-up} {
+		@include block-grid($per-row: 6);
+	}
+	@media #{$large-up} {
+		@include block-grid($per-row: 8);
+	}
+	@media #{$xlarge-up} {
+		@include block-grid($per-row: 11);
+	}
+	@media #{$xxlarge-up} {
+		@include block-grid($per-row: 14);
+	}
 }

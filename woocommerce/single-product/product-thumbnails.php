@@ -33,10 +33,11 @@ $thumbnail = upandup_woo_img_url( 'thumbnail' );
 if ( ! empty( $thumbnail ) ) {
   $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
 	$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
+	// $source_image = str_replace( 'thumb', 'source', $thumbnail );
 	$full_size_image_dimensions = getimagesize( $full_size_image );
 	$image_title = basename( $thumbnail, '.jpg' );
 
-  array_push( $downloads, $full_size_image );
+  // array_push( $downloads, $source_image );
 
 	$attributes = array(
 		'title'                   => $image_title,
@@ -60,11 +61,11 @@ foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) a
   $thumbnail = str_replace( $upload_path, $upload_url, $img_path );
   $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
 	$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
-	$source_image = str_replace( 'thumb', 'source', $thumbnail );
+	// $source_image = str_replace( 'thumb', 'source', $thumbnail );
   $full_size_image_dimensions = getimagesize( $full_size_image );
 	$image_title     = $image_title = basename( $thumbnail, '.jpg' );
 
-  array_push( $downloads, $source_image );
+  // array_push( $downloads, $source_image );
 
   $attributes = array(
 		'title'                   => $image_title,
@@ -96,12 +97,12 @@ if ( $children ) {
 		$thumbnail = upandup_woo_img_url( 'thumbnail', $child_product );
 		if( $thumbnail != '' ) {
       $medium_size_image = str_replace( 'thumb', 'medium', $thumbnail );
-    	$full_size_image = str_replace( 'thumb', 'large', $thumbnail );
-			$source_image = str_replace( 'thumb', 'source', $thumbnail );
+    	$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
+			// $source_image = str_replace( 'thumb', 'source', $thumbnail );
 			$full_size_image_dimensions = getimagesize( $full_size_image );
 			$image_title     = $image_title = basename( $thumbnail, '.jpg' );
 
-      array_push( $downloads, $source_image );
+      // array_push( $downloads, $source_image );
 
 			$attributes = array(
 				'title'                   => $image_title,
@@ -131,5 +132,5 @@ if( '' == $first_html ) {
   echo '</ul>';
 }
 if( current_user_can( 'download_images' ) ) {
-	echo '<button id="download" class="small secondary" data-files="' . implode( ' ', $downloads ) . '">Download All Images</button>';
+	echo '<button class="small secondary downloadImage" data-files="' . $sku . '">Download All Images</button>';
 }

@@ -3,6 +3,7 @@ var $ = require('gulp-load-plugins')();
 var del = require('del')
 var gulp = require('gulp');
 var bower = require('main-bower-files');
+var sourcemaps = require('gulp-sourcemaps');
 
 // Config Vars
 var config = {
@@ -69,6 +70,7 @@ gulp.task('css', function() {
 	del(paths.css.build + '*')
 	return gulp.src(paths.css.src + '**/*.scss')
 		.pipe($.plumber({errorHandler: onError}))
+		.pipe(sourcemaps.init())
 		.pipe($.sass())
 		.pipe($.print())
 		.pipe($.pleeease({
@@ -80,6 +82,8 @@ gulp.task('css', function() {
 			}
 		}))
 		.pipe($.clipEmptyFiles())
+		.pipe($.cleanCss())
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(paths.css.build))
 });
 

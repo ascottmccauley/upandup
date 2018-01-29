@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /************************
  * Helpers
 ************************/
+// wp post delete $(wp post list --post_type='shop_order' --format=ids)
 // Extend a permalink to include the $_GET variable 'prev'='postID';
 function upandup_get_permalink_prev( $url ) {
 	global $wp_query;
@@ -25,29 +26,145 @@ function upandup_get_permalink_prev( $url ) {
 	return $permalink;
 }
 
+// return true if customer or admin is logged in
+function upandup_woo_customer() {
+	if( is_user_logged_in() && ! current_user_can( 'subscriber') ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// allow shop manager to edit theme options
+$shop_manager = get_role( 'shop_manager' );
+$shop_manager->add_cap( 'edit_theme_options' );
+
 /************************
  * Cleanup
 ************************/
 // Make shop private
+// Redirect to login page if unaccessible page is tried
 function upandup_shop_private() {
-	if ( ! is_user_logged_in() ) {
-		if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
+	if( false == upandup_woo_customer() ) {
+		// if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
+		if ( is_woocommerce() || is_cart() || is_checkout() ) {
 			// allow access to cape-cod-jewelry and convertible-collection products
 			if ( ! has_term( 'cape-cod-jewelry', 'product_cat' ) && ! has_term(  'convertible-collection', 'product_cat' ) ) {
 				$redirect = home_url() . $_SERVER["REQUEST_URI"];
-				wp_redirect( wp_login_url( $redirect ) );
+				// wp_redirect( wp_login_url( $redirect ) );
+				wp_redirect( home_url() );
 				exit;
 			}
 		}
 	}
+	// change my-account to edit-account
+	if ( is_page( get_option('woocommerce_myaccount_page_id') ) && ! is_wc_endpoint_url( 'edit-account') && ! is_wc_endpoint_url( 'orders') && ! is_wc_endpoint_url( 'view-order') ) {
+		wp_redirect( wc_customer_edit_account_url() );
+		die();
+	}
 }
 add_action( 'template_redirect', 'upandup_shop_private' );
 
+// add message to subscribers
+function upandup_subscriber_pending_notice( $content ) {
+	if( is_user_logged_in() && current_user_can( 'subscriber' ) ) {
+		echo '<div class="woocommerce-message notice">Your account is still being reviewed. To expedite the process please contact customer service.</div>';
+	}
+}
+add_action( 'groundup_before_post', 'upandup_subscriber_pending_notice' );
+
+// Revert to non wc lostpassword form
+remove_filter( 'lostpassword_url', 'wc_lostpassword_url', 10 );
+
+// Change redirect for customers
+function upandup_woocommerce_login_redirect( $redirect, $request, $user ) {
+	// Get the first of all the roles assigned to the user
+	$role = $user->roles[0];
+
+	$dashboard = admin_url();
+	$shop = wc_get_page_permalink( 'shop' );
+
+	if( $role == 'administrator' || $role == 'shop_manager' ) {
+		//Redirect administrators to the dashboard
+		$redirect = $dashboard;
+	} elseif ( $role == 'customer' || $role == 'customer_limited' ) {
+		//Redirect wholesale customers to the "shop" page
+		$redirect = $shop;
+	} else {
+		//Redirect any other role to home
+		$redirect = home_url();
+	}
+
+	$redirect = $shop;
+
+	return $redirect;
+}
+add_filter( 'login_redirect', 'upandup_woocommerce_login_redirect', 30, 3 );
+// add_filter( 'woocommerce_login_redirect', 'upandup_woocommerce_login_redirect', 20, 2 );
+
+// change all my-account links to the edit account page instead.
+function woocommerce_get_my_account_page_permalink() {
+	return wc_customer_edit_account_url();
+}
+add_filter( 'woocommerce_get_my_account_page_permalink', 'woocommerce_get_my_account_page_permalink' );
+
+// Fix $_product->get_children() to show products ordered by sku number
+function upandup_woocommerce_get_children( $children ) {
+	$skus = [];
+	foreach( $children as $child ) {
+		$_product = wc_get_product( $child );
+		array_push( $skus, $_product->get_sku() );
+	}
+	array_multisort( $skus, $children );
+	return $children;
+}
+add_filter( 'woocommerce_product_get_children', 'upandup_woocommerce_get_children', 10, 1 );
+
+
+// Show links to children products and MSRP for grouped products when not logged in:
+function upandup_public_woocommerce_single_product_summary() {
+	global $product, $post;
+
+	$grouped_products = $product->get_children();
+
+	$previous_post = $post;
+
+	if ( $grouped_products ) { ?>
+		<table cellspacing="0" class="group_table">
+		<?php foreach ( $grouped_products as $grouped_product ) {
+			$post_object = get_post( $grouped_product );
+			$grouped_product = get_product( $grouped_product );
+			setup_postdata( $post = $post_object ); ?>
+
+
+				<tr id="product-<?php the_ID(); ?>" <?php post_class(); ?>>
+					<td class="label">
+							<label for="product-<?php echo $grouped_product->get_id(); ?>">
+								<?php echo '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink( $grouped_product->get_id() ), $grouped_product->get_id() ) ) . '">' . $grouped_product->get_name() . '</a>'; ?>
+							</label>
+						</td>
+						<?php do_action( 'woocommerce_grouped_product_list_before_price', $grouped_product ); ?>
+						<td class="price">
+							<?php
+								echo $grouped_product->get_price_html();
+								echo wc_get_stock_html( $grouped_product );
+							?>
+						</td>
+				</tr>
+
+		<?php } ?>
+		</table>
+		<?php // Return data to original post.
+		setup_postdata( $post = $previous_post );
+	}
+}
+
 // hide pricing and buy buttons for non-logged in users
-if ( ! is_user_logged_in() ) {
-	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 10 );
+if ( ! upandup_woo_customer() ) {
+	// remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_price', 10 );
 	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
 	remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+	add_action( 'woocommerce_single_product_summary', 'upandup_public_woocommerce_single_product_summary', 10 );
 }
 
 // Change template for search.php to archive-product
@@ -73,13 +190,13 @@ add_filter( 'post_limits', 'upandup_search_per_page' );
 
 // Remove Default Woocommerce Styling
 add_filter( 'woocommerce_enqueue_styles', '__return_false' );
-add_action( 'after_setup_theme', 'yourtheme_setup' );
 
-function yourtheme_setup() {
+function upandup_woo_theme_setup() {
 	remove_theme_support( 'wc-product-gallery-zoom' );
 	remove_theme_support( 'wc-product-gallery-lightbox' );
 	remove_theme_support( 'wc-product-gallery-slider' );
 }
+add_action( 'after_setup_theme', 'upandup_woo_theme_setup' );
 
 // Remove Default Woocommerce Image Sizes
 function upandup_woo_remove_image_size() {
@@ -154,6 +271,67 @@ add_filter( 'groundup_sidebars', 'upandup_woo_sidebars' );
 // Remove wp-admin and admin-bar for customers and non-admins
 update_option( 'woocommerce_lock_down_admin', 'yes' );
 
+// replace date_created with order_date for now.
+function upandup_woo_order_get_date_created( $value, $data ) {
+	$meta = $data->meta_data;
+	foreach( $meta as $key ) {
+		if( $key->key == 'ship_date' ){
+			$order_date = $key->value;
+		}
+	}
+	// wp_die($order_date);
+	$date = new WC_DateTime( $order_date, new DateTimeZone( 'UTC' ) );
+	return $date;
+}
+// add_filter( 'woocommerce_order_get_date_created', 'upandup_woo_order_get_date_created', 10, 2 );
+
+// replace order_number with custom marathon order number.
+function upandup_woocommerce_order_number( $order_number, $order ) {
+	$marathon_number = get_post_meta( $order_number, 'marathon_order_number', true);
+	if( $marathon_number ) {
+		return $marathon_number;
+	}
+	return $order_number . ' (temporary)';
+}
+add_filter( 'woocommerce_order_number', 'upandup_woocommerce_order_number', 10, 2 );
+
+// // add order-date query to my-orders
+function upandup_woo_woocommerce_my_account_my_orders_query( $args ) {
+	// $args['meta_key'] = 'ship_date';
+	// $args['orderby'] = 'meta_value';
+	// $args['order'] = 'DESC';
+	$args['post_status'] = 'completed';
+	// $orders  = wc_get_orders( $args );
+	// if ( $orders->total > 0 ) {
+	// 	foreach ( $orders as $order_data ) {
+	// 		$order = $order_data[0];
+	// 		$ship_date = get_post_meta( $order->id, 'ship_date', true );
+	// 		$order_date = get_post_meta( $order->id, 'order_date', true );
+	// 		if ( $ship_date ) {
+	// 			$order->set_date_created( $ship_date );
+	// 			$date = date_create_from_format( 'Y-m-d', $ship_date );
+	// 		} elseif( $order_date ) {
+	// 			$order->set_date_created( $order_date );
+	// 			$date = date_create_from_format( 'Y-m-d', $order_date );
+	// 		}
+  //
+	// 		if( $date ) {
+	// 			wp_update_post(
+	// 				array (
+	// 					'ID'            => $order->ID, // ID of the post to update
+	// 					'post_date'     => $date->format( 'Y-m-d H:i:s' ),
+	// 					'post_date_gmt' => $date->format( 'Y-m-d H:i:s' ),
+	// 				)
+	// 			);
+	// 		}
+	// 	}
+	// }
+	// $args['orderby']='date';
+	return $args;
+}
+// TODO: change this to not run every time, and maybe in a different place.
+add_filter( 'woocommerce_my_account_my_orders_query', 'upandup_woo_woocommerce_my_account_my_orders_query' );
+
 /************************
  * text changes
 ************************/
@@ -167,6 +345,13 @@ function upandup_woo_gettext( $translated_text, $text, $domain ) {
 			break;
 		case 'You may be interested in&hellip;' :
 			$translated_text = __( 'Related Products', 'woocommerce' );
+			break;
+		case 'Order again' :
+			$translated_text = __( 'Duplicate Entire Order', 'woocommerce' );
+			break;
+		case 'Billing details' :
+			$translated_text = __( '', 'woocommerce' );
+			break;
 	}
 	return $translated_text;
 }
@@ -177,19 +362,61 @@ add_filter( 'gettext', 'upandup_woo_gettext', 20, 3 );
 ************************/
 // Create new Customer Role with 'download' permissions
 function upandup_woocommerce_user_roles() {
+	// admin
+	$admin_role = get_role( 'administrator' );
+	$admin_role->add_cap( 'download_images', true );
+
+	// Add Customer (Trusted)
 	$customer_role = get_role( 'customer' );
 	$customer_cap = $customer_role->capabilities;
 	$download_images = array( 'download_images' => true );
 	array_push( $customer_cap, $download_images );
 	add_role( 'customer_trusted', __( 'Customer (Trusted)' ), $customer_cap );
 
-	$admin_role = get_role( 'administrator' );
-	$admin_role->add_cap( 'download_images', true );
-
 	$customer_trusted_role = get_role( 'customer_trusted' );
 	$customer_trusted_role->add_cap( 'download_images', true );
+
+	// Employee
+	$employee_role = get_role( 'employee' );
+	$employee_role->add_cap( 'customer_limited', true );
+	// TODO: disabled for now
+	// $employee_role->add_cap( 'download_images', true );
+	$employee_role->remove_cap( 'download_images' );
+
+
+	// Add Customer (Limited)
+	$subscriber_role = get_role( 'subscriber' );
+	$subscriber_cap = $subscriber_role->capabilities;
+	add_role( 'customer_limited', __( 'Customer (Limited)' ), $subscriber_cap );
+
 }
 add_action( 'after_setup_theme', 'upandup_woocommerce_user_roles' );
+
+// Add "awaiting shipment" Order Status
+function upandup_woo_awating_shipment_order_status() {
+	register_post_status( 'wc-awating-shipment', array(
+		'label'		=> 'Awaiting Shipment',
+		'public'	=> true,
+		'show_in_admin_status_list' => true, // show count All (12) , Completed (9) , Awaiting shipment (2) ...
+		'label_count'	=> _n_noop( 'Awaiting Shipment <span class="count">(%s)</span>', 'Awaiting shipment <span class="count">(%s)</span>' )
+	) );
+}
+add_action( 'init', 'upandup_woo_awating_shipment_order_status' );
+
+// Add new statuses to admin
+function upandup_wc_add_order_statuses( $order_statuses ) {
+	$new_order_statuses = array();
+  foreach ( $order_statuses as $key => $status ) {
+    $new_order_statuses[ $key ] = $status;
+    if ( 'wc-processing' === $key ) {
+      // $new_order_statuses['wc-awaiting-shipment'] = 'Awaiting Shipment';
+			$new_order_statuses['wc-invoiced'] = 'Invoiced';
+    }
+  }
+
+  return $new_order_statuses;
+}
+add_filter( 'wc_order_statuses', 'upandup_wc_add_order_statuses' );
 
 // Change WooCommerce wrappers
 function woocommerce_output_content_wrapper() {
@@ -210,8 +437,9 @@ function upandup_woo_add_to_nav( $items, $args ) {
 
 	if ( $menu_object->slug == 'primary' ) {
 		if ( ! is_user_logged_in() ) {
-			$items .= '<li class="login"><a href="' . wp_login_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . '">Log In</a></li>';
-		} else {
+			$items .= '<li class="login"><a href="' . wp_login_url() . '">Log In</a></li>';
+		}
+		elseif ( upandup_woo_customer() ) {
 			$args = array(
 				'taxonomy' => 'product_cat',
 				'order' => 'ASC',
@@ -232,26 +460,30 @@ function upandup_woo_add_to_nav( $items, $args ) {
 
 	if ( $menu_object->slug == 'secondary' ) {
 		$menu_object->count = $menu_object->count + 2;
-		if ( is_user_logged_in() ) {
-			// Add Product Search
+		if ( upandup_woo_customer() ) {
+			// Add Product Search and Orders
 			$items .= '<li class="search has-form">' . get_product_search_form( $echo = false ) . '</li>';
-
-			// Add Login/Account Link
-			$items .= '<li class="account has-dropdown"><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . '">Account</a>';
-			$items .= '<ul class="dropdown"><li><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . get_option( 'woocommerce_myaccount_orders_endpoint', 'orders' ) . '">Orders</a></li>';
-			$items .= '<li><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . get_option( 'woocommerce_myaccount_edit_address_endpoint', 'edit-address' ) . '">Addresses</a></li>';
-			$items .= '<li><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . get_option( 'woocommerce_logout_endpoint', 'customer-logout' ) . '">Log Out</a></li>';
-			$items .= '</ul></li>';
+			if ( ! current_user_can( 'customer_limited' ) ) {
+				$orders_active = is_wc_endpoint_url( 'orders') ? ' active': '';
+				$items .= '<li class="orders' . $orders_active . '"><a href="' . get_permalink( wc_get_page_id( 'myaccount' ) ) . get_option( 'woocommerce_myaccount_orders_endpoint', 'orders' ) . '">Shipped Orders</a></li>';
+			}
 		}
-
-		// Add Minicart Link
-		$cart_quantity = sizeof( WC()->cart->get_cart() );
-		if ( $cart_quantity > 0 ) {
-			$cart_subtotal = WC()->cart->get_cart_subtotal();
-			$checkout_link = WC()->cart->get_cart_url();
-			$items .= '<li class="cart"><a class="cart-contents" href="' . $checkout_link . '" title="' .  __( 'View your shopping cart' ) . '"><i class="icon-shopping-cart"></i> ' . $cart_quantity . ' items</a></li>';
-		} else {
-			$items .= '<li class="cart"><a class="cart-contents empty"></a></li>';
+		if ( is_user_logged_in() ) {
+			// Add Orders/Account/Logout Link
+			$account_active = is_wc_endpoint_url( 'edit-account') ? ' active': '';
+			$items .= '<li class="account' . $account_active . '"><a href="' . wc_customer_edit_account_url() . '">Account</a></li>';
+			$items .= '<li class="logout"><a href="' . wp_logout_url() . '">Log Out</a></li>';
+		}
+		if ( upandup_woo_customer() ) {
+			// Add Minicart Link
+			$cart_quantity = sizeof( WC()->cart->get_cart() );
+			if ( $cart_quantity > 0 ) {
+				$cart_subtotal = WC()->cart->get_cart_subtotal();
+				$checkout_link = WC()->cart->get_cart_url();
+				$items .= '<li class="cart"><a class="cart-contents" href="' . $checkout_link . '" title="' .  __( 'View your shopping cart' ) . '"><i class="icon-shopping-cart"></i> ' . $cart_quantity . ' items</a></li>';
+			} else {
+				$items .= '<li class="cart"><a class="cart-contents empty"></a></li>';
+			}
 		}
 	}
 
@@ -304,6 +536,8 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '', $return = 'st
 	} elseif ( is_int( $_product ) ) {
 		// try getting product by id
 		$_product = wc_get_product( $_product );
+	} elseif ( is_string( $_product ) ) {
+		$sku = $_product;
 	}
 	if ( !$_product ) {
 		return '';
@@ -323,8 +557,8 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '', $return = 'st
 		// scan media folder for sku.jpg
 		$upload_dir = wp_upload_dir();
 		$upload_path = $upload_dir['path'];
-		$upload_url = $upload_dir['url'];
-		$sku = $_product->get_sku();
+		$upload_url = set_url_scheme( $upload_dir['url'] );
+		$sku = $sku ? $sku : $_product->get_sku();
 		// special case: if sku ends in "n" but not "-n", grab parent image (without "n");
 		if ( substr( $sku,  -1 ) == 'n' && substr( $sku,  -2 ) != '-n' ) {
 			// remove trailing 'n'
@@ -338,12 +572,12 @@ function upandup_woo_img_url( $size = 'thumbnail', $_product = '', $return = 'st
 			$size = 'thumb';
 		}
 
-		$children = $_product->get_children();
-
 		if ( file_exists( $upload_path . '/products/' . $size . '/' . $sku . '.jpg' ) ) {
 				$img_url = $upload_url . '/products/' . $size . '/' . $sku . '.jpg';
-		} elseif ( $children ) {
+		}
+		elseif ( $_product->get_children() ) {
 			// Check to see if this is a grouped product and load the first child image instead!
+		 $children = $_product->get_children();
 			$firstChild = wc_get_product( $children[0] );
 			if ( $firstChild ) {
 				$img_url = upandup_woo_img_url( $size, $children[0] );
@@ -494,7 +728,7 @@ function upandup_woo_template_loop_product_thumbnail() {
 	global $product;
 	$upload_dir = wp_upload_dir();
 	$upload_path = $upload_dir['path'];
-	$upload_url = $upload_dir['url'];
+	$upload_url = set_url_scheme( $upload_dir['url'] );
 	$sku = $product->get_sku();
 
 	$img_url = upandup_woo_img_url( 'thumbnail' );
@@ -724,6 +958,9 @@ add_action( 'woocommerce_single_product_summary', 'upandup_woo_product_attribute
 function upandup_woo_add_to_cart_text() {
 	global $product;
 
+	if( current_user_can( 'employee' ) ) {
+		return 'Add Image';
+	}
 	$product_type = $product->get_type();
 	switch ( $product_type ) {
 		case 'external':
@@ -744,6 +981,24 @@ function upandup_woo_add_to_cart_text() {
 }
 add_filter( 'woocommerce_product_single_add_to_cart_text', 'upandup_woo_add_to_cart_text' );
 add_filter( 'woocommerce_product_add_to_cart_text', 'upandup_woo_add_to_cart_text' );
+
+// change 'add to cart' button to 'view cart' if it's already in the cart
+function upandup_woocommerce_loop_add_to_cart_link( $link, $product ) {
+	// get id from link, and lookup if it's in the cart, and then change link to view cart
+	global $woocommerce;
+
+	foreach( WC()->cart->get_cart() as $cart_item_key => $values ) {
+		$_product = $values['data'];
+
+		if( $product->id == $_product->id ) {
+			$link = '<a href="' . $woocommerce->cart->get_cart_url() . '" class="added_to_cart wc-forward" title="View Cart">View Cart</a>';
+			break;
+		}
+	}
+
+	return $link;
+}
+add_filter( 'woocommerce_loop_add_to_cart_link', 'upandup_woocommerce_loop_add_to_cart_link', 5, 2 );
 
 // Product Description
 function upandup_woo_product_description() {
@@ -809,9 +1064,9 @@ add_action( 'woocommerce_cart_actions', 'woocommerce_button_proceed_to_checkout'
 
 // Change thumbnail
 function upandup_woocommerce_cart_item_thumbnail( $image, $cart_item, $cart_item_key ) {
-	$image_url = upandup_woo_img_url( 'tiny', $cart_item['product_id'] );
+	$image_url = upandup_woo_img_url( 'thumbnail', $cart_item['product_id'] );
 	if ( $image_url != '' ) {
-		$thumbnail = '<img src="' . $image_url . '" width="60" height="60">';
+		$thumbnail = '<img src="' . $image_url . '">';
 	} else {
 		$thumbnail = '';
 	}
@@ -838,29 +1093,18 @@ add_action( 'init', 'upandup_woo_empty_cart' );
 
 // Add download images button to cart page
 function upandup_woocommerce_cart_download_images() {
-	if(current_user_can( 'download_images' ) ) {
+	if( current_user_can( 'download_images' ) ) {
 		$downloads = [];
 		$upload_dir = wp_upload_dir();
 		$upload_path = $upload_dir['path'];
-		$upload_url = $upload_dir['url'];
+		$upload_url = set_url_scheme( $upload_dir['url'] );
 
 		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 			$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
-			$thumbnail = upandup_woo_img_url( 'thumbnail', $_product );
-			if ( ! empty( $thumbnail ) ) {
-				$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
-				array_push( $downloads, $full_size_image );
-				$sku = $_product->get_sku();
-				// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
-				foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
-				  $thumbnail = str_replace( $upload_path, $upload_url, $img_path );
-					$full_size_image = str_replace( 'thumb', 'source', $thumbnail );
-					array_push( $downloads, $full_size_image );
-				}
-			}
+			array_push( $downloads, $_product->get_sku() );
 		}
 		if( $downloads != [] ) {
-			echo '<button id="download" class="secondary downloads" data-files="' . implode( ' ', $downloads ) . '">Download All Images</button>';
+			echo '<button class="secondary downloads downloadImage" data-files="' . implode( ' ', $downloads ) . '">Download All Images</button>';
 		}
 	}
 }
@@ -869,6 +1113,149 @@ add_action( 'woocommerce_cart_actions', 'upandup_woocommerce_cart_download_image
 /************************
  * checkout page
 ************************/
+// Remove Billing fields
+function upandup_woo_checkout_fields( $fields ) {
+  unset($fields['billing']['billing_first_name']);
+  unset($fields['billing']['billing_last_name']);
+  unset($fields['billing']['billing_company']);
+  unset($fields['billing']['billing_address_1']);
+  unset($fields['billing']['billing_address_2']);
+  unset($fields['billing']['billing_city']);
+  unset($fields['billing']['billing_postcode']);
+  unset($fields['billing']['billing_country']);
+  unset($fields['billing']['billing_state']);
+  unset($fields['billing']['billing_phone']);
+  unset($fields['billing']['billing_address_2']);
+  unset($fields['billing']['billing_postcode']);
+  unset($fields['billing']['billing_company']);
+  unset($fields['billing']['billing_last_name']);
+  unset($fields['billing']['billing_email']);
+  unset($fields['billing']['billing_city']);
+
+	unset($fields['shipping']['shipping_first_name']);
+	unset($fields['shipping']['shipping_last_name']);
+	unset($fields['shipping']['shipping_company']);
+	unset($fields['shipping']['shipping_address_1']);
+	unset($fields['shipping']['shipping_address_2']);
+	unset($fields['shipping']['shipping_city']);
+	unset($fields['shipping']['shipping_postcode']);
+	unset($fields['shipping']['shipping_country']);
+	unset($fields['shipping']['shipping_state']);
+	unset($fields['shipping']['shipping_phone']);
+	unset($fields['shipping']['shipping_address_2']);
+	unset($fields['shipping']['shipping_postcode']);
+	unset($fields['shipping']['shipping_company']);
+	unset($fields['shipping']['shipping_last_name']);
+	unset($fields['shipping']['shipping_email']);
+	unset($fields['shipping']['shipping_city']);
+
+	$fields['order']['marathon_ship_rate'] = array(
+		'label' => __('Shipping Rate', 'woocommerce'), // Add custom field label
+    'required' => true, // if field is required or not
+    'clear' => false, // add clear or not
+    'type' => 'select', // add field type
+    'class' => array('marathon_ship_rate'),   // add class name
+		'options' => array('Ground', '3 Day', '2 Day', 'Next Day')
+	);
+	$fields['order']['customer_buyer_name'] = array(
+    'label' => __('Buyer Name', 'woocommerce'), // Add custom field label
+    'placeholder' => _x('Your Name (required)', 'placeholder', 'woocommerce'), // Add custom field placeholder
+    'required' => true, // if field is required or not
+    'clear' => false, // add clear or not
+    'type' => 'text', // add field type
+    'class' => array('customer_buyer_name') // add class name
+  );
+
+	$fields['order']['customer_PO'] = array(
+    'label' => __('Customer PO Number', 'woocommerce'), // Add custom field label
+    'placeholder' => _x('optional', 'placeholder', 'woocommerce'), // Add custom field placeholder
+    'required' => false, // if field is required or not
+    'clear' => false, // add clear or not
+    'type' => 'text', // add field type
+    'class' => array('customer_PO')   // add class name
+  );
+
+	// move order comments to end
+	$order_comments = $fields['order']['order_comments'];
+	unset($fields['order']['order_comments']);
+	$fields['order']['order_comments'] = $order_comments;
+
+  return $fields;
+}
+add_filter( 'woocommerce_checkout_fields' , 'upandup_woo_checkout_fields' );
+
+
+// Save Customer PO Number and Customer Name and shipping rate
+function upandup_woocommerce_checkout_update_order_meta( $order_id ) {
+	$rate = 'Ground';
+
+	if ( ! empty( $_POST['marathon_ship_rate'] ) ) {
+		switch ( intval( $_POST['marathon_ship_rate'] ) ) {
+			case 3:
+				$rate = 'Next Day';
+				break;
+			case 2:
+				$rate = '2 Day';
+				break;
+			case 1:
+				$rate = '3 Day';
+				break;
+			case 0:
+				$rate = 'Ground';
+				break;
+			default:
+				$rate = 'Error';
+				break;
+		}
+  }
+	update_post_meta( $order_id, 'marathon_ship_rate', $rate );
+
+	if ( ! empty( $_POST['customer_PO'] ) ) {
+    update_post_meta( $order_id, 'customer_po', sanitize_text_field( $_POST['customer_PO'] ) );
+  }
+	if ( ! empty( $_POST['customer_buyer_name'] ) ) {
+    update_post_meta( $order_id, 'customer_buyer_name', sanitize_text_field( $_POST['customer_buyer_name'] ) );
+  }
+}
+add_action( 'woocommerce_checkout_update_order_meta', 'upandup_woocommerce_checkout_update_order_meta' );
+
+// Display order meta on Edit Page
+function upandup_woocommerce_admin_order_data_after_billing_address( $order ){
+	echo '<p><strong>'.__('Shipping Rate').':</strong> ' . get_post_meta( $order->id, 'marathon_ship_rate', true ) . '</p>';
+	echo '<p><strong>'.__('Customer PO').':</strong> ' . get_post_meta( $order->id, 'customer_po', true ) . '</p>';
+	echo '<p><strong>'.__('Buyer Name').':</strong> ' . get_post_meta( $order->id, 'customer_buyer_name', true ) . '</p>';
+}
+add_action( 'woocommerce_admin_order_data_after_billing_address', 'upandup_woocommerce_admin_order_data_after_billing_address', 10, 1 );
+
+// Show shipping address on checkout page:
+function upandup_woocommerce_after_checkout_billing_form() {
+	$user_id = get_current_user_id();
+	$user = get_userdata( $user_id );
+
+	if ( ! $user )
+	  return;
+
+  $shipping_first_name = get_user_meta( $user_id, 'shipping_first_name', true );
+  $shipping_last_name = get_user_meta( $user_id, 'shipping_last_name', true );
+  $shipping_company = get_user_meta( $user_id, 'shipping_company', true );
+  $shipping_address_1 = get_user_meta( $user_id, 'shipping_address_1', true );
+  $shipping_address_2 = get_user_meta( $user_id, 'shipping_address_2', true );
+  $shipping_city = get_user_meta( $user_id, 'shipping_city', true );
+  $shipping_state = get_user_meta( $user_id, 'shipping_state', true );
+  $shipping_postcode = get_user_meta( $user_id, 'shipping_postcode', true );
+  $shipping_country = get_user_meta( $user_id, 'shipping_country', true );
+
+	$address = $shipping_first_name . ' ' . $shipping_last_name . '</br>';
+	$address .= $shipping_company ? $shipping_company . '</br>' : '';
+	$address .= $shipping_address_1 . '</br>';
+	$address .= $shipping_address_2 ? $shipping_address_2 . '</br>' : '';
+	$address .= $shipping_city . ' ' . $shipping_state . ', ' . $shipping_postcode . ' ' . $shipping_country;
+
+	echo '<h3>Default Shipping Address:</h3>';
+	echo '<h5>' . $address . '</h5>';
+}
+add_action( 'woocommerce_after_checkout_billing_form', 'upandup_woocommerce_after_checkout_billing_form', 50 );
+
 // Remove login form
 update_option( 'woocommerce_enable_guest_checkout', 'no' );
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_form', 10 );
@@ -876,6 +1263,20 @@ remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_login_f
 // Remove Coupons
 update_option( 'woocommerce_enable_coupons', 'no' );
 remove_action( 'woocommerce_before_checkout_form', 'woocommerce_checkout_coupon_form', 10 );
+
+// Add Account Number to Checkout Page
+function upandup_woocommerce_before_checkout_form() {
+	$user_id = get_current_user_id();
+	$user = get_userdata( $user_id );
+
+	if ( !$user )
+	  return;
+
+	$account_number = get_user_meta( $user_id, 'account_number', true );
+
+	echo '<h4 class="text-center">Account Number: ' . $account_number . '</h4>';
+}
+add_action( 'woocommerce_before_checkout_form', 'upandup_woocommerce_before_checkout_form' );
 
 // Start out with same shipping address
 add_filter( 'woocommerce_ship_to_different_address_checked', '__return_false' );
@@ -897,7 +1298,7 @@ add_filter( 'woocommerce_checkout_fields' , 'custom_override_checkout_fields' );
 // make billing phone not required and billing_email not usernaame
 function upandup_woo_billing_fields( $address_fields ) {
 	$address_fields['billing_phone']['required'] = false;
-	$address_fields['billing_email']['required'] = true;
+	$address_fields['billing_email']['required'] = false;
 	return $address_fields;
 }
 add_filter( 'woocommerce_billing_fields', 'upandup_woo_billing_fields', 10, 1 );
@@ -905,7 +1306,7 @@ add_filter( 'woocommerce_billing_fields', 'upandup_woo_billing_fields', 10, 1 );
 // ignore default value of billing_email
 function upandup_woo_checkout_get_value( $value, $input ) {
 	if ( $input == 'billing_email' ) {
-		if ( is_user_logged_in() ) {
+		if ( upandup_woo_customer() ) {
 			$current_user = wp_get_current_user();
 			// return billing email or nothing
 			if ( $meta = get_user_meta( $current_user->ID, $input, true ) ) {
@@ -919,35 +1320,424 @@ function upandup_woo_checkout_get_value( $value, $input ) {
 add_filter( 'woocommerce_checkout_get_value', 'upandup_woo_checkout_get_value', 10, 2 );
 
 /************************
+ * Orders page
+*************************/
+
+// add header to orders page
+function upandup_woocommerce_before_account_orders( $has_orders ) {
+	if( $has_orders ) {
+		echo '<h3 class="text-center">Shipped Orders</h3>';
+	}
+}
+add_action( 'woocommerce_before_account_orders', 'upandup_woocommerce_before_account_orders' );
+
+
+/************************
+ * Order Details page
+*************************/
+// localize WP javascript
+function upandup_localize_main_js() {
+	global $woocommerce, $post;
+
+  $wpVars = array(
+    'ajaxurl' => admin_url( 'admin-ajax.php' ),
+    'nonce' => wp_create_nonce( 'upandup_marathon_nonce' ),
+  );
+  wp_localize_script( 'groundup-main', 'wpVars', $wpVars );
+}
+add_action( 'wp_enqueue_scripts', 'upandup_localize_main_js', 200 ); //delay until after 'groundup-main' has been enqueued in /groundup
+
+// helper function or zipping files below:
+function create_zip( $files = array(), $destination_folder = '', $filename = '', $overwrite = false ) {
+	//if the zip file already exists and overwrite is false, return false
+	$destination = trailingslashit( $destination_folder ) . $filename;
+	if( file_exists( $destination ) ) {
+		return $destination;
+	}
+
+	$valid_files = array();
+
+	if( is_array( $files ) ) {
+		foreach( $files as $file ) {
+			if( file_exists( $file ) ) {
+				$valid_files[] = $file;
+			}
+		}
+	}
+	//if we have good files...
+	if( count( $valid_files ) ) {
+		//create the archive
+		if ( ! file_exists( $destination_folder ) ) {
+      mkdir( $destination_folder, 0757, true);
+		}
+
+		$zip = new ZipArchive();
+		if( $zip->open( $destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE ) !== true ) {
+			return file_exists( $destination );
+		}
+		//add the files
+		foreach( $valid_files as $file ) {
+			$new_filename = substr( $file, strrpos( $file,'/' ) + 1 );
+			$zip->addFile( $file, $new_filename );
+		}
+
+		//close the zip -- done!
+		$zip->close();
+
+		//check to make sure the file exists
+		return $valid_files;
+	} else {
+		return $files;
+	}
+}
+
+// Remove payment method from everything
+function upandup_woocommerce_get_order_item_totals( $total_rows ) {
+	unset( $total_rows['payment_method'] );
+	unset( $total_rows['cart_subtotal'] );
+	$total_rows['order_total']['label'] = 'Total MSRP:';
+	return $total_rows;
+}
+add_filter( 'woocommerce_get_order_item_totals', 'upandup_woocommerce_get_order_item_totals' );
+
+////////// Image Request Stuffs ///////
+// Ajax Image Request
+function upandup_ajax_request_images() {
+  global $phpmailer, $woocommerce;
+
+  $response = array();
+	if ( check_ajax_referer( 'upandup_marathon_nonce', 'nonce', false ) ) {
+
+		// get order_number and username
+		$current_user = wp_get_current_user();
+		$customer = $current_user->user_login;
+		$customer_email = $current_user->user_email;
+		// $customer_email = sanitize_email($_POST['customer_email']);
+
+		$account_number = get_user_meta( $current_user->ID, 'account_number', true );
+
+		$response = [];
+		$downloads = [];
+		$upload_dir = wp_upload_dir();
+		$upload_path = $upload_dir['path'];
+		$upload_url = set_url_scheme( $upload_dir['url'] );
+
+		// use $_POST values, should come in as $sku
+		if( !empty( $_POST['image_items'] ) ) {
+			$dt = [];
+			foreach ( $_POST['image_items'] as $sku ) {
+				array_push( $dt, $sku );
+				$thumbnail = upandup_woo_img_url( 'thumbnail', $sku );
+				if ( ! empty( $thumbnail ) ) {
+					$full_size_image = str_replace( 'thumb', 'source', $thumbnail );
+					$full_size_image = str_replace( $upload_url, $upload_path, $full_size_image );
+					array_push( $downloads, $full_size_image );
+
+					// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
+					// scan thumb directory instead of source for speed.
+					foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
+					  // $thumbnail = str_replace( $upload_url, $upload_path, $img_path );
+						$full_size_image = str_replace( 'thumb', 'source', $img_path );
+						array_push( $downloads, $full_size_image );
+					}
+				}
+			}
+		} else {
+			array_push( $response, array( 'error' => 'image_items empty' ) );
+		}
+		array_push( $response, array( 'image_items' => $dt ) );
+
+		$zip_folder = $upload_path . '/downloads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+		$zip_file = $account_number . '-' . substr( uniqid(), -4 ) . '.zip';
+		$zip_success = create_zip( $downloads, $zip_folder, $zip_file );
+
+		array_push( $response, array( 'filesRequested' => $downloads ) );
+
+		if ( $zip_success == 'error' ) {
+			array_push( $response, array( 'zipSuccess' => 'false', 'error' => $zip_success ) );
+		} else {
+			// send email to admin
+			array_push( $response, array( 'zipSuccess' => 'true', 'zippedFiles' => $zip_success ) );
+	    $email_to = 'image@marathon-co.com';
+
+	    $email_subject = 'Image Request From Account: ' . $account_number;
+			// create .zip file of images with unique id and put into dated folder
+			$zip_url = str_replace( $upload_path, $upload_url, trailingslashit( $zip_folder ) . $zip_file );
+
+			$email_message = "Account: " . $account_number;
+			$email_message .= "\r\nCustomer email: " . $customer_email;
+	    $email_message .= "\r\nImages can be downloaded at " . $zip_url ;
+			$email_message .= "\r\nImages will be removed from the server after 30 days";
+			$email_message .= "\r\n\r\nImages Requested:";
+			foreach ($dt as $image_item) {
+				$email_message .= "\r\n" . $image_item;
+			}
+			$email_from = 'NoReply@marathon-co.com';
+	    $headers = 'From: Marathon Company <' . $email_from . '>' . "\r\n";
+	    $success = wp_mail( $email_to, $email_subject, $email_message, $headers );
+
+	    if ( $success ) {
+				// send confirmation email
+				$email_to = $customer_email;
+
+		    $email_subject = 'Your Image Request Is Being Processed';
+
+				$email_message = "Thank you for requesting images from marathon-co.com. Your request is under review. We will get back to you shortly.";
+				$email_from = 'NoReply@marathon-co.com';
+		    $headers = 'From: Marathon Company <' . $email_from . '>' . "\r\n";
+
+				wp_mail( $email_to, $email_subject, $email_message, $headers );
+
+	      array_push( $response, array( 'email_sent' => 'true' ) );
+				array_push( $response, array( 'success' => true ) );
+	    } else {
+	      array_push( $response, array( 'email_sent' => 'could not send' ) );
+	    }
+		}
+  } else {
+    array_push( $response, array( 'error' => 'invalid nonce' ) );
+  }
+
+  // echo the response
+  header( 'Content-Type: application/json' );
+  echo json_encode( $response );
+  die();
+}
+add_action( 'wp_ajax_request_images', 'upandup_ajax_request_images' );
+add_action( 'wp_ajax_nopriv_request_images', 'upandup_ajax_request_images' );
+
+// Ajax Download Images
+function upandup_ajax_download_images() {
+  global $phpmailer, $woocommerce;
+
+  $response = array();
+	if ( check_ajax_referer( 'upandup_marathon_nonce', 'nonce', false ) ) {
+
+		// get order_number and username
+		$current_user = wp_get_current_user();
+		$account_number = get_user_meta( $current_user->ID, 'account_number', true );
+
+		$response = [];
+		$downloads = [];
+		$upload_dir = wp_upload_dir();
+		$upload_path = $upload_dir['path'];
+		$upload_url = set_url_scheme( $upload_dir['url'] );
+
+		// use $_POST values, should come in as $sku
+		if( !empty( $_POST['image_items'] ) ) {
+			$dt = [];
+			foreach ( $_POST['image_items'] as $sku ) {
+				array_push( $dt, $sku );
+				$thumbnail = upandup_woo_img_url( 'thumbnail', $sku );
+				if ( ! empty( $thumbnail ) ) {
+					$full_size_image = str_replace( 'thumb', 'source', $thumbnail );
+					$full_size_image = str_replace( $upload_url, $upload_path, $full_size_image );
+					array_push( $downloads, $full_size_image );
+
+					// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
+					// scan thumb directory instead of source for speed.
+					foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
+					  // $thumbnail = str_replace( $upload_url, $upload_path, $img_path );
+						$full_size_image = str_replace( 'thumb', 'source', $img_path );
+						array_push( $downloads, $full_size_image );
+					}
+				}
+			}
+		} else {
+			array_push( $response, array( 'error' => 'image_items empty' ) );
+		}
+		array_push( $response, array( 'image_items' => $dt ) );
+
+		if( count( $_POST['image_items'] == 1 ) ) {
+			$zip_file = 'Marathon-' . $_POST['image_items'] . '-images.zip';
+		} else {
+			$zip_file = 'Marathon-' . substr( uniqid(), -4 ) . '-images.zip';
+		}
+		$zip_folder = $upload_path . '/downloads/' . date('Y') . '/' . date('m') . '/' . date('d') . '/';
+		$zip_success = create_zip( $downloads, $zip_folder, $zip_file );
+
+		array_push( $response, array( 'filesRequested' => $downloads ) );
+
+		if ( $zip_success == 'error' ) {
+			array_push( $response, array( 'zipSuccess' => 'false', 'error' => $zip_success ) );
+		} else {
+			// send email to admin
+			array_push( $response, array( 'zipSuccess' => 'true', 'zippedFiles' => $zip_success ) );
+
+			$zip_url = str_replace( $upload_path, $upload_url, trailingslashit( $zip_folder ) . $zip_file );
+
+	    array_push( $response, array( 'zip_url' => $zip_url ) );
+			array_push( $response, array( 'success'=> true ) );
+			array_push( $response, array( 'zip_name' => $zip_file ) );
+		}
+  } else {
+    array_push( $response, array( 'error' => 'invalid nonce' ) );
+  }
+
+  // echo the response
+  header( 'Content-Type: application/json' );
+  echo json_encode( $response );
+  die();
+}
+add_action( 'wp_ajax_download_images', 'upandup_ajax_download_images' );
+add_action( 'wp_ajax_nopriv_download_images', 'upandup_ajax_download_images' );
+
+
+// Add re-order button next to each order on my-account/orders page
+function upandup_woocommerce_my_account_my_orders_actions( $actions, $order ) {
+	$actions['order-again'] = array(
+		'url'  => wp_nonce_url( add_query_arg( 'order_again', $order->id ) , 'woocommerce-order_again' ),
+		'name' => __( 'Reorder', 'woocommerce' )
+	);
+	return $actions;
+}
+add_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button' );
+
+// show shipping information, customer buyer, tracking number and marathon order number
+function upandup_woocommerce_order_details_after_order_table( $order ) {
+	$customer_buyer_name = get_post_meta( $order->id, 'customer_buyer_name', true );
+	$customer_po = get_post_meta( $order->id, 'customer_po', true );
+	$marathon_ship_rate = get_post_meta( $order->id, 'marathon_ship_rate', true );
+	$ship_date = get_post_meta( $order->id, 'ship_date', true );
+	$tracking_number = get_post_meta( $order->id, 'tracking_number', true );
+
+	echo $customer_buyer_name ? '<p>Buyer Name: <strong>' . $customer_buyer_name . '</strong></p>' : '';
+	echo $customer_po ? '<p>Purchase Order: <strong>' . $customer_po . '</strong></p>' : '';
+	echo $marathon_ship_rate ? '<p>Shipping Rate: <strong>' . $marathon_ship_rate . '</strong></p>' : '';
+	echo $ship_date ? '<p>Shipped Date: <strong>' . $ship_date . '</strong></p>' : '';
+	echo $tracking_number ? '<p>Tracking Number: <strong>' . $tracking_number . '</strong></p>' : '';
+}
+add_action( 'woocommerce_order_details_after_order_table', 'upandup_woocommerce_order_details_after_order_table', 10, 1 );
+
+/************************
  * account pages
 ************************/
+function sanitize_account_number( $account_number ){
+	return int( $account_number );
+}
+$args = array(
+    'object_subtype' => 'user',
+    'sanitize_callback' => 'sanitize_account_number',
+    'auth_callback' => 'authorize_account_number',
+    'type' => 'integer',
+    'description' => 'Account Number',
+    'single' => true,
+    'show_in_rest' => true,
+);
+register_meta( 'post', 'account_number', $args );
+
+// Add account number to admin profile fields
+function upandup_user_profile_edit_action( $user ) {
+	if ( current_user_can( 'edit_user', $user->ID ) ) {
+		$account_disabled = ' ';
+	} else {
+		$account_disabled = ' disabled';
+	} ?>
+	<table class="form-table">
+		<tr class="user-account-wrap">
+			<th><label for="account_number"><?php _e('Account Number: '); ?> </label></th>
+			<td><input<?php echo $account_disabled; ?> name="account_number" value="<?php echo get_user_meta( $user->ID, 'account_number', true ); ?>" type="text">
+		</tr>
+	</table>
+<?php }
+add_action( 'show_user_profile', 'upandup_user_profile_edit_action', 10, 1 );
+add_action( 'edit_user_profile', 'upandup_user_profile_edit_action', 10, 1 );
+
+function upandup_user_profile_update( $user_id ) {
+	if ( current_user_can( 'edit_user', $user_id ) ) {
+		update_user_meta( $user_id, 'account_number', sanitize_text_field( $_POST['account_number'] ) );
+	} else {
+		return false;
+	}
+}
+add_action( 'personal_options_update', 'upandup_user_profile_update', 10, 1 );
+add_action( 'edit_user_profile_update', 'upandup_user_profile_update', 10, 1 );
+
 // Add account number to My Account pages
 function upandup_woocommerce_edit_account_form() {
-	$user_id = get_current_user_id();
-  $user = get_userdata( $user_id );
+	$current_user = wp_get_current_user();
 
-  if ( !$user )
+  if ( !$current_user )
     return;
 
-  $account_number = get_user_meta( $user_id, 'account_number', true );
+  $account_number = get_user_meta( $current_user->ID, 'account_number', true );
+	$username = $current_user->user_login;
+
+	// update username if value has been changed here
+	$updatedUsername = sanitize_user( $_POST['username'], true );
+	if( !empty( $updatedUsername ) && $updatedUsername != $username ) {
+		if ( username_exists( $updatedUsername ) ) {
+			$error = 'Username already exists';
+		} else {
+			 global $wpdb;
+
+			 // Query to change the username
+			 $query = $wpdb->query( $wpdb->prepare( "UPDATE $wpdb->users SET user_login = %s WHERE user_login = %s", $updatedUsername, $current_user->user_login ) );
+
+			 if ( $query ) {
+				 $username = $updatedUsername;
+				 // wp_set_auth_cookie( $current_user->ID );
+			 }
+		 }
+	}
 	?>
 
 	<p class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">
 		<label for="account_number"><?php _e( 'Account Number', 'woocommerce' ); ?> </label>
 		<input disabled type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="account_number" id="account_number" value="<?php echo $account_number; ?>" />
 	</p>
+	<?php if( !empty( $error ) ) {
+		echo '<p class="error">Username already exists</p>';
+	} ?>
+	<p class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">
+		<label for="username"><?php _e( 'Username', 'woocommerce' ); ?> </label>
+		<input type="text" class="woocommerce-Input woocommerce-Input--text input-text" name="username" id="username" value="<?php echo $username; ?>" />
+	</p>
 
 <?php }
 add_action( 'woocommerce_edit_account_form_start', 'upandup_woocommerce_edit_account_form' );
 
-// do not save account_number data, because we do not want the customer to update it.
-// function upandup_woocommerce_save_account_details( $user_id ) {
-//   update_user_meta( $user_id, 'account_number', htmlentities( $_POST[ 'account_number' ] ) );
-// }
-// add_action( 'woocommerce_save_account_details', 'upandup_woocommerce_save_account_details' );
+// check for duplicate username when changing on myaccount page
+// Save username change on account details page
+function upandup_woocommerce_save_account_details_errors( $errors, $user ) {
+	// update username if value has been changed here
+	$user = get_user_by( 'ID', $user->ID );
+	$updatedUsername = sanitize_user( $_POST['username'], true );
+	if( !empty( $updatedUsername ) && $updatedUsername != $user->user_login ) {
+		if ( username_exists( $updatedUsername ) ) {
+			$errors->add( 'duplicate username', __( 'This username is already taken' ) );
+		}
+	}
+	return $errors;
+}
+add_action( 'woocommerce_save_account_details_errors', 'upandup_woocommerce_save_account_details_errors', 10, 2 );
 
-// remove duplicitave menu from account page
-remove_action( 'woocommerce_account_navigation', 'woocommerce_account_navigation' );
+// Save username change on account details page
+function upandup_woocommerce_save_account_details( $user_id ) {
+	$current_user = wp_get_current_user();
+
+	if ( !$current_user )
+		return;
+
+	$username = $current_user->user_login;
+
+	// update username if value has been changed here
+	$updatedUsername = sanitize_user( $_POST['username'], true );
+	if( !empty( $updatedUsername ) && $updatedUsername != $username ) {
+		if ( ! username_exists( $updatedUsername ) ) {
+			global $wpdb;
+
+			// Query to change the username
+			$query = $wpdb->query( $wpdb->prepare( "UPDATE $wpdb->users SET user_login = %s WHERE user_login = %s", $updatedUsername, $current_user->user_login ) );
+
+			if ( $query ) {
+				$username = $updatedUsername;
+				wp_set_auth_cookie( $current_user->ID );
+			}
+		}
+	}
+}
+add_action( 'woocommerce_save_account_details', 'upandup_woocommerce_save_account_details' );
 
 function upandup_woo_recent_products() {
 	// get recent orders
@@ -994,7 +1784,8 @@ function upandup_woo_recent_products() {
 		<?php }
 		}
 }
-add_action( 'woocommerce_after_account_orders', 'upandup_woo_recent_products' );
+// TODO: disabled for now
+// add_action( 'woocommerce_after_account_orders', 'upandup_woo_recent_products' );
 
 // Add back permalink for children products and -N products (hidden by default because they aren't $product->is_visible())
 function upandup_woo_woocommerce_order_item_permalink( $permalink, $item, $order ) {
@@ -1013,8 +1804,8 @@ add_filter( 'woocommerce_order_item_permalink', 'upandup_woo_woocommerce_order_i
 // remove order-status and msrp totals from previous orders
 function upandup_woo_account_orders_columns($columns) {
 	return array(
-		'order-number'  => __( 'Order', 'woocommerce' ),
-		'order-date'    => __( 'Date', 'woocommerce' ),
+		'order-number'  => __( 'Invoice', 'woocommerce' ),
+		'order-date'    => __( 'Shipped Date', 'woocommerce' ),
 		// 'order-status'  => __( 'Status', 'woocommerce' ),
 		// 'order-total'   => __( 'Total', 'woocommerce' ),
 		'order-actions' => '&nbsp;',
@@ -1024,89 +1815,27 @@ add_filter( 'woocommerce_account_orders_columns', 'upandup_woo_account_orders_co
 
 // remove my-account navigation
 function upandup_woo_account_menu_items( $items ) {
-	// return array();
+	$items = [];
+	return $items;
 }
 add_filter( 'woocommerce_account_menu_items', 'upandup_woo_account_menu_items' );
 
-// Add re-order button next to each order on my-account/orders page
-function upandup_woocommerce_my_account_my_orders_actions( $actions, $order ) {
-	$actions['order-again'] = array(
-		'url'  => wp_nonce_url( add_query_arg( 'order_again', $order->id ) , 'woocommerce-order_again' ),
-		'name' => __( 'Reorder', 'woocommerce' )
-	);
-	return $actions;
-}
-add_filter( 'woocommerce_my_account_my_orders_actions', 'upandup_woocommerce_my_account_my_orders_actions', 60, 2 );
-
-// Add re-order button next to products on order details pages
-function upandup_woocommerce_order_reorder_button( $item_id, $item, $order ) {
-	$product_id   = (int) $item->get_product_id();
-	$product = wc_get_product( $product_id );
-	$quantity     = $item->get_quantity();
-	$class = 'button tiny reorder-item';
-
-	// Only needed for variations.
-	// $variation_id = $item->get_variation_id();
-  // $variations   = array();
-	// $cart_item_data = apply_filters( 'woocommerce_order_again_cart_item_data', array(), $item, $order );
-	// $meta = $item->get_meta_data();
-	// if ( taxonomy_is_product_attribute( $meta->meta_key ) ) {
-  //   $variations[ $meta->meta_key ] = $meta->meta_value;
-  // } elseif ( meta_is_product_attribute( $meta->meta_key, $meta->meta_value, $product_id ) ) {
-  //   $variations[ $meta->meta_key ] = $meta->meta_value;
-  // }
-
-	if($product) {
-		$link = esc_url($product->add_to_cart_url() . '&quantity=' . $quantity);
-		echo '<a class="' . $class . '" rel="nofollow" href=' . $link . '">Reorder</a>';
-	}
-}
-add_action( 'woocommerce_order_item_meta_start', 'upandup_woocommerce_order_reorder_button', 10, 3 );
-
-function upandup_woocommerce_order_download_images_button( $order ) {
-	if(current_user_can( 'download_images' ) ) {
-		$downloads = [];
-		$upload_dir = wp_upload_dir();
-		$upload_path = $upload_dir['path'];
-		$upload_url = $upload_dir['url'];
-
-		foreach ( $order->get_items() as $order_item ) {
-			$_product = wc_get_product( $order_item['product_id'] );
-			$thumbnail = upandup_woo_img_url( 'thumbnail', $_product );
-			if ( ! empty( $thumbnail ) ) {
-				$full_size_image = str_replace( 'thumb', 'original', $thumbnail );
-				array_push( $downloads, $full_size_image );
-				$sku = $_product->get_sku();
-				// glob uses -[a-z][a-z]* specifically to keep products like ES207 from showing thumbnails for ES207-P
-				foreach( glob( $upload_path . '/products/thumb/' . $sku . '-[a-z][a-z]*.jpg' ) as $img_path ) {
-				  $thumbnail = str_replace( $upload_path, $upload_url, $img_path );
-					$full_size_image = str_replace( 'thumb', 'source', $thumbnail );
-					array_push( $downloads, $full_size_image );
-				}
-			}
-		}
-		if( $downloads != [] ) {
-			echo '<button id="download" class="secondary downloads" data-files="' . implode( ' ', $downloads ) . '">Download All Images</button>';
-		}
-	}
-}
-add_action( 'woocommerce_order_details_after_order_table', 'upandup_woocommerce_order_download_images_button', 10, 1 );
 
 /************************
  * Store Notices
 ************************/
 // prettier add to cart notices.
-function upandup_woo_add_to_cart_message( $message, $product_id ) {
+function upandup_woo_add_to_cart_message_html( $message, $product_id ) {
 	// get correct category back link
-	// TODO: check if there is a $_GET variable to see previous page
 	$terms = wc_get_product_terms( $product_id, 'product_cat', array( 'orderby' => 'parent', 'order' => 'DESC' ) );
-	$main_term = apply_filters( 'woocommerce_breadcrumb_main_term', $terms[0], $terms );
-	$backlink = esc_url( get_term_link( $main_term ) );
-	$output = '<a href="' . $backlink . '" class="wc-backward button">Continue Shopping</a>';
+	$terms = wc_get_product_terms( $product_id, 'product_cat' );
+
+	// main.js has script that includes window.go(-2);
+	$output = '<a href="#" class="wc-backward button" id="back">Continue Shopping</a>';
 	$output .= $message;
 	return $output;
 }
-add_filter( 'wc_add_to_cart_message', 'upandup_woo_add_to_cart_message', 0, 2 );
+add_filter( 'wc_add_to_cart_message_html', 'upandup_woo_add_to_cart_message_html', 0, 2 );
 
 // Plugin Hack
 function relevanssi_remove_punct_not_numbers( $a ) {
@@ -1142,19 +1871,51 @@ function relevanssi_remove_punct_not_numbers( $a ) {
 /************************
  * Emails
 ************************/
-
-// Add account number to customer details in emails
+// Add account number, username, marathon_ship_rate, customer_buyer_name, and customer_po to customer details in emails
 function upandup_woo_email_customer_details_fields( $fields, $sent_to_admin, $order ) {
 	$user = get_user_by( 'id', $order->customer_user );
+	$user_login = wptexturize( $user->user_login );
+	$account_number = get_user_meta( $user->ID, 'account_number', true );
+
+	$username = array(
+		'label' => __( 'Username', 'upandup' ),
+		'value' => $user_login,
+	);
+
 	$account = array(
 		'label' => __( 'Account', 'upandup' ),
-		'value' => wptexturize( $user->user_login ),
+		'value' => $account_number,
 	);
+
 	// Add account to beginning of associative array
-	$fields = array( 'account' => $account ) + $fields;
+	$fields = array( 'account' => $account ) + $fields = array( 'username' => $username ) + $fields;
 	return $fields;
 }
 add_filter( 'woocommerce_email_customer_details_fields', 'upandup_woo_email_customer_details_fields', 5, 3 );
+
+// Add All Order Meta Keys to Emails
+function my_custom_checkout_field_order_meta_keys( $keys ) {
+  echo '<h2>Order Details:</h2>';
+	$keys['Order Date'] = 'order_date';
+	$keys['Shipping Rate'] = 'marathon_ship_rate';
+  $keys['Buyer Name'] = 'customer_buyer_name';
+  $keys['Purchase Order'] = 'customer_po';
+	$keys['Shipped Date'] = 'ship_date';
+	$keys['Tracking Number'] = 'tracking_number';
+  return $keys;
+}
+add_filter( 'woocommerce_email_order_meta_keys', 'my_custom_checkout_field_order_meta_keys' );
+
+
+
+// Only send admin email if order_status is 'processing'
+function upandup_woocommerce_email( $email_class ) {
+	// remove new_order email when going from pending straight to completed.
+	remove_action( 'woocommerce_order_status_pending_to_completed_notification', array( $email_class->emails['WC_Email_New_Order'], 'trigger' ) );
+}
+add_action( 'woocommerce_email', 'upandup_woocommerce_email' );
+
+
 
 /************************
  * Hacks
@@ -1165,7 +1926,7 @@ if ( function_exists( 'relevanssi_remove_punct' ) ) {
 	add_filter('relevanssi_remove_punctuation', 'relevanssi_remove_punct_not_numbers');
 }
 // Bring back shipping rates
-add_filter( 'woocommerce_enable_deprecated_additional_flat_rates', function() { return true; } );
+// add_filter( 'woocommerce_enable_deprecated_additional_flat_rates', function() { return true; } );
 
 /************************
  * Specific Templates
@@ -1173,3 +1934,13 @@ add_filter( 'woocommerce_enable_deprecated_additional_flat_rates', function() { 
 // TODO: Not working.
 // TODO: be sure to check errors on previous orders page.
 // require_once('engrave.php');
+
+// TODO: add all numeric usernames to account_number meta TMP should only be used once
+// if(current_user_can('edit_users')) {
+// 	$customers = get_users('role=customer');
+// 	foreach ($customers as $user) {
+// 		if(ctype_digit( $user->user_login )){
+// 			update_user_meta($user->ID,'account_number',$user->user_login);
+// 		}
+// 	}
+// }

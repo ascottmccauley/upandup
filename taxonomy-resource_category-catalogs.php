@@ -10,7 +10,7 @@
 **/
  ?>
 <?php // only available for logged in users
-if ( ! is_user_logged_in() ) {
+if ( ! current_user_can( 'view_order' ) ) {
   $redirect = home_url() . $_SERVER["REQUEST_URI"];
   wp_redirect( wp_login_url( $redirect ) );
   exit;

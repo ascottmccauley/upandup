@@ -2,8 +2,8 @@
 // If inline.css exists, this will be deferred until after the page has loaded
 
 @import "settings";
-
 @import "fonts";
+@import "mixins";
 
 // Import Foundation
 @import "../../bower_components/foundation/scss/normalize";
@@ -16,10 +16,10 @@ $slick-loader-path: "../img/";
 @import "../../bower_components/slick-carousel/slick/slick-theme.scss";
 
 // Import Magnific Popup
-@import "../../bower_components/Magnific-Popup/src/css/main";
-.mfp-container {
-	padding-top: $topbar-height;
-}
+// @import "../../bower_components/Magnific-Popup/src/css/main";
+// .mfp-container {
+// 	padding-top: $topbar-height;
+// }
 
 // Import Sass-Burger
 $burger-height: 0 !default; // Include this because node-sass hasn't updated libsass
@@ -34,6 +34,7 @@ i, [class*="icon-"] {	@include fa-icon(); }
 
 // Import WooCommerce
 @import "../../woocommerce/woocommerce";
+
 
 // Base Styles
 * {
@@ -294,6 +295,9 @@ nav.second-bar {
 				background: scale-color($second-bar-bg-color, $lightness: -20%);
 			}
 		}
+		li.active:not(.has-form)>a:not(.button) {
+			background: scale-color($second-bar-bg-color, $lightness: -20%);
+		}
 		li:not(.has-form):not(.active)>a:not(.button) {
 			background: $second-bar-bg-color;
 			&:hover {
@@ -353,7 +357,7 @@ body.no-sidebar .tab-bar .left-small {
 	}
 }
 
-#searchsubmit {
+.searchsubmit {
 	background-color: $primary-color;
 }
 
@@ -378,11 +382,11 @@ body.no-sidebar .tab-bar .left-small {
 }
 
 .right-off-canvas-menu {
-	#searchbar {
+	.searchbar {
 		margin-left: 5px;
 		margin-right: 5px;
 	}
-	#searchsubmit {
+	.searchsubmit {
 		background-color: $secondary-color;
 	}
 	li.cart a {

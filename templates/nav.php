@@ -21,7 +21,7 @@
 <div class="sticky hide-for-small">
 	<?php // See if secondary_menu has any items
 	$menu_object = groundup_get_menu_object( 'Secondary' );
-	if ( $menu_object->count > 0 || is_user_logged_in() ) { ?>
+	if ( $menu_object->count > 0 || ( is_user_logged_in() ) ) { ?>
 		<nav id="secondary-navigation" class="second-bar top-bar" role="navigation" data-topbar>
 			<section class="top-bar-section">
 				<?php wp_nav_menu( array(

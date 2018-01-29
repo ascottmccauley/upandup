@@ -76,7 +76,9 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 						</td>
 						<td class="label">
 							<label for="product-<?php echo $grouped_product->get_id(); ?>">
-								<?php echo $grouped_product->is_visible() ? '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink( $grouped_product->get_id() ), $grouped_product->get_id() ) ) . '">' . $grouped_product->get_name() . '</a>' : $grouped_product->get_name(); ?>
+								<?php // custom ASM do not use is_visible for metric
+								// echo $grouped_product->is_visible() ? '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink( $grouped_product->get_id() ), $grouped_product->get_id() ) ) . '">' . $grouped_product->get_name() . '</a>' : $grouped_product->get_name();
+								echo '<a href="' . esc_url( apply_filters( 'woocommerce_grouped_product_list_link', get_permalink( $grouped_product->get_id() ), $grouped_product->get_id() ) ) . '">' . $grouped_product->get_name() . '</a>'; ?>
 							</label>
 						</td>
 						<?php do_action( 'woocommerce_grouped_product_list_before_price', $grouped_product ); ?>

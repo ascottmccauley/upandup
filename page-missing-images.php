@@ -30,6 +30,7 @@ Template Name: Missing Images
         // remove trailing 'n'
         $sku = rtrim( $sku, 'n' );
       }
+      // TODO: make into a link to product page
       if ( ! file_exists( $upload_path . '/products/thumb/' . $sku . '.jpg') ) {
         echo '<li>' . $sku . '</li>';
       }
@@ -39,4 +40,5 @@ Template Name: Missing Images
     echo '<h1>WooCommerce is not active.</h1>';
   } ?>
 </main>
+<?php get_sidebar(); ?>
 <?php get_footer(); ?>

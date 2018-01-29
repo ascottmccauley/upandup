@@ -63,7 +63,6 @@ class Modal_Shortcode {
 		}
 	}
 	public static function footer() {
-		var_dump('testing popups');
 		echo self::$modal;
 	}
 }
