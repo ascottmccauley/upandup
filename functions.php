@@ -6,6 +6,18 @@
  */
 ?>
 <?php
+// check if this is a subdomain
+// this is used to pull specific parts for the subdomain 'jewelmark.marathon-co.com'
+// could be expanded to work with other subdomains if needed
+function upandup_subdomain_check() {
+	$parts = explode('.', $_SERVER['HTTP_HOST']);
+	if( count( $parts ) > 2 ) {
+		return $parts[0];
+	} else {
+		return false;
+	}
+}
+
 // correct path to /media folder
 update_option( 'upload_path', str_replace( '/wp/', '/', ABSPATH ) . 'media' );
 
@@ -223,12 +235,13 @@ function upandup_page_title( $page_title ) {
 }
 add_filter( 'page_title', 'upandup_page_title' );
 
-// Add modernizr stop parent from deferring it
+// Add modernizr
 function upandup_modernizr() {
 	wp_enqueue_script( 'modernizr', get_stylesheet_directory_uri() . '/assets/js/modernizr.js', null, null, false );
 }
 add_action( 'wp_enqueue_scripts', 'upandup_modernizr' );
 
+// Stop parent from deferring modernizr
 function groundup_defer_script( $tag, $handle ) {
 	if ( $handle != 'jquery' && $handle != 'modernizr' ) {
 		$tag = str_replace(' src', ' defer="defer" src', $tag );
@@ -236,7 +249,7 @@ function groundup_defer_script( $tag, $handle ) {
 	return $tag;
 }
 
-// IE shims
+// IE shim
 function upandup_ie_fix() {
 	echo '<!--[if lt IE 9]>
   <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
@@ -247,6 +260,7 @@ function upandup_ie_fix() {
 }
 add_action( 'wp_head', 'upandup_ie_fix' );
 
+// IE shim
 function upandup_ie() {
 	global $wp_scripts;
 	wp_enqueue_script( 'ie', get_stylesheet_directory_uri() . '/assets/js/ie.js', null, null, false );
@@ -350,16 +364,7 @@ function upandup_login_form_defaults( $defaults ) {
 }
 add_filter( 'login_form_defaults', 'upandup_login_form_defaults' );
 
-// Change default login username label
-// add_filter( 'gettext', 'upandup_login_label' );
-// add_filter( 'ngettext', 'upandup_login_label' );
-// function upandup_login_label( $translated ) {
-//    $translated = str_ireplace( 'Username or Email Address', 'Account Number', $translated );
-//    return $translated;
-// }
-
 // Add Login Warning
-// TODO: This could be preventing error messages from showing on registration page when duplicate email is used.
 function groundup_login_error_message( $error_message ) {
 	global $errors;
 
@@ -383,9 +388,10 @@ function upandup_register_form() {
 	<p><label for="first_name"><?php _e( 'First Name', 'upandup' ) ?><br/><input type="text" name="first_name" id="first_name" class="input" value="<?php echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" /></label></p>
 	<p><label for="last_name"><?php _e( 'Last Name', 'upandup' ) ?><br/><input type="text" name="last_name" id="last_name" class="input" value="<?php echo esc_attr( wp_unslash( $last_name ) ); ?>" size="25" /></label></p>
 	<p><label for="account_number"><?php _e( 'Account Number', 'upandup' ) ?><br/><input type="text" name="account_number" id="account_number" class="input" value="<?php echo esc_attr( wp_unslash( $account_number ) ); ?>" size="25" /></label></p>
-	<p>If you do not know your account number please contact us at <a href="tel:+1<?php echo antispambot( '8004511515' ); ?>"><?php echo antispambot( '1-800-451-1515' ); ?></a></p>
-
-<?php }
+	<?php if( ! upandup_subdomain_check() ) { ?>
+		<p>If you do not know your account number please contact us at <a href="tel:+1<?php echo antispambot( '8004511515' ); ?>"><?php echo antispambot( '1-800-451-1515' ); ?></a></p>
+	<?php }
+}
 add_action( 'register_form', 'upandup_register_form' );
 
 // Validate fields
@@ -396,12 +402,39 @@ function upandup_registration_errors( $errors, $sanitized_user_login, $user_emai
 	if ( empty( $_POST['last_name'] ) || ! empty( $_POST['last_name'] ) && trim( $_POST['last_name'] ) == '' ) {
     $errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a last name.', 'upandup' ) );
   }
-	if ( empty( $_POST['account_number'] ) || ! empty( $_POST['account_number'] ) && trim( $_POST['account_number'] ) == '' ) {
-    $errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include an account number.', 'upandup' ) );
+	if ( empty( $_POST['account_number'] ) || ! empty( $_POST['account_number'] ) && trim( $_POST['account_number'] ) == '' || !validateAccountNumber( $_POST['account_number'] ) ) {
+    $errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must include a valid account number.', 'upandup' ) );
   }
+	if ( empty( $_POST['user_login'] ) || ! empty( $_POST['user_login'] ) && trim( $_POST['user_login'] ) == '' || !isStrongUsername( $_POST['user_login'] ) ) {
+    $errors->add( 'user_login', __( '<strong>ERROR</strong>: You must include a username that is longer than 5 characters and contains letters and not be an email address.', 'upandup' ) );
+  }
+
   return $errors;
 }
 add_action( 'registration_errors', 'upandup_registration_errors', 5, 3 );
+
+function validateAccountNumber( $account_number ) {
+	if( strlen( $account_number ) < 3 || strlen( $account_number) > 8 ) {
+		return false;
+	}
+	if ( ! ctype_digit( $account_number ) ) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function isStrongUsername( $username ) {
+	if ( strlen( $username ) < 5 ) {
+		return false;
+	} elseif ( ! preg_match("#[a-zA-Z]+#", $username ) ) {
+		return false;
+	} elseif ( is_email( $username ) ) {
+		return false;
+	} {
+		return true;
+	}
+}
 
 // save new fields
 function upandup_user_register( $user_id ) {
@@ -559,7 +592,6 @@ add_action( 'user_profile_update_errors', 'validateComplexPassword', 10 );
 add_action( 'woocommerce_save_account_details_errors', 'validateComplexPassword', 10 );
 
 function validateComplexPassword( $errors ) {
-
 	$password = ( isset( $_POST[ 'pass1' ] ) && trim( $_POST[ 'pass1' ] ) ) ? $_POST[ 'pass1' ] : null;
 	if ( ! $password ) {
 		$password = ( isset( $_POST[ 'password_1' ] ) && trim( $_POST[ 'password_1' ] ) ) ? $_POST[ 'password_1' ] : null;
@@ -574,13 +606,12 @@ function validateComplexPassword( $errors ) {
 	if ( ! isStrongPassword( $password ) ) {
 		$errors->add( 'pass', '<strong>ERROR</strong>: Your password must contain: <br />at least 6 characters<br />a letter A -> Z<br />a number 0 -> 9<br />a special character<br />[^£$%&*()}{@#~?><>,|=_+-].</li>' ); // your complex password error message
 	}
-	return $errors;
 }
 
 function isStrongPassword( $password ) {
 	if ( strlen( $password ) < 6 ) {
 		return false;
-	} elseif ( ! preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password) ) {
+	} elseif ( ! preg_match('/[\'^£$%&*()}{@#~?><>!,|=_+¬-]/', $password) ) {
 		return false;
 	} elseif ( ! preg_match("#[a-zA-Z]+#", $password ) ) {
 		return false;
@@ -590,6 +621,19 @@ function isStrongPassword( $password ) {
 		return true;
 	}
 }
+
+// force username requirements when user registers
+function upandup_username_requirements(  $errors, $sanitized_user_login, $user_email ) {
+	if ( empty( $password ) || ( $errors->get_error_data( 'pass' ) ) ) {
+		return $errors;
+	}
+
+	if ( ! isStrongUsername( $username ) ) {
+		$errors->add( 'user', '<strong>ERROR</strong>: Your username must be longer than 5 characters, contain letters A -> Z and not be an email address.');
+	}
+}
+add_filter( 'registration_errors', 'upandup_username_requirements', 5, 3 );
+
 
 // change password hint text:
 function upandup_password_hint( $hint ) {
@@ -612,6 +656,7 @@ function upandup_check_user_status( $user ) {
 			$account_number = get_user_meta( $user->ID, 'account_number', true );
 			$user_info = get_userdata( $user->ID );
 			$buyer_name = $user_info->first_name . ' ' . $user_info->last_name;
+			$email_address = $user_info->user_email;
 
 			$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 
@@ -619,9 +664,10 @@ function upandup_check_user_status( $user ) {
 			$message .= sprintf( __( 'Username: %s' ), $user->user_login ) . "\r\n";
 			$message .= sprintf( __( 'Account Number: %s' ), $account_number ) . "\r\n";
 			$message .= sprintf( __( 'Buyer Name: %s' ), $buyer_name ) . "\r\n";
+			$message .= sprintf( __( 'Email Address: %s' ), $email_address ) . "\r\n";
 
 			$wp_new_user_notification_email_admin = array(
-				'to'      => get_option( 'admin_email' ),
+				'to'      => 'mail@marathon-co.com',
 				'subject' => __( 'New User Registration - Account ' . $account_number  ),
 				'message' => $message,
 				'headers' => '',
@@ -656,3 +702,95 @@ add_filter( 'wp_calculate_image_srcset', function($sources) {
  }
  return $filtered_sources;
 });
+
+// Add approved and verified $columns to user list
+function upandup_manage_users_columns( $column ) {
+    $column['approved'] = 'Approved';
+		$column['verfied'] = 'Verfied';
+		$column['account_number'] = 'Account Number';
+    return $column;
+}
+add_filter( 'manage_users_columns', 'upandup_manage_users_columns' );
+
+function upandup_manage_users_custom_column( $val, $column_name, $user_id ) {
+  switch ($column_name) {
+    case 'approved' :
+      return get_user_meta( $user_id, 'approved', true ) ? 'approved' : 'not approved';
+      break;
+		case 'verfied' :
+      return get_user_meta( $user_id, 'verified', true ) ? 'verfied' : 'not verified';
+      break;
+		case 'account_number' :
+			return get_user_meta( $user_id, 'account_number', true );
+			break;
+    default:
+  }
+  return $val;
+}
+add_filter( 'manage_users_custom_column', 'upandup_manage_users_custom_column', 10, 3 );
+
+
+
+/////// Jewelmark Alterations ///////
+// Add custom class to body to be used in CSS
+function upandup_subdomain_class( $classes ) {
+	if( false !== upandup_subdomain_check() ) {
+		$classes[] = upandup_subdomain_check();
+	}
+  return $classes;
+}
+add_filter( 'body_class', 'upandup_subdomain_class', 10, 1 );
+add_filter( 'login_body_class', 'upandup_subdomain_class', 10, 1 );
+
+
+// change footer content to custom page
+function upandup_jewelmark_footer_page( $page ) {
+	if( 'jewelmark' === upandup_subdomain_check() ) {
+		$page = get_page_by_title( 'Footer Jewelmark' );
+	}
+	return $page;
+}
+add_filter( 'groundup_footer_page', 'upandup_jewelmark_footer_page');
+
+// Do not show msrp
+function upandup_jewelmark_get_price_html( $price, $product ) {
+	if( 'jewelmark' === upandup_subdomain_check() ) {
+		return null;
+	}	else {
+		return $price;
+	}
+}
+add_filter( 'woocommerce_get_price_html', 'upandup_jewelmark_get_price_html', 20, 2 );
+
+// Remove Buy button
+function upandup_jewelmark_loop_add_to_cart_link( $link, $product ) {
+	if( 'jewelmark' === upandup_subdomain_check() ) {
+		return null;
+	}	else {
+		return $link;
+	}
+}
+add_filter( 'woocommerce_loop_add_to_cart_link', 'upandup_jewelmark_loop_add_to_cart_link', 20, 2 );
+
+// Use custom secondary menu
+function upandup_jewelmark_menus( $menus ) {
+	array_push( $menus, 'Jewelmark-Primary' );
+	return $menus;
+}
+add_filter( 'groundup_menus', 'upandup_jewelmark_menus' );
+add_filter( 'groundup_menu_locations', 'upandup_jewelmark_menus' );
+
+function upandup_jewelmark_menu_primary( $menu ) {
+	if( 'jewelmark' === upandup_subdomain_check() ) {
+		$menu = 'Jewelmark-Primary';
+	}
+	return $menu;
+}
+add_filter( 'upandup_menu_primary', 'upandup_jewelmark_menu_primary', 10, 1 );
+
+// Remove quantity and buy buttons
+if( 'jewelmark' === upandup_subdomain_check() ) {
+	remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_add_to_cart', 30 );
+}
+
+//TODO: make sure blacklist won't be a problem

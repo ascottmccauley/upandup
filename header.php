@@ -17,4 +17,4 @@
 	<?php } ?>
 </header>
 
-<?php get_template_part( 'templates/nav', 'primary'); ?>
+<?php get_template_part( 'templates/nav' );

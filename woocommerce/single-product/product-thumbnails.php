@@ -13,7 +13,7 @@
  * @see 	    https://docs.woocommerce.com/document/template-structure/
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     3.1.0
+ * @version     3.3.2
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -131,6 +131,6 @@ if ( $children ) {
 if( '' == $first_html ) {
   echo '</ul>';
 }
-if( current_user_can( 'download_images' ) ) {
+if( current_user_can( 'download_images' ) && 1 == 2 ) {
 	echo '<button class="small secondary downloadImage" data-files="' . $sku . '">Download All Images</button>';
 }

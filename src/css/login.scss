@@ -70,3 +70,10 @@ html, body {
 		}
 	}
 }
+body.test, body.jewelmark {
+	#login {
+		h1 a {
+			background-image: url(../img/logo-jewelmark.png);
+    }
+  }
+}

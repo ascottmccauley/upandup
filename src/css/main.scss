@@ -15,12 +15,6 @@ $slick-loader-path: "../img/";
 @import "../../bower_components/slick-carousel/slick/slick.scss";
 @import "../../bower_components/slick-carousel/slick/slick-theme.scss";
 
-// Import Magnific Popup
-// @import "../../bower_components/Magnific-Popup/src/css/main";
-// .mfp-container {
-// 	padding-top: $topbar-height;
-// }
-
 // Import Sass-Burger
 $burger-height: 0 !default; // Include this because node-sass hasn't updated libsass
 $burger-gutter: 0 !default; // Include this because node-sass hasn't updated libsass
@@ -34,6 +28,9 @@ i, [class*="icon-"] {	@include fa-icon(); }
 
 // Import WooCommerce
 @import "../../woocommerce/woocommerce";
+
+// Import Custom Subdomain CSS
+@import "subdomain";
 
 
 // Base Styles

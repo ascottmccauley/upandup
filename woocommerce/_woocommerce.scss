@@ -181,6 +181,11 @@ body.children.parent ul.products {
 		@include block-grid($per-row: 5);
 	}
 }
+body.search.shop.no-sidebar ul.products {
+	@media #{$medium-up} {
+		@include block-grid($per-row: 9);
+	}
+}
 
 .product-category {
 	a {

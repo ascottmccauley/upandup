@@ -1,0 +1,37 @@
+// Custom CSS overrides for jewelmark subdomain
+body.test, body.jewelmark {
+  #header {
+    background-color: #a4bdcb;
+    figure a {
+      background: url(../img/logo-jewelmark.png);
+  		background-position: top;
+  		background-repeat: no-repeat;
+  		background-size: contain;
+      width: 242px;
+      height: 97px;
+      display: block;
+      margin: 0 auto;
+      img {
+        display: none;
+      }
+    }
+  }
+  .middle.tab-bar-section {
+  	h1 a {
+  		background: url(../img/logo-jewelmark-small.png);
+  		background-position: top;
+  		background-repeat: no-repeat;
+  		background-size: contain;
+  		text-align: center;
+  		text-shadow: none;
+  		color: transparent;
+  	}
+
+  }
+  // added directly to login.scss
+  // #login {
+	// 	h1 a {
+	// 		background-image: url(../img/logo-jewelmark.png);
+  //   }
+  // }
+}

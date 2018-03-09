@@ -12,7 +12,7 @@
 **/
  ?>
 <?php // only available for logged in users
-if ( ! is_user_logged_in() ) {
+if ( ! upandup_woo_customer() ) {
   $redirect = home_url() . $_SERVER["REQUEST_URI"];
   wp_redirect( wp_login_url( $redirect ) );
  exit;

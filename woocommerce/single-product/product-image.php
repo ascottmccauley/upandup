@@ -4,12 +4,11 @@
  *
  * @author 		WooThemes
  * @package 	WooCommerce/Templates
- * @version     3.1.0
+ * @version     3.3.2
 **/
 
 /** Changes
 * use custom function upandup_woo_img_url to just get image directly instead of attachment
-*
 *
 **/
 

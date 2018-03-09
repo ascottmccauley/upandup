@@ -45,8 +45,9 @@
 	} ?>
 	<nav id="primary-navigation" class="top-bar" role="navigation" data-topbar>
 		<section class="top-bar-section">
-			<?php
-			$menu_object = groundup_get_menu_object( 'Primary' );
+			<?php $menu = apply_filters( 'upandup_menu_primary', 'Primary' );
+			$menu_object = groundup_get_menu_object( $menu );
+
 			wp_nav_menu( array(
 				'menu' => $menu_object->term_id,
 				'link_before' => '',

@@ -10,7 +10,7 @@
 **/
  ?>
 <?php // only available for logged in users
-if ( ! current_user_can( 'view_order' ) ) {
+if ( ! upandup_woo_customer() ) {
   $redirect = home_url() . $_SERVER["REQUEST_URI"];
   wp_redirect( wp_login_url( $redirect ) );
   exit;
